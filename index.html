@@ -198,64 +198,95 @@
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 12px;
-    margin-bottom: 16px;
+    margin-bottom: 20px;
   }
   .response-card {
     background: var(--surface);
-    border: 1px solid var(--border);
+    border: 1.5px solid var(--border);
     border-radius: var(--radius);
-    padding: 16px 18px;
+    padding: 18px 20px;
     font-size: 14px;
     line-height: 1.75;
+    cursor: pointer;
     position: relative;
+    transition: all 0.25s cubic-bezier(0.2, 0, 0.1, 1);
+    overflow: hidden;
+  }
+  .response-card:hover {
+    transform: scale(1.03);
+    border-color: #c4b5a8;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+    z-index: 1;
+  }
+  .response-card.selected {
+    border-color: var(--accent);
+    background: linear-gradient(135deg, var(--accent-soft) 0%, var(--surface) 40%);
+    box-shadow: 0 2px 12px rgba(201,112,78,0.15);
+    animation: selectPulse 0.5s cubic-bezier(0.2, 0, 0.1, 1);
+  }
+  .response-card.selected::after {
+    content: '✓';
+    position: absolute;
+    top: 12px;
+    right: 14px;
+    font-size: 18px;
+    color: var(--accent);
+    opacity: 0;
+    animation: checkIn 0.4s 0.15s cubic-bezier(0.2, 0, 0.1, 1) forwards;
+  }
+  .response-card.selected.not-chosen {
+    opacity: 0.55;
+    filter: grayscale(0.1);
+  }
+  @keyframes selectPulse {
+    0% { transform: scale(1); }
+    40% { transform: scale(1.04); }
+    100% { transform: scale(1.01); }
+  }
+  @keyframes checkIn {
+    0% { opacity: 0; transform: translateY(-6px); }
+    100% { opacity: 1; transform: translateY(0); }
   }
   .response-card .card-label {
-    font-size: 12px;
-    letter-spacing: 0.06em;
-    color: var(--muted);
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    color: var(--light);
     text-transform: uppercase;
-    margin-bottom: 8px;
+    margin-bottom: 10px;
+    transition: color 0.25s;
   }
+  .response-card:hover .card-label,
+  .response-card.selected .card-label { color: var(--accent); }
+  .response-card .hover-hint {
+    position: absolute;
+    bottom: 10px;
+    right: 14px;
+    font-size: 11px;
+    color: var(--light);
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .response-card:hover .hover-hint,
+  .response-card.selected .hover-hint { opacity: 1; }
+  .response-card.selected .hover-hint { color: var(--accent); }
   .response-card.designed { border-color: #d4c5b8; }
-  .judgment-toggle {
-    font-size: 13px;
-    color: var(--accent);
-    cursor: pointer;
-    margin-top: 10px;
-    display: inline-block;
-    user-select: none;
-  }
-  .judgment-detail {
+  .response-card .vote-indicator {
     display: none;
-    margin-top: 8px;
-    padding: 10px 12px;
-    background: var(--accent-soft);
-    border-radius: var(--radius-sm);
-    font-size: 13px;
-    color: var(--muted);
-    line-height: 1.6;
-  }
-  .judgment-detail.show { display: block; }
-  .vote-row {
     text-align: center;
-    margin-bottom: var(--gap-lg);
-    font-size: 13px;
-    color: var(--muted);
+    font-size: 12px;
+    color: var(--accent);
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid var(--accent-soft);
   }
-  .vote-row button {
-    padding: 6px 20px;
-    border: 1px solid var(--border);
-    border-radius: 20px;
-    background: var(--surface);
-    color: var(--muted);
-    font-size: 13px;
-    cursor: pointer;
-    font-family: inherit;
-    margin: 0 4px;
-    transition: all 0.2s;
+  .response-card.selected .vote-indicator {
+    display: block;
+    animation: fadeIn 0.4s 0.3s ease forwards;
   }
-  .vote-row button:hover { border-color: var(--accent); color: var(--accent); }
-  .vote-row button.voted { background: var(--accent-soft); border-color: var(--accent); color: var(--accent); }
+  @keyframes fadeIn {
+    0% { opacity: 0; }
+    100% { opacity: 1; }
+  }
   .next-input-row {
     display: flex;
     gap: 8px;
@@ -499,13 +530,22 @@ function renderChat() {
     } else if (m.role === 'assistant' && m._pairIndex !== undefined) {
       const pair = m._pairData;
       if (!pair) continue;
+      const voted = pair.vote;
+      const cardAClass = 'response-card' + (voted === 'standard' ? ' selected' : '') + (voted === 'designed' ? ' selected not-chosen' : '');
+      const cardBClass = 'response-card designed' + (voted === 'designed' ? ' selected' : '') + (voted === 'standard' ? ' selected not-chosen' : '');
       html += '<div class="compare-grid">';
-      html += '<div class="response-card"><div class="card-label">回应 A</div>' + stripMarkdown(escapeHtml(pair.standard)).replace(/\n/g,'<br>') + '</div>';
-      html += '<div class="response-card designed"><div class="card-label">回应 B</div>' + escapeHtml(pair.designedResponse).replace(/\n/g,'<br>') + '</div></div>';
-
-      html += '<div class="vote-row">这一轮哪个回应让你更舒服？ ';
-      html += '<button class="' + (pair.vote === 'standard' ? 'voted' : '') + '" data-vote="standard" data-idx="' + pair.idx + '">回应 A</button>';
-      html += '<button class="' + (pair.vote === 'designed' ? 'voted' : '') + '" data-vote="designed" data-idx="' + pair.idx + '">回应 B</button>';
+      html += '<div class="' + cardAClass + '" data-vote="standard" data-idx="' + pair.idx + '">';
+      html += '<div class="card-label">回应 A</div>';
+      html += stripMarkdown(escapeHtml(pair.standard)).replace(/\n/g,'<br>');
+      html += '<div class="hover-hint">' + (voted === 'standard' ? '已选择' : '选这个') + '</div>';
+      html += '<div class="vote-indicator">你选了这一个</div>';
+      html += '</div>';
+      html += '<div class="' + cardBClass + '" data-vote="designed" data-idx="' + pair.idx + '">';
+      html += '<div class="card-label">回应 B</div>';
+      html += escapeHtml(pair.designedResponse).replace(/\n/g,'<br>');
+      html += '<div class="hover-hint">' + (voted === 'designed' ? '已选择' : '选这个') + '</div>';
+      html += '<div class="vote-indicator">你选了这一个</div>';
+      html += '</div>';
       html += '</div>';
     }
   }
@@ -587,10 +627,13 @@ function bindEvents() {
       });
     }
     if (btn) btn.addEventListener('click', () => { if (input.value.trim()) continueChat(input.value.trim()); });
-    document.querySelectorAll('[data-vote]').forEach(b => {
-      b.addEventListener('click', function() {
+    document.querySelectorAll('.response-card').forEach(card => {
+      card.addEventListener('click', function() {
         const idx = parseInt(this.dataset.idx);
         const choice = this.dataset.vote;
+        // Already voted this round? ignore
+        const pair = getPairData(idx);
+        if (!pair || pair.vote) return;
         recordVote(idx, choice);
       });
     });
@@ -760,14 +803,17 @@ async function callAPI() {
   }
 }
 
-function recordVote(idx, choice) {
+function getPairData(idx) {
   const msgs = standardMessages.filter(m => m._pairIndex === idx);
-  if (!msgs.length) return;
-  const pair = msgs[0]._pairData;
+  if (!msgs.length) return null;
+  return msgs[0]._pairData;
+}
+
+function recordVote(idx, choice) {
+  const pair = getPairData(idx);
   if (!pair || pair.vote) return;
   pair.vote = choice;
   votes[choice]++;
-  // 同步更新sessionLog
   const entry = sessionLog.find(e => e.round === idx + 1);
   if (entry) entry.vote = choice === 'standard' ? 'A' : 'B';
   render();
