@@ -480,6 +480,17 @@
     z-index: 100;
   }
   .toast.show { opacity: 1; }
+  .toast.warn {
+    background: #e07b3c;
+    font-size: 15px;
+    padding: 14px 28px;
+    animation: toastBounce 0.5s ease;
+  }
+  @keyframes toastBounce {
+    0% { transform: translateX(-50%) translateY(10px); }
+    60% { transform: translateX(-50%) translateY(-4px); }
+    100% { transform: translateX(-50%); }
+  }
 
   /* ── Spinner ── */
   .spinner {
@@ -706,7 +717,7 @@ function renderWelcome() {
       <button class="send-btn" id="sendBtn" disabled>→</button>
     </div>
     <div class="welcome-note">
-      这里有两个回应你的人。<br>一个只是普通的AI，另一个会试着先"读懂你"再说话。<br>聊完之后，告诉我你更喜欢哪个。
+      每一轮都有两个回应你的人。<br>左边是普通的AI，右边是会先试着"读懂你"再说话的AI。<br>每轮聊完，<strong>点一下你觉得更舒服的那个</strong>，就可以继续了。
     </div>
     <div class="welcome-note" style="margin-top:8px;font-size:12px;color:var(--light)">
       <a href="#" onclick="state='pickPersonality';render();return false;" style="color:var(--accent);">← 换一个人格</a>
@@ -940,15 +951,21 @@ function tryContinueChat(userInput) {
     pendingDraft = userInput;
     document.querySelectorAll('.response-card[data-idx="' + pair.idx + '"]').forEach(c => {
       c.style.transition = 'none';
-      c.style.boxShadow = '0 0 0 3px rgba(201,112,78,0.5)';
+      c.style.boxShadow = '0 0 0 5px rgba(224,123,60,0.6), 0 8px 24px rgba(224,123,60,0.3)';
+      c.style.borderColor = '#e07b3c';
       setTimeout(() => {
-        c.style.transition = 'all 0.5s';
+        c.style.transition = 'box-shadow 0.6s, border-color 0.6s';
         c.style.boxShadow = '';
-      }, 80);
+        c.style.borderColor = '';
+      }, 120);
     });
     const firstCard = document.querySelector('.response-card[data-idx="' + pair.idx + '"]');
     if (firstCard) firstCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    buildToast('先选一个让你更舒服的回复吧～');
+    buildToast('先选一个让你更舒服的回复吧～', 'warn');
+    setTimeout(() => {
+      const inp = document.getElementById('chatInput');
+      if (inp) { inp.focus(); inp.value = pendingDraft; }
+    }, 2200);
     return;
   }
   continueChat(userInput);
@@ -960,9 +977,13 @@ function latestUnvotedPair() {
   return msgs[msgs.length - 1]._pairData;
 }
 
-function buildToast(msg) {
+function buildToast(msg, type) {
   const t = document.getElementById('toast');
-  if (t) { t.textContent = msg; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 2000); }
+  if (!t) return;
+  t.textContent = msg;
+  t.classList.add('show');
+  if (type === 'warn') t.classList.add('warn');
+  setTimeout(() => { t.classList.remove('show', 'warn'); }, 2500);
 }
 
 async function continueChat(userInput) {
@@ -1125,7 +1146,8 @@ function recordVote(idx, choice) {
   render();
   // If user had typed something before voting, auto-send it now
   if (draft.trim()) {
-    setTimeout(() => continueChat(draft.trim()), 100);
+    buildToast('你的消息正在发送…', 'warn');
+    setTimeout(() => continueChat(draft.trim()), 300);
   } else {
     setTimeout(() => {
       const input = document.getElementById('chatInput');
