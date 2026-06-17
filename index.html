@@ -210,18 +210,38 @@
     font-family: inherit;
   }
 
-  /* ── Chat ── */
-  .chat-header {
-    text-align: center;
-    margin-bottom: var(--gap-lg);
-    padding-bottom: var(--gap);
+  /* ── Chat layout ── */
+  .sticky-header {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 20px;
+    background: rgba(250,248,245,0.92);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
     border-bottom: 1px solid var(--border-light);
+    font-size: 13px;
   }
-  .chat-header .round-label {
-    font-size: 12px;
-    letter-spacing: 0.08em;
-    color: var(--muted);
-    text-transform: uppercase;
+  .sticky-header-left { color: var(--text); font-weight: 500; }
+  .sticky-header-right { color: var(--muted); font-size: 12px; }
+  .chat-scroll {
+    flex: 1;
+    overflow-y: auto;
+    padding: var(--gap) 0;
+    min-height: 0;
+  }
+  .chat-footer {
+    border-top: 1px solid var(--border-light);
+    padding: 12px 0 0 0;
+  }
+  .chat-container {
+    display: flex;
+    flex-direction: column;
+    height: calc(100vh - 96px);
+    max-height: 800px;
   }
   .user-bubble {
     background: var(--surface);
@@ -553,7 +573,7 @@ const PERSONALITY_PROMPTS = {
 策略：给具体方向，还决定权`,
 };
 
-const PERSONALITY_NAMES = { companion: '安静的倾听者', explorer: '好奇的探索伙伴', cocreator: '并肩的创作者' };
+const PERSONALITY_NAMES = { companion: '我在这里', explorer: '让我走近，看看你都发生了什么', cocreator: '让我们一起来看看' };
 const PERSONALITY_INTENTS = { companion: '想被陪一会儿', explorer: '想一起想想', cocreator: '想一起想想' };
 
 // ── Judge Prompt ──
@@ -593,7 +613,7 @@ function render() {
   const app = document.getElementById('app');
   if (state === 'welcome') app.innerHTML = renderWelcome();
   else if (state === 'pickPersonality') app.innerHTML = renderPersonalityPick();
-  else if (state === 'chatting') app.innerHTML = renderChat();
+  else if (state === 'chatting') { app.innerHTML = renderChat(); setTimeout(() => { const el = document.querySelector('.chat-scroll'); if (el) el.scrollTop = el.scrollHeight; }, 50); }
   else if (state === 'ending') app.innerHTML = renderEnd();
   else if (state === 'feedback') app.innerHTML = renderFeedback();
   bindEvents();
@@ -603,21 +623,18 @@ function renderPersonalityPick() {
   return `
   <div class="welcome-wrap">
     <div class="welcome-greeting">你好，欢迎来到这里。</div>
-    <div class="welcome-sub">今天，你想跟一个什么样的人聊聊？</div>
+    <div class="welcome-sub">今天，你想怎么聊聊？</div>
     <div class="personality-grid">
       <div class="personality-card" data-personality="companion">
-        <div class="personality-icon">🪑</div>
-        <div class="personality-name">安静的倾听者</div>
+        <div class="personality-name">我在这里</div>
         <div class="personality-desc">你说，我听。<br>不急着给建议。</div>
       </div>
       <div class="personality-card" data-personality="explorer">
-        <div class="personality-icon">🔍</div>
-        <div class="personality-name">好奇的探索伙伴</div>
-        <div class="personality-desc">用一个好问题，<br>让你看到没注意到的角度。</div>
+        <div class="personality-name">让我走近，看看你都发生了什么</div>
+        <div class="personality-desc">用一个好问题，<br>帮你看到没注意到的角度。</div>
       </div>
       <div class="personality-card" data-personality="cocreator">
-        <div class="personality-icon">🤝</div>
-        <div class="personality-name">并肩的创作者</div>
+        <div class="personality-name">让我们一起来看看</div>
         <div class="personality-desc">像搭档一样，<br>跟你有来有回地推进想法。</div>
       </div>
     </div>
@@ -630,7 +647,7 @@ function renderPersonalityPick() {
 function renderWelcome() {
   return `
   <div class="welcome-wrap">
-    <div class="welcome-greeting">好的，让<span style="color:var(--accent);">${personalityName}</span>陪你聊聊。</div>
+    <div class="welcome-greeting"><span style="color:var(--accent);">${personalityName}</span></div>
     <div class="welcome-sub">你可以随便说点什么，或者从下面选一句</div>
     <div class="preset-list">
       <button class="preset-btn" data-preset="最近有点累，好像也没什么特别的事，就是提不起劲。">最近有点累</button>
@@ -653,44 +670,57 @@ function renderWelcome() {
 
 function renderChat() {
   const msgs = standardMessages.slice(1).filter(m => m.role === 'user' || m.role === 'assistant');
-  let html = '<div class="chat-header"><div class="round-label">第 ' + round + ' 轮</div></div>';
-
-  for (let i = msgs.length - 1; i >= 0; i--) {
+  // Build conversation in chronological order (oldest first)
+  const historyBubbles = [];
+  for (let i = 0; i < msgs.length; i++) {
     const m = msgs[i];
     if (m.role === 'user') {
-      html += '<div class="user-bubble">' + escapeHtml(m.content) + '</div>';
+      historyBubbles.push('<div class="user-bubble">' + escapeHtml(m.content) + '</div>');
     } else if (m.role === 'assistant' && m._pairIndex !== undefined) {
       const pair = m._pairData;
       if (!pair) continue;
       const voted = pair.vote;
       const cardAClass = 'response-card' + (voted === 'standard' ? ' selected' : '') + (voted === 'designed' ? ' selected not-chosen' : '');
       const cardBClass = 'response-card designed' + (voted === 'designed' ? ' selected' : '') + (voted === 'standard' ? ' selected not-chosen' : '');
-      html += '<div class="compare-grid">';
-      html += '<div class="' + cardAClass + '" data-vote="standard" data-idx="' + pair.idx + '">';
-      html += '<div class="card-label">回应 A</div>';
-      html += stripMarkdown(escapeHtml(pair.standard)).replace(/\n/g,'<br>');
-      html += '<div class="hover-hint">' + (voted === 'standard' ? '已选择' : '选这个') + '</div>';
-      html += '<div class="vote-indicator">你选了这一个</div>';
-      html += '</div>';
-      html += '<div class="' + cardBClass + '" data-vote="designed" data-idx="' + pair.idx + '">';
-      html += '<div class="card-label">回应 B</div>';
-      html += escapeHtml(pair.designedResponse).replace(/\n/g,'<br>');
-      html += '<div class="hover-hint">' + (voted === 'designed' ? '已选择' : '选这个') + '</div>';
-      html += '<div class="vote-indicator">你选了这一个</div>';
-      html += '</div>';
-      html += '</div>';
+      let cardsHtml = '<div class="compare-grid">';
+      cardsHtml += '<div class="' + cardAClass + '" data-vote="standard" data-idx="' + pair.idx + '">';
+      cardsHtml += '<div class="card-label">回应 A</div>';
+      cardsHtml += stripMarkdown(escapeHtml(pair.standard)).replace(/\n/g,'<br>');
+      cardsHtml += '<div class="hover-hint">' + (voted === 'standard' ? '已选择' : '选这个') + '</div>';
+      cardsHtml += '<div class="vote-indicator">你选了这一个</div>';
+      cardsHtml += '</div>';
+      cardsHtml += '<div class="' + cardBClass + '" data-vote="designed" data-idx="' + pair.idx + '">';
+      cardsHtml += '<div class="card-label">回应 B</div>';
+      cardsHtml += escapeHtml(pair.designedResponse).replace(/\n/g,'<br>');
+      cardsHtml += '<div class="hover-hint">' + (voted === 'designed' ? '已选择' : '选这个') + '</div>';
+      cardsHtml += '<div class="vote-indicator">你选了这一个</div>';
+      cardsHtml += '</div>';
+      cardsHtml += '</div>';
+      historyBubbles.push(cardsHtml);
     }
   }
 
+  let html = '<div class="chat-container">';
+  html += '<div class="sticky-header">';
+  html += '<div class="sticky-header-left"><span style="color:var(--accent);">' + personalityName + '</span></div>';
+  html += '<div class="sticky-header-right">第 ' + round + ' 轮</div>';
+  html += '</div>';
+
+  html += '<div class="chat-scroll">';
+  html += historyBubbles.join('');
   html += '<div id="loadingArea"></div>';
+  html += '</div>';
+
+  html += '<div class="chat-footer">';
   html += '<div class="next-input-row">';
   html += '<textarea class="chat-input" id="chatInput" placeholder="继续说……" rows="2"></textarea>';
   html += '<button class="send-btn" id="chatSendBtn" disabled>→</button>';
   html += '</div>';
-
   if (round >= 5) {
     html += '<div class="end-hint">觉得聊得差不多了？<button id="endChatBtn">就到这里吧</button></div>';
   }
+  html += '</div>';
+  html += '</div>';
 
   return html;
 }
