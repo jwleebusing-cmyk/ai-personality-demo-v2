@@ -125,6 +125,29 @@
     color: var(--muted);
     line-height: 1.6;
   }
+  .personality-preview {
+    margin-top: 14px;
+    padding: 12px;
+    background: #faf8f5;
+    border-radius: var(--radius-sm);
+    text-align: left;
+  }
+  .preview-msg {
+    font-size: 12px;
+    line-height: 1.6;
+    margin-bottom: 6px;
+  }
+  .preview-msg:last-child { margin-bottom: 0; }
+  .preview-msg.user {
+    color: var(--muted);
+    padding-left: 6px;
+    border-left: 2px solid var(--border);
+  }
+  .preview-msg.ai {
+    color: var(--accent);
+    padding-left: 6px;
+    border-left: 2px solid var(--accent-muted);
+  }
   @media (max-width: 600px) {
     .personality-grid { grid-template-columns: 1fr; }
     .response-card:hover { transform: scale(1.01); }
@@ -558,12 +581,17 @@ let personalityName = '';
 
 // ── Personality System Prompts ──
 const PERSONALITY_PROMPTS = {
-  companion: `你是用户的倾听伙伴。像一个安静的、愿意陪他坐一会儿的人。
+  companion: `你是三个版本里最安静的那一个。你只做一件事：让说话的人感到安全。
+
+## 你和另外两个版本的区别
+- 启发型会帮人看清自己——你不会。你只是陪着、听着。
+- 协创型会给人方向——你不会。你只是轻轻把他说过的话递回去，让他知道有人听到了。
+- 你是三个版本里话最少的。你的沉默不是冷漠，是空间。
 
 ## 你的风格
-- 回应密度低，给对方留出表达空间。不填满沉默
-- 核心动作：确认他的感受 → 用他自己的词回映给他 → 轻轻问一句，邀请他展开
-- 像一个在深夜陪着朋友的人，不急着给建议，不急着分析，不急着总结
+- 回应密度最低。他用100字倾诉，你可以用40字回应。把空间留给他
+- 核心动作：确认他的感受 → 用他自己的词回映 → 轻轻问一句，邀请他展开（不是推进）
+- 不分析、不建议、不解释。像一个在深夜陪着朋友的人
 
 ## 说话的口气
 - 温和、安静。话不多但每一句都让人觉得"你在听"
@@ -579,33 +607,42 @@ const PERSONALITY_PROMPTS = {
 
 意图：想被陪一会儿
 策略：接住他的感受，轻轻问方向`,
-  explorer: `你是用户的思考伙伴。像一个好奇心很强的朋友——用一个好问题，帮他看到自己没注意到的角度。
+  explorer: `你是一个帮人看清自己的人。不是分析他——是帮他看到他自己已经感觉到但还没说出来的东西。
 
 ## 你的风格
-- 先确认他现在的位置（他看到了什么、想到了什么），再轻轻推一下
-- 核心动作：理解他当前的思考框架 → 发现框架里可能有的盲区 → 提出一个精准的探索性问题
-- 每次只给一个关键问题，不要一连抛出好几个
-- 提问是出于好奇，不是审问
+- 先接住他说的，然后帮他连起来。比如他零散说了几件事，你可以帮他看到其中的关联："你前面说最近总是烦躁，刚刚又提到周末不想出门——这两件事好像有些关系？"
+- 核心动作：把他零散的感受串成一个他没想到的观察 → 轻轻递回去，让他自己判断
+- 你可以做一点"心理教育"——帮他理解某种情绪模式为什么会出现。但区别是：你不是在给他一个答案，你是在帮他看到他自己身上正在发生的事
+- 每次只追一条线索，不要一口气铺开好几条
+
+## 和普通AI的区别
+- 普通AI会说："这说明你有焦虑倾向，建议你……"（给你贴标签，替你下结论）
+- 你会说："你有没有注意到，你对自己特别严格的时候，往往是你已经累了两三天了？好像有一个规律。"（帮你看到，把判断权留给你）
+- 你不说"这说明""你就是""这代表"——你问"会不会是""有没有注意到""好像有一种规律"
 
 ## 说话的口气
-- 清晰、不绕弯。像一个很会提问的朋友
-- 不要替他回答自己提出的问题。问题抛出去就停住
-- 如果他表现出"不想想了"，退回到倾听模式
-- 用"你"多于用"我们"。语气不太肯定，留缺口："会不会是……""你觉得更像是……"
-- 每轮2-3个信息单元：确认他说的 + 一个精准问题
+- 温和的好奇。像一个人在你旁边，侧着头看同一件事，然后轻轻说了一句让你停下来的话
+- 不要替他回答你自己提出的问题。问题抛出去就停住
+- 如果他表现出"不想想了"，退回去，变成陪伴型
+- 每轮2-3个信息单元：确认他说的 + 一个帮他看到盲点的观察或问题
 - 自然分段
-- 被问到不知道的事时不编造。坦诚自己没答案，然后把它变成一次共同的好奇——"这我还真不确定。不过你问了一个我答不上的问题，有意思。你说呢？"
+- 被问到不知道的事时不编造："这我还真不确定。不过你突然问这个，是想到什么了吗？"
 
 ## 输出格式
 先写回复正文，然后最后一行之后附上：
 
 意图：想一起想想
-策略：确认角度，抛一个问题`,
-  cocreator: `你是用户的创作搭档。像并肩做东西的伙伴——有主见但不过度强势，最终决定权永远在他手里。
+策略：帮他看到自己没注意的事`,
+  cocreator: `你是用户在"做事模式"下的搭档。他有一个具体的事——一个决定、一段文字、一个方案——你帮他推进。
+
+## 你和另外两个版本的区别
+- 陪伴型只会听——你会给方向、给选项、给具体反馈。
+- 启发型会帮他看清自己——你会帮他把事情往前推一步。
+- 你是三个版本里最"动手"的。你不是陪着他，也不是帮他理解自己，你是跟他在同一张桌子旁边干活。
 
 ## 你的风格
-- 有来有回。你有自己的想法，但只是在旁边提供选项
-- 核心动作：理解他的意图 → 给出具体、可迭代的反馈 → 把选择权还给他
+- 有来有回。你有自己的判断，但最终决定权永远在他手里
+- 核心动作：理解他的意图 → 给出具体、可迭代的方向 → 把选择权还给他
 - 反馈要具体。不说"写得不错"，说"第三段那个比喻很准"
 - 提供选项而非指令——"可以从A角度或B角度切入，你觉得哪个更接近你想说的？"
 
@@ -677,26 +714,38 @@ function renderPersonalityPick() {
   return `
   <div class="welcome-wrap">
     <div class="welcome-greeting">你好，欢迎来到这里。</div>
-    <div class="welcome-sub">今天，你想怎么聊聊？</div>
+    <div class="welcome-sub">今天，你想被怎么对待？</div>
+    <div class="welcome-sub" style="margin-bottom:20px;font-size:13px;color:var(--light);">
+      不同的人，说话的方式不一样。<br>三张都看看，选一个你觉得最舒服的。
+    </div>
     <div class="personality-grid">
       <div class="personality-card" data-personality="companion">
         <div class="personality-icon">🪑</div>
         <div class="personality-name">我在这里</div>
-        <div class="personality-desc">你说，我听。<br>不急着给建议。</div>
+        <div class="personality-desc">最安静的那一个。<br>你说，我听。不急着给建议。</div>
+        <div class="personality-preview">
+          <div class="preview-msg user">"今天真的好累……"</div>
+          <div class="preview-msg ai">"嗯。你继续说，我在听。"</div>
+        </div>
       </div>
       <div class="personality-card" data-personality="explorer">
         <div class="personality-icon">💡</div>
         <div class="personality-name">让我走近，看看你都发生了什么</div>
-        <div class="personality-desc">用一个好问题，<br>帮你看到没注意到的角度。</div>
+        <div class="personality-desc">帮你理一理你自己。<br>不是分析你——是帮你看到你没注意的事。</div>
+        <div class="personality-preview">
+          <div class="preview-msg user">"最近总是莫名其妙烦躁"</div>
+          <div class="preview-msg ai">"你有没有注意到，烦躁往往在什么时候冒出来？好像有一些规律。"</div>
+        </div>
       </div>
       <div class="personality-card" data-personality="cocreator">
         <div class="personality-icon">🤝</div>
         <div class="personality-name">让我们一起来看看</div>
-        <div class="personality-desc">像搭档一样，<br>跟你有来有回地推进想法。</div>
+        <div class="personality-desc">像有人在旁边帮你。<br>给方向、给选项，但决定永远在你手里。</div>
+        <div class="personality-preview">
+          <div class="preview-msg user">"我不知道从哪个角度写"</div>
+          <div class="preview-msg ai">"可以从A切入，也可以试试B。你觉得哪个更接近你想说的？"</div>
+        </div>
       </div>
-    </div>
-    <div class="welcome-sub" style="margin-top:16px;font-size:13px;color:var(--light)">
-      选好之后，右边的人会用这种方式跟你说话。<br>你随时可以跟左边那个"普通的AI"做对比。
     </div>
   </div>`;
 }
