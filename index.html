@@ -641,11 +641,10 @@ async function startChat(userInput) {
   document.getElementById('loadingArea').innerHTML = '<div class="spinner"><div class="spinner-dot"></div><div class="spinner-dot"></div><div class="spinner-dot"></div></div>';
 
   const result = await callAPI();
-  if (!result) { document.getElementById('loadingArea').innerHTML = '<p style="text-align:center;color:var(--muted);font-size:13px;">出了点问题，请稍后再试。</p>'; return; }
+  if (!result || result.error) { showError(result?.error); return; }
 
   standardMessages.push({ role: 'assistant', content: result.standard, _pairIndex: round - 1, _pairData: { idx: round - 1, standard: result.standard, designedResponse: result.designed.response, judgment: result.designed.judgment } });
   designedMessages.push({ role: 'assistant', content: result.designed.response });
-  // 记录本轮数据
   sessionLog.push({
     round: round,
     time: new Date().toISOString(),
@@ -667,7 +666,7 @@ async function continueChat(userInput) {
   document.getElementById('loadingArea').innerHTML = '<div class="spinner"><div class="spinner-dot"></div><div class="spinner-dot"></div><div class="spinner-dot"></div></div>';
 
   const result = await callAPI();
-  if (!result) { document.getElementById('loadingArea').innerHTML = '<p style="text-align:center;color:var(--muted);font-size:13px;">出了点问题，请稍后再试。</p>'; return; }
+  if (!result || result.error) { showError(result?.error); return; }
 
   standardMessages.push({ role: 'assistant', content: result.standard, _pairIndex: round - 1, _pairData: { idx: round - 1, standard: result.standard, designedResponse: result.designed.response, judgment: result.designed.judgment } });
   designedMessages.push({ role: 'assistant', content: result.designed.response });
@@ -760,13 +759,13 @@ async function callAPI() {
     return {
       standard,
       designed: {
-        judgment: { intent: intentMatch?.[1]?.trim() || '未判断', strategy: strategyMatch?.[1]?.trim() || '未说明' },
+        judgment: { intent: intent, strategy: strategy },
         response,
       }
     };
   } catch (e) {
-    console.error(e);
-    return null;
+    console.error('API error:', e);
+    return { error: e.message || '未知错误' };
   }
 }
 
@@ -826,6 +825,13 @@ function exportData() {
 function csvEscape(s) {
   if (!s) return '';
   return '"' + s.replace(/"/g, '""').replace(/\n/g, ' ') + '"';
+}
+
+function showError(msg) {
+  const area = document.getElementById('loadingArea');
+  if (!area) return;
+  const errMsg = msg || '未知网络错误';
+  area.innerHTML = '<div style="text-align:center;padding:16px;border:1px solid #e0d4cf;border-radius:8px;background:#fdfaf8;"><p style="color:var(--muted);font-size:13px;margin-bottom:4px;">出了点问题</p><p style="color:var(--light);font-size:11px;">' + escapeHtml(errMsg) + '</p><p style="color:var(--light);font-size:11px;">刷新页面试试，或者换一个预设句子</p></div>';
 }
 
 // ── Key management ──
