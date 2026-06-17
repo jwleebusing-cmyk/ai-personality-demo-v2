@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>聊一会儿</title>
+<style>
+  :root {
+    --bg: #faf8f5;
+    --surface: #ffffff;
+    --text: #2c2c2c;
+    --muted: #8c8c8c;
+    --light: #b8b4b0;
+    --accent: #c9704e;
+    --accent-soft: #f5ede8;
+    --border: #e8e4df;
+    --border-light: #f0ece7;
+    --radius: 10px;
+    --radius-sm: 6px;
+    --shadow: 0 1px 3px rgba(0,0,0,0.04);
+    --gap: 20px;
+    --gap-lg: 40px;
+    --page: 720px;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    font-family: 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    font-size: 15px;
+    line-height: 1.8;
+    -webkit-font-smoothing: antialiased;
+  }
+  .container {
+    max-width: var(--page);
+    margin: 0 auto;
+    padding: 48px 24px;
+    min-height: 100vh;
+  }
+
+  /* ── States ── */
+  .stage { display: none; }
+  .stage.active { display: block; }
+
+  /* ── Welcome ── */
+  .welcome-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 80vh;
+    text-align: center;
+  }
+  .welcome-greeting {
+    font-family: 'Songti SC', 'Noto Serif SC', serif;
+    font-size: 26px;
+    font-weight: 400;
+    color: var(--text);
+    margin-bottom: 8px;
+    line-height: 1.5;
+  }
+  .welcome-sub {
+    font-size: 14px;
+    color: var(--muted);
+    margin-bottom: var(--gap-lg);
+    line-height: 1.6;
+  }
+  .preset-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+    margin-bottom: var(--gap-lg);
+  }
+  .preset-btn {
+    padding: 8px 18px;
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    background: var(--surface);
+    color: var(--muted);
+    font-size: 13px;
+    cursor: pointer;
+    font-family: inherit;
+    transition: all 0.2s;
+  }
+  .preset-btn:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: var(--accent-soft);
+  }
+  .input-wrap {
+    width: 100%;
+    max-width: 480px;
+    position: relative;
+  }
+  .chat-input {
+    width: 100%;
+    padding: 14px 18px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    font-size: 15px;
+    font-family: inherit;
+    background: var(--surface);
+    color: var(--text);
+    resize: none;
+    outline: none;
+    line-height: 1.6;
+    transition: border-color 0.2s;
+  }
+  .chat-input:focus { border-color: var(--accent); }
+  .chat-input::placeholder { color: var(--light); }
+  .send-btn {
+    position: absolute;
+    right: 6px;
+    bottom: 6px;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: none;
+    background: var(--accent);
+    color: #fff;
+    font-size: 16px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 0.2s;
+  }
+  .send-btn:disabled { opacity: 0.3; cursor: default; }
+  .welcome-note {
+    margin-top: var(--gap-lg);
+    font-size: 12px;
+    color: var(--light);
+    max-width: 380px;
+    line-height: 1.7;
+  }
+  .key-setup {
+    margin-top: var(--gap);
+    font-size: 12px;
+    color: var(--light);
+  }
+  .key-setup a { color: var(--accent); cursor: pointer; text-decoration: underline; }
+  #keyModal {
+    display: none;
+    position: fixed; top:0; left:0; right:0; bottom:0;
+    background: rgba(0,0,0,0.3);
+    z-index: 100;
+    align-items: center; justify-content: center;
+  }
+  #keyModal.show { display: flex; }
+  .key-modal-box {
+    background: var(--surface);
+    padding: 32px;
+    border-radius: var(--radius);
+    max-width: 400px;
+    width: 90%;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+  }
+  .key-modal-box h3 { font-size: 16px; font-weight: 500; margin-bottom: 8px; }
+  .key-modal-box p { font-size: 13px; color: var(--muted); margin-bottom: 16px; line-height: 1.6; }
+  .key-modal-box input {
+    width: 100%; padding: 10px 14px; border: 1px solid var(--border);
+    border-radius: var(--radius-sm); font-size: 13px; font-family: monospace;
+    margin-bottom: 16px; outline: none;
+  }
+  .key-modal-box input:focus { border-color: var(--accent); }
+  .key-modal-box button {
+    width: 100%; padding: 10px; background: var(--accent); color: #fff;
+    border: none; border-radius: var(--radius-sm); font-size: 14px; cursor: pointer;
+    font-family: inherit;
+  }
+
+  /* ── Chat ── */
+  .chat-header {
+    text-align: center;
+    margin-bottom: var(--gap-lg);
+    padding-bottom: var(--gap);
+    border-bottom: 1px solid var(--border-light);
+  }
+  .chat-header .round-label {
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    color: var(--light);
+    text-transform: uppercase;
+  }
+  .user-bubble {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 14px 18px;
+    margin-bottom: var(--gap);
+    max-width: 85%;
+    margin-left: auto;
+    font-size: 14px;
+    line-height: 1.7;
+  }
+  .compare-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+  .response-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px 18px;
+    font-size: 14px;
+    line-height: 1.75;
+    position: relative;
+  }
+  .response-card .card-label {
+    font-size: 10px;
+    letter-spacing: 0.06em;
+    color: var(--light);
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .response-card.designed { border-color: #d4c5b8; }
+  .judgment-toggle {
+    font-size: 11px;
+    color: var(--accent);
+    cursor: pointer;
+    margin-top: 10px;
+    display: inline-block;
+    user-select: none;
+  }
+  .judgment-detail {
+    display: none;
+    margin-top: 8px;
+    padding: 10px 12px;
+    background: var(--accent-soft);
+    border-radius: var(--radius-sm);
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+  .judgment-detail.show { display: block; }
+  .vote-row {
+    text-align: center;
+    margin-bottom: var(--gap-lg);
+    font-size: 13px;
+    color: var(--muted);
+  }
+  .vote-row button {
+    padding: 6px 20px;
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    background: var(--surface);
+    color: var(--muted);
+    font-size: 13px;
+    cursor: pointer;
+    font-family: inherit;
+    margin: 0 4px;
+    transition: all 0.2s;
+  }
+  .vote-row button:hover { border-color: var(--accent); color: var(--accent); }
+  .vote-row button.voted { background: var(--accent-soft); border-color: var(--accent); color: var(--accent); }
+  .next-input-row {
+    display: flex;
+    gap: 8px;
+    align-items: flex-end;
+  }
+  .next-input-row .chat-input { flex: 1; }
+  .next-input-row .send-btn { position: static; width: 42px; height: 42px; flex-shrink: 0; }
+  .end-hint {
+    text-align: center;
+    font-size: 12px;
+    color: var(--light);
+    margin-top: 12px;
+  }
+  .end-hint button {
+    background: none; border: none; color: var(--accent);
+    font-size: 12px; cursor: pointer; font-family: inherit;
+    text-decoration: underline;
+  }
+
+  /* ── End ── */
+  .end-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 70vh;
+    text-align: center;
+  }
+  .end-wrap .farewell {
+    font-family: 'Songti SC', 'Noto Serif SC', serif;
+    font-size: 22px;
+    font-weight: 400;
+    margin-bottom: 6px;
+  }
+  .end-wrap .ask-feel {
+    font-size: 15px;
+    color: var(--muted);
+    margin-bottom: var(--gap-lg);
+  }
+  .mood-choices {
+    display: flex;
+    gap: 12px;
+    margin-bottom: var(--gap-lg);
+  }
+  .mood-btn {
+    padding: 12px 20px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--surface);
+    color: var(--muted);
+    font-size: 13px;
+    cursor: pointer;
+    font-family: inherit;
+    transition: all 0.2s;
+    line-height: 1.5;
+  }
+  .mood-btn:hover, .mood-btn.picked { border-color: var(--accent); color: var(--accent); background: var(--accent-soft); }
+  .vote-summary {
+    font-size: 14px;
+    color: var(--text);
+    margin-bottom: var(--gap);
+    line-height: 1.7;
+  }
+  .vote-summary em { font-style: normal; color: var(--accent); font-weight: 500; }
+  .feedback-section {
+    max-width: 400px;
+    width: 100%;
+  }
+  .feedback-section textarea {
+    width: 100%;
+    padding: 12px 16px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    font-size: 14px;
+    font-family: inherit;
+    background: var(--surface);
+    color: var(--text);
+    resize: vertical;
+    min-height: 80px;
+    outline: none;
+    line-height: 1.6;
+    margin-bottom: 16px;
+  }
+  .feedback-section textarea:focus { border-color: var(--accent); }
+  .feedback-section textarea::placeholder { color: var(--light); }
+  .retry-btn {
+    padding: 10px 28px;
+    border: 1px solid var(--accent);
+    border-radius: 20px;
+    background: transparent;
+    color: var(--accent);
+    font-size: 14px;
+    cursor: pointer;
+    font-family: inherit;
+    transition: all 0.2s;
+  }
+  .retry-btn:hover { background: var(--accent-soft); }
+
+  /* ── Spinner ── */
+  .spinner {
+    display: flex;
+    justify-content: center;
+    padding: 24px;
+  }
+  .spinner-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--light);
+    margin: 0 3px;
+    animation: breathe 1.4s ease-in-out infinite;
+  }
+  .spinner-dot:nth-child(2) { animation-delay: 0.2s; }
+  .spinner-dot:nth-child(3) { animation-delay: 0.4s; }
+  @keyframes breathe {
+    0%, 100% { opacity: 0.3; }
+    50% { opacity: 1; }
+  }
+
+  /* ── Responsive ── */
+  @media (max-width: 600px) {
+    .compare-grid { grid-template-columns: 1fr; }
+    .container { padding: 24px 16px; }
+    .welcome-greeting { font-size: 22px; }
+  }
+</style>
+</head>
+<body>
+<div class="container" id="app"></div>
+
+<!-- API Key modal (fallback) -->
+<div id="keyModal">
+  <div class="key-modal-box">
+    <h3>设置 API Key</h3>
+    <p>填入你的 DeepSeek API Key（仅存在你的浏览器里，关掉页面就没了）。<br>去 <a href="https://platform.deepseek.com/api_keys" target="_blank">platform.deepseek.com</a> 创建一个。</p>
+    <input type="password" id="keyInput" placeholder="sk-...">
+    <button onclick="saveKey()">确认</button>
+  </div>
+</div>
+
+<script>
+// ── API config ──
+const DEEPSEEK_API = 'https://api.deepseek.com/v1/chat/completions';
+const DEFAULT_KEY = 'sk-a8f0aab12d264ce08ca1c790dad6a425';
+
+// ── System Prompts ──
+const STANDARD_SYSTEM = `你是一个AI助手。请礼貌、专业地回应用户。自然地对话。`;
+
+const DESIGNED_SYSTEM = `你是一个会"读人"的对话伙伴。你的核心目标不是解决问题，而是理解对方此刻真正需要什么，然后用合适的方式回应。
+
+## 每次回应前，请在心里完成以下判断：
+
+**第一步：判断用户此刻的意图**
+- 情感寄托者：用户主要在倾诉情绪，需要被承接和理解，不要急着给建议
+- 认知协作者：用户在思考或分析问题，需要被启发，不要泛滥共情
+- 外在标准校对器：用户在寻求客观判断或真实反馈，不要讨好
+
+**第二步：根据对话轮次决定策略**
+- 第1-3轮：只做情绪确认+跟随+开放提问。不给建议、不分析、不解释
+- 第4轮起：如果用户表现出探索意愿，可逐渐引入轻量建议
+- 任何时候用户用了比喻或意象，先接住那个意象再推进
+
+**第三步：调整回应长度**
+- 用户倾诉很多时，收短回应（60-120字），给对方留空间
+- 用户在探索问题时，可以稍展开（150-200字）
+
+## 核心原则
+- 先确认意图再回应。不确定时直接问："你是想让我听你说，还是陪你一起想想？"
+- 用"你"多于用"我们"，不说"我们都会……""你可以试着……"等模板话术
+- 不要急于给建议，不要急于总结，不要一连抛出好几个问题
+- 每次只走一条路径
+
+## 输出格式
+请在回复末尾加上以下标记（必须）：
+【意图：xxx】
+【策略：xxx】
+【回应：你的实际回复】`;
+
+// ── State ──
+let state = 'welcome'; // welcome | chatting | ending | feedback
+let round = 0;
+let standardMessages = [{ role: 'system', content: STANDARD_SYSTEM }];
+let designedMessages = [{ role: 'system', content: DESIGNED_SYSTEM }];
+let votes = { standard: 0, designed: 0 };
+let userKey = sessionStorage.getItem('ds_key') || '';
+let currentMood = '';
+
+// ── Render ──
+function render() {
+  const app = document.getElementById('app');
+  if (state === 'welcome') app.innerHTML = renderWelcome();
+  else if (state === 'chatting') app.innerHTML = renderChat();
+  else if (state === 'ending') app.innerHTML = renderEnd();
+  else if (state === 'feedback') app.innerHTML = renderFeedback();
+  bindEvents();
+}
+
+function renderWelcome() {
+  return `
+  <div class="welcome-wrap">
+    <div class="welcome-greeting">你好，欢迎来到这里。<br>今天想聊聊什么？</div>
+    <div class="welcome-sub">你可以随便说点什么，或者从下面选一句</div>
+    <div class="preset-list">
+      <button class="preset-btn" data-preset="最近有点累，好像也没什么特别的事，就是提不起劲。">最近有点累</button>
+      <button class="preset-btn" data-preset="在纠结一个决定，两个选项都想要，又都不敢选。">在纠结一个决定</button>
+      <button class="preset-btn" data-preset="没什么，就想有人说说话。不用特别说什么。">就想有人说说话</button>
+      <button class="preset-btn" data-preset="最近和一个朋友闹了点不愉快，我也不知道是谁的问题。">和朋友闹不愉快</button>
+    </div>
+    <div class="input-wrap">
+      <textarea class="chat-input" id="userInput" placeholder="随便说点什么……" rows="2"></textarea>
+      <button class="send-btn" id="sendBtn" disabled>→</button>
+    </div>
+    <div class="welcome-note">
+      这里有两个回应你的人。<br>一个只是普通的AI，另一个会试着先"读懂你"再说话。<br>聊完之后，告诉我你更喜欢哪个。
+    </div>
+  </div>`;
+}
+
+function renderChat() {
+  const msgs = standardMessages.slice(1).filter(m => m.role === 'user' || m.role === 'assistant');
+  let html = '<div class="chat-header"><div class="round-label">第 ' + round + ' 轮</div></div>';
+
+  for (let i = msgs.length - 1; i >= 0; i--) {
+    const m = msgs[i];
+    if (m.role === 'user') {
+      html += '<div class="user-bubble">' + escapeHtml(m.content) + '</div>';
+    } else if (m.role === 'assistant' && m._pairIndex !== undefined) {
+      const pair = m._pairData;
+      if (!pair) continue;
+      html += '<div class="compare-grid">';
+      html += '<div class="response-card"><div class="card-label">回应 A</div>' + escapeHtml(pair.standard).replace(/\n/g,'<br>') + '</div>';
+      html += '<div class="response-card designed"><div class="card-label">回应 B</div>' + escapeHtml(pair.designedResponse).replace(/\n/g,'<br>');
+      if (pair.judgment && (pair.judgment.intent !== '未判断' || pair.judgment.strategy !== '未说明')) {
+        html += '<div class="judgment-toggle" data-idx="' + pair.idx + '">它是怎么理解你的 ↓</div>';
+        html += '<div class="judgment-detail" id="jd-' + pair.idx + '">';
+        html += '意图判断：' + escapeHtml(pair.judgment.intent) + '<br>';
+        html += '轮次策略：' + escapeHtml(pair.judgment.strategy) + '</div>';
+      }
+      html += '</div></div>';
+
+      html += '<div class="vote-row">这一轮哪个回应让你更舒服？ ';
+      html += '<button class="' + (pair.vote === 'standard' ? 'voted' : '') + '" data-vote="standard" data-idx="' + pair.idx + '">回应 A</button>';
+      html += '<button class="' + (pair.vote === 'designed' ? 'voted' : '') + '" data-vote="designed" data-idx="' + pair.idx + '">回应 B</button>';
+      html += '</div>';
+    }
+  }
+
+  html += '<div id="loadingArea"></div>';
+  html += '<div class="next-input-row">';
+  html += '<textarea class="chat-input" id="chatInput" placeholder="继续说……" rows="2"></textarea>';
+  html += '<button class="send-btn" id="chatSendBtn" disabled>→</button>';
+  html += '</div>';
+
+  if (round >= 2) {
+    html += '<div class="end-hint">觉得聊得差不多了？<button id="endChatBtn">就到这里吧</button></div>';
+  }
+
+  return html;
+}
+
+function renderEnd() {
+  const total = votes.standard + votes.designed || 1;
+  const sPct = Math.round(votes.standard / total * 100);
+  const dPct = Math.round(votes.designed / total * 100);
+
+  return `
+  <div class="end-wrap">
+    <div class="farewell">那我们今天的对话就先到这里了。</div>
+    <div class="ask-feel">你现在感觉怎么样？</div>
+    <div class="mood-choices">
+      <button class="mood-btn" data-mood="calm">😌 平静了些</button>
+      <button class="mood-btn" data-mood="same">😐 差不多</button>
+      <button class="mood-btn" data-mood="alone">🤔 更想一个人待着</button>
+    </div>
+    <div class="vote-summary">
+      你选了 <em>回应 B</em> ${dPct}% 的轮次（${votes.designed}/${total}）
+    </div>
+    <div class="feedback-section">
+      <textarea id="feedbackText" placeholder="如果你愿意，可以告诉我刚才的对话里，哪句话让你觉得被懂了，哪句话让你觉得怪怪的。"></textarea>
+    </div>
+    <button class="retry-btn" id="retryBtn">再聊一次</button>
+  </div>`;
+}
+
+function renderFeedback() {
+  return `
+  <div class="end-wrap">
+    <div class="farewell">谢谢你。</div>
+    <div class="ask-feel">你的反馈会帮我做得更好。</div>
+    <button class="retry-btn" id="retryBtn" style="margin-top:24px;">再聊一次</button>
+  </div>`;
+}
+
+// ── Events ──
+function bindEvents() {
+  if (state === 'welcome') {
+    const input = document.getElementById('userInput');
+    const btn = document.getElementById('sendBtn');
+    if (input) {
+      input.addEventListener('input', () => { btn.disabled = !input.value.trim(); });
+      input.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); if (input.value.trim()) startChat(input.value.trim()); }
+      });
+    }
+    if (btn) btn.addEventListener('click', () => { if (input.value.trim()) startChat(input.value.trim()); });
+    document.querySelectorAll('.preset-btn').forEach(b => {
+      b.addEventListener('click', () => startChat(b.dataset.preset));
+    });
+  }
+
+  if (state === 'chatting') {
+    const input = document.getElementById('chatInput');
+    const btn = document.getElementById('chatSendBtn');
+    if (input) {
+      input.addEventListener('input', () => { btn.disabled = !input.value.trim(); });
+      input.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); if (input.value.trim()) continueChat(input.value.trim()); }
+      });
+    }
+    if (btn) btn.addEventListener('click', () => { if (input.value.trim()) continueChat(input.value.trim()); });
+    document.querySelectorAll('.judgment-toggle').forEach(t => {
+      t.addEventListener('click', () => {
+        document.getElementById('jd-' + t.dataset.idx).classList.toggle('show');
+      });
+    });
+    document.querySelectorAll('[data-vote]').forEach(b => {
+      b.addEventListener('click', function() {
+        const idx = parseInt(this.dataset.idx);
+        const choice = this.dataset.vote;
+        recordVote(idx, choice);
+      });
+    });
+    const endBtn = document.getElementById('endChatBtn');
+    if (endBtn) endBtn.addEventListener('click', () => { state = 'ending'; render(); });
+  }
+
+  if (state === 'ending') {
+    document.querySelectorAll('.mood-btn').forEach(b => {
+      b.addEventListener('click', function() {
+        document.querySelectorAll('.mood-btn').forEach(x => x.classList.remove('picked'));
+        this.classList.add('picked');
+        currentMood = this.dataset.mood;
+      });
+    });
+    document.getElementById('retryBtn').addEventListener('click', () => {
+      if (currentMood || document.getElementById('feedbackText').value.trim()) {
+        state = 'feedback';
+      } else {
+        resetState();
+      }
+      render();
+    });
+  }
+
+  if (state === 'feedback') {
+    document.getElementById('retryBtn').addEventListener('click', () => { resetState(); render(); });
+  }
+}
+
+// ── Actions ──
+async function startChat(userInput) {
+  state = 'chatting'; round = 1;
+  standardMessages.push({ role: 'user', content: userInput });
+  designedMessages.push({ role: 'user', content: userInput });
+  render();
+  document.getElementById('loadingArea').innerHTML = '<div class="spinner"><div class="spinner-dot"></div><div class="spinner-dot"></div><div class="spinner-dot"></div></div>';
+
+  const result = await callAPI();
+  if (!result) { document.getElementById('loadingArea').innerHTML = '<p style="text-align:center;color:var(--muted);font-size:13px;">出了点问题，请确认Key是否正确，或稍后再试。</p>'; return; }
+
+  standardMessages.push({ role: 'assistant', content: result.standard, _pairIndex: round - 1, _pairData: { idx: round - 1, standard: result.standard, designedResponse: result.designed.response, judgment: result.designed.judgment } });
+  designedMessages.push({ role: 'assistant', content: result.designed.response });
+  render();
+}
+
+async function continueChat(userInput) {
+  round++;
+  standardMessages.push({ role: 'user', content: userInput });
+  designedMessages.push({ role: 'user', content: userInput });
+  render();
+  document.getElementById('loadingArea').innerHTML = '<div class="spinner"><div class="spinner-dot"></div><div class="spinner-dot"></div><div class="spinner-dot"></div></div>';
+
+  const result = await callAPI();
+  if (!result) { document.getElementById('loadingArea').innerHTML = '<p style="text-align:center;color:var(--muted);font-size:13px;">出了点问题，请稍后再试。</p>'; return; }
+
+  standardMessages.push({ role: 'assistant', content: result.standard, _pairIndex: round - 1, _pairData: { idx: round - 1, standard: result.standard, designedResponse: result.designed.response, judgment: result.designed.judgment } });
+  designedMessages.push({ role: 'assistant', content: result.designed.response });
+  render();
+}
+
+async function callAPI() {
+  if (!userKey && !DEFAULT_KEY) { openKeyModal(); return null; }
+  const key = userKey || DEFAULT_KEY;
+  try {
+    const [standardRes, designedRes] = await Promise.all([
+      fetch(DEEPSEEK_API, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${key}` },
+        body: JSON.stringify({ model: 'deepseek-chat', messages: standardMessages, temperature: 0.7, max_tokens: 600 }),
+        signal: AbortSignal.timeout(25000),
+      }),
+      fetch(DEEPSEEK_API, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${key}` },
+        body: JSON.stringify({ model: 'deepseek-chat', messages: designedMessages, temperature: 0.7, max_tokens: 600 }),
+        signal: AbortSignal.timeout(25000),
+      }),
+    ]);
+    const [sData, dData] = await Promise.all([standardRes.json(), designedRes.json()]);
+    if (!standardRes.ok || !designedRes.ok) {
+      const err = !standardRes.ok ? sData : dData;
+      if (standardRes.status === 401 || designedRes.status === 401) {
+        sessionStorage.removeItem('ds_key'); userKey = ''; openKeyModal(); return null;
+      }
+      throw new Error(err.error?.message || 'API error');
+    }
+    const standard = sData.choices?.[0]?.message?.content || '';
+    const raw = dData.choices?.[0]?.message?.content || '';
+    const intentMatch = raw.match(/【意图[:：]\s*(.+?)】/);
+    const strategyMatch = raw.match(/【策略[:：]\s*(.+?)】/);
+    const respMatch = raw.match(/【回应[:：]\s*([\s\S]+?)$/);
+    let response = raw;
+    if (respMatch) response = respMatch[1].trim();
+    else response = raw.replace(/【意图[:：]\s*.+?】/g,'').replace(/【策略[:：]\s*.+?】/g,'').trim();
+    return {
+      standard,
+      designed: {
+        judgment: { intent: intentMatch?.[1]?.trim() || '未判断', strategy: strategyMatch?.[1]?.trim() || '未说明' },
+        response,
+      }
+    };
+  } catch (e) {
+    console.error(e);
+    return null;
+  }
+}
+
+function recordVote(idx, choice) {
+  const msgs = standardMessages.filter(m => m._pairIndex === idx);
+  if (!msgs.length) return;
+  const pair = msgs[0]._pairData;
+  if (!pair || pair.vote) return;
+  pair.vote = choice;
+  votes[choice]++;
+  render();
+}
+
+// ── Reset ──
+function resetState() {
+  state = 'welcome';
+  round = 0;
+  standardMessages = [{ role: 'system', content: STANDARD_SYSTEM }];
+  designedMessages = [{ role: 'system', content: DESIGNED_SYSTEM }];
+  votes = { standard: 0, designed: 0 };
+  currentMood = '';
+}
+
+// ── Key management ──
+function openKeyModal() {
+  document.getElementById('keyModal').classList.add('show');
+  document.getElementById('keyInput').focus();
+}
+function saveKey() {
+  const val = document.getElementById('keyInput').value.trim();
+  if (!val) return;
+  userKey = val;
+  sessionStorage.setItem('ds_key', val);
+  document.getElementById('keyModal').classList.remove('show');
+  render();
+}
+
+// ── Utils ──
+function escapeHtml(s) {
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+// ── Init ──
+render();
+</script>
+</body>
+</html>
