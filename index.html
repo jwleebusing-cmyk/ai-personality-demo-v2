@@ -111,7 +111,7 @@
     box-shadow: 0 4px 16px rgba(0,0,0,0.06);
   }
   .personality-card .personality-icon {
-    font-size: 28px;
+    font-size: 36px;
     margin-bottom: 10px;
   }
   .personality-card .personality-name {
@@ -574,6 +574,7 @@ const PERSONALITY_PROMPTS = {
 };
 
 const PERSONALITY_NAMES = { companion: '我在这里', explorer: '让我走近，看看你都发生了什么', cocreator: '让我们一起来看看' };
+const PERSONALITY_ICONS = { companion: '🪑', explorer: '💡', cocreator: '🤝' };
 const PERSONALITY_INTENTS = { companion: '想被陪一会儿', explorer: '想一起想想', cocreator: '想一起想想' };
 
 // ── Judge Prompt ──
@@ -626,14 +627,17 @@ function renderPersonalityPick() {
     <div class="welcome-sub">今天，你想怎么聊聊？</div>
     <div class="personality-grid">
       <div class="personality-card" data-personality="companion">
+        <div class="personality-icon">🪑</div>
         <div class="personality-name">我在这里</div>
         <div class="personality-desc">你说，我听。<br>不急着给建议。</div>
       </div>
       <div class="personality-card" data-personality="explorer">
+        <div class="personality-icon">💡</div>
         <div class="personality-name">让我走近，看看你都发生了什么</div>
         <div class="personality-desc">用一个好问题，<br>帮你看到没注意到的角度。</div>
       </div>
       <div class="personality-card" data-personality="cocreator">
+        <div class="personality-icon">🤝</div>
         <div class="personality-name">让我们一起来看看</div>
         <div class="personality-desc">像搭档一样，<br>跟你有来有回地推进想法。</div>
       </div>
@@ -702,7 +706,7 @@ function renderChat() {
 
   let html = '<div class="chat-container">';
   html += '<div class="sticky-header">';
-  html += '<div class="sticky-header-left"><span style="color:var(--accent);">' + personalityName + '</span></div>';
+  html += '<div class="sticky-header-left"><span style="margin-right:6px;">' + (PERSONALITY_ICONS[personality] || '') + '</span> <span style="color:var(--accent);">' + personalityName + '</span></div>';
   html += '<div class="sticky-header-right">第 ' + round + ' 轮</div>';
   html += '</div>';
 
