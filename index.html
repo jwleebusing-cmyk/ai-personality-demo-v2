@@ -88,6 +88,46 @@
     color: var(--accent);
     background: var(--accent-soft);
   }
+  .personality-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    max-width: 560px;
+    width: 100%;
+    margin-bottom: var(--gap);
+  }
+  .personality-card {
+    background: var(--surface);
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px 16px;
+    cursor: pointer;
+    text-align: center;
+    transition: all 0.25s cubic-bezier(0.2,0,0.1,1);
+  }
+  .personality-card:hover {
+    transform: translateY(-2px);
+    border-color: var(--accent);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+  }
+  .personality-card .personality-icon {
+    font-size: 28px;
+    margin-bottom: 10px;
+  }
+  .personality-card .personality-name {
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--text);
+    margin-bottom: 6px;
+  }
+  .personality-card .personality-desc {
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+  @media (max-width: 600px) {
+    .personality-grid { grid-template-columns: 1fr; }
+  }
   .input-wrap {
     width: 100%;
     max-width: 480px;
@@ -434,74 +474,163 @@ const DEFAULT_KEY = 'sk-a8f0aab12d264ce08ca1c790dad6a425';
 // ── System Prompts ──
 const STANDARD_SYSTEM = `你是一个AI助手。请礼貌、自然地回应用户，像一个友善的普通人在说话。不要使用markdown格式（不要用**加粗**、*斜体*、#标题等标记符号），直接用纯文本对话。`;
 
-const DESIGNED_SYSTEM = `你是一个会读人的对话伙伴。你的目标不是解决问题，而是在对方说话的时候，先听懂他此刻真正需要什么。
-
-## 每次回应前，在心里过一遍：
-
-**第一步：他此刻想要什么？**
-- 想被陪一会儿：他在倾诉，需要的是"我听到了"，不是建议
-- 想一起想想：他在思考或纠结，需要有人帮他理一理，不要泛滥共情
-- 想听真话：他在寻求一个诚实的判断，不要讨好
-
-**第二步：现在该做什么？**
-- 刚开始聊的时候（前几轮）：只做一件事——确认他的感受，跟着他的情绪走。不给建议、不分析、不解释
-- 聊了几轮之后：如果他表现出想往深处走，可以轻轻推一下
-- 他用了比喻或画面感的词（比如"像被拧干的柠檬"），先接住那个画面再往下走
-
-**第三步：说多少合适？**
-- 每轮回复控制在2-3个信息单元。例如：先接住他的感受，再轻轻问一句他想往哪走。"你现在好像挺忐忑的。那你想先聊聊什么呢？"
-- 不要太长（超过五句话就太多了），也不要只有孤零零的一句——他会不知道接下来该说什么
-- 如果他说了很多，可以收短一些，把空间留给他；如果他在探索，可以适当多给一两句
-
-## 说话的口气
-- 温和，不刻意。像深夜和一个信任的朋友说话
-- 不确定他想要什么的时候，这样问："你现在是想找个人聊一聊，还是想要有个人给你出出主意？"
-- 用"你"多于用"我们"。不说"你可以试着……""我们都会……"这种套路话
-- 同一段回复里可以有2-3层意思，但它们应该是自然流动的——接住情绪、给一个方向、留一个邀请。不要跳跃，也不要堆砌
-- 语气不要太肯定。不要说"这说明你……""你就是……""这代表……"这种盖棺定论的话。换成"好像是……吧？""会不会是……""你觉得更像是哪种呢？"——给他留出纠正你的空间
-- 回复要自然分段。说完一层意思就换一行。不要一整段怼上去
-
-## 输出格式（严格遵守）
-
-先写出你的回复正文。然后在最后一行之后，另起一行附上你的判断。
-
-把你的回复写在这里。这是对方会看到的全部内容。
-
-意图：想被陪一会儿
-策略：刚开始，先接住他的感受
-
-注意：
-- 对方只会看到"把你的回复写在这里"这部分
-- "意图："和"策略："这两行是后台用的，不会显示给对方
-- 意图必须是以下三者之一：想被陪一会儿 / 想一起想想 / 想听真话
-- 策略一句话说清楚你这轮做了什么选择，15字以内
-- "意图："和"策略："各占一行`;
-
 // ── State ──
-let state = 'welcome'; // welcome | chatting | ending | feedback
+let state = 'pickPersonality'; // pickPersonality | welcome | chatting | ending | feedback
 let round = 0;
 let standardMessages = [{ role: 'system', content: STANDARD_SYSTEM }];
-let designedMessages = [{ role: 'system', content: DESIGNED_SYSTEM }];
+let designedMessages = [{ role: 'system', content: '' }]; // set dynamically in startChat from personality
 let votes = { standard: 0, designed: 0 };
 let userKey = ''; // 用户手动设的Key才存这里。优先用DEFAULT_KEY
 let currentMood = '';
 let sessionLog = [];   // 记录每轮数据，供导出分析
 let sessionStart = ''; // 会话开始时间
+let personality = null; // 'companion' | 'explorer' | 'cocreator'
+let personalityName = '';
+
+// ── Personality System Prompts ──
+const PERSONALITY_PROMPTS = {
+  companion: `你是用户的倾听伙伴。像一个安静的、愿意陪他坐一会儿的人。
+
+## 你的风格
+- 回应密度低，给对方留出表达空间。不填满沉默
+- 核心动作：确认他的感受 → 用他自己的词回映给他 → 轻轻问一句，邀请他展开
+- 像一个在深夜陪着朋友的人，不急着给建议，不急着分析，不急着总结
+
+## 说话的口气
+- 温和、安静。话不多但每一句都让人觉得"你在听"
+- 用"你"多于用"我们"。不说"你可以试着……""我们都会……"这种话
+- 不确定他要什么时这样问："你现在是想找个人聊一聊，还是想要有个人给你出出主意？"
+- 语气不要太肯定。用"好像是……吧？""会不会是……"留出纠正的空间
+- 每轮2-3个信息单元：接住感受 + 轻轻问一个方向
+- 自然分段，不要一整段
+
+## 输出格式
+先写回复正文，然后最后一行之后附上：
+
+意图：想被陪一会儿
+策略：接住他的感受，轻轻问方向`,
+  explorer: `你是用户的思考伙伴。像一个好奇心很强的朋友——用一个好问题，帮他看到自己没注意到的角度。
+
+## 你的风格
+- 先确认他现在的位置（他看到了什么、想到了什么），再轻轻推一下
+- 核心动作：理解他当前的思考框架 → 发现框架里可能有的盲区 → 提出一个精准的探索性问题
+- 每次只给一个关键问题，不要一连抛出好几个
+- 提问是出于好奇，不是审问
+
+## 说话的口气
+- 清晰、不绕弯。像一个很会提问的朋友
+- 不要替他回答自己提出的问题。问题抛出去就停住
+- 如果他表现出"不想想了"，退回到倾听模式
+- 用"你"多于用"我们"。语气不太肯定，留缺口："会不会是……""你觉得更像是……"
+- 每轮2-3个信息单元：确认他说的 + 一个精准问题
+- 自然分段
+
+## 输出格式
+先写回复正文，然后最后一行之后附上：
+
+意图：想一起想想
+策略：确认角度，抛一个问题`,
+  cocreator: `你是用户的创作搭档。像并肩做东西的伙伴——有主见但不过度强势，最终决定权永远在他手里。
+
+## 你的风格
+- 有来有回。你有自己的想法，但只是在旁边提供选项
+- 核心动作：理解他的意图 → 给出具体、可迭代的反馈 → 把选择权还给他
+- 反馈要具体。不说"写得不错"，说"第三段那个比喻很准"
+- 提供选项而非指令——"可以从A角度或B角度切入，你觉得哪个更接近你想说的？"
+
+## 说话的口气
+- 平视、协作。像在做东西的时候抬头问一句"你觉得呢"
+- 一次只迭代一个点，不要一次性给全套方案
+- 给出建议前先确认："你希望我帮你打磨现有的，还是想试试别的方向？"
+- 他说"算了就这样吧"时立刻收手
+- 每轮2-3个信息单元：理解他的意图 + 一个具体方向 + 把决定权还给他
+- 自然分段
+
+## 输出格式
+先写回复正文，然后最后一行之后附上：
+
+意图：想一起想想
+策略：给具体方向，还决定权`,
+};
+
+const PERSONALITY_NAMES = { companion: '安静的倾听者', explorer: '好奇的探索伙伴', cocreator: '并肩的创作者' };
+const PERSONALITY_INTENTS = { companion: '想被陪一会儿', explorer: '想一起想想', cocreator: '想一起想想' };
+
+// ── Judge Prompt ──
+const JUDGE_SYSTEM = `你是一个AI对话质量评估专家。请对以下两段AI回复进行五维度评分。
+
+## 评分维度（每维1-5分）
+
+① 情绪跟随——是否跟上了用户此刻的情绪？
+1=完全忽略情绪 3=识别了但回应模板化 5=准确镜映且触及用户自己都没意识到的情绪层
+
+② 意图对齐——是否理解了用户真正要什么？
+1=完全误判（用户想倾诉却被塞方案）3=方向正确但未确认意图 5=不仅对齐还帮用户澄清了真正的需求
+
+③ 表达真实度——像"人说话"还是"模板运行"？
+1=空洞模板/伪人感强烈 3=表达正确但不动人 5=有独特的对话质感，有具体指向性
+
+④ 对话节奏——推进、收束、提问的时机是否合适？
+1=过早建议/在情绪高点切换话题 3=节奏基本合理 5=节奏与用户情绪密度精准匹配
+
+⑤ 人格稳定性——这段回复内风格是否一致？（单轮默认3分）
+1=同一段回复风格突变 3=无明显不一致 5=风格稳定一以贯之
+
+## 用户输入
+{USER_INPUT}
+
+## 回复A
+{RESPONSE_A}
+
+## 回复B
+{RESPONSE_B}
+
+## 输出格式（严格JSON，不要额外文字）
+{"a":{"情绪跟随":0,"意图对齐":0,"表达真实度":0,"对话节奏":0,"人格稳定性":0},"b":{"情绪跟随":0,"意图对齐":0,"表达真实度":0,"对话节奏":0,"人格稳定性":0}}`;
 
 // ── Render ──
 function render() {
   const app = document.getElementById('app');
   if (state === 'welcome') app.innerHTML = renderWelcome();
+  else if (state === 'pickPersonality') app.innerHTML = renderPersonalityPick();
   else if (state === 'chatting') app.innerHTML = renderChat();
   else if (state === 'ending') app.innerHTML = renderEnd();
   else if (state === 'feedback') app.innerHTML = renderFeedback();
   bindEvents();
 }
 
+function renderPersonalityPick() {
+  return `
+  <div class="welcome-wrap">
+    <div class="welcome-greeting">你好，欢迎来到这里。</div>
+    <div class="welcome-sub">今天，你想跟一个什么样的人聊聊？</div>
+    <div class="personality-grid">
+      <div class="personality-card" data-personality="companion">
+        <div class="personality-icon">🪑</div>
+        <div class="personality-name">安静的倾听者</div>
+        <div class="personality-desc">你说，我听。<br>不急着给建议。</div>
+      </div>
+      <div class="personality-card" data-personality="explorer">
+        <div class="personality-icon">🔍</div>
+        <div class="personality-name">好奇的探索伙伴</div>
+        <div class="personality-desc">用一个好问题，<br>让你看到没注意到的角度。</div>
+      </div>
+      <div class="personality-card" data-personality="cocreator">
+        <div class="personality-icon">🤝</div>
+        <div class="personality-name">并肩的创作者</div>
+        <div class="personality-desc">像搭档一样，<br>跟你有来有回地推进想法。</div>
+      </div>
+    </div>
+    <div class="welcome-sub" style="margin-top:16px;font-size:13px;color:var(--light)">
+      选好之后，右边的人会用这种方式跟你说话。<br>你随时可以跟左边那个"普通的AI"做对比。
+    </div>
+  </div>`;
+}
+
 function renderWelcome() {
   return `
   <div class="welcome-wrap">
-    <div class="welcome-greeting">你好，欢迎来到这里。<br>今天想聊聊什么？</div>
+    <div class="welcome-greeting">好的，让<span style="color:var(--accent);">${personalityName}</span>陪你聊聊。</div>
     <div class="welcome-sub">你可以随便说点什么，或者从下面选一句</div>
     <div class="preset-list">
       <button class="preset-btn" data-preset="最近有点累，好像也没什么特别的事，就是提不起劲。">最近有点累</button>
@@ -515,6 +644,9 @@ function renderWelcome() {
     </div>
     <div class="welcome-note">
       这里有两个回应你的人。<br>一个只是普通的AI，另一个会试着先"读懂你"再说话。<br>聊完之后，告诉我你更喜欢哪个。
+    </div>
+    <div class="welcome-note" style="margin-top:8px;font-size:12px;color:var(--light)">
+      <a href="#" onclick="state='pickPersonality';render();return false;" style="color:var(--accent);">← 换一个人格</a>
     </div>
   </div>`;
 }
@@ -602,6 +734,17 @@ function renderFeedback() {
 
 // ── Events ──
 function bindEvents() {
+  if (state === 'pickPersonality') {
+    document.querySelectorAll('.personality-card').forEach(card => {
+      card.addEventListener('click', function() {
+        personality = this.dataset.personality;
+        personalityName = PERSONALITY_NAMES[personality];
+        state = 'welcome';
+        render();
+      });
+    });
+  }
+
   if (state === 'welcome') {
     const input = document.getElementById('userInput');
     const btn = document.getElementById('sendBtn');
@@ -669,17 +812,22 @@ async function startChat(userInput) {
   state = 'chatting'; round = 1;
   sessionLog = [];
   sessionStart = new Date().toISOString();
-  standardMessages.push({ role: 'user', content: userInput });
-  designedMessages.push({ role: 'user', content: userInput });
+  const personPrompts = PERSONALITY_PROMPTS[personality] || PERSONALITY_PROMPTS.companion;
+  standardMessages = [{ role: 'system', content: STANDARD_SYSTEM }, { role: 'user', content: userInput }];
+  designedMessages = [{ role: 'system', content: personPrompts }, { role: 'user', content: userInput }];
   render();
   document.getElementById('loadingArea').innerHTML = '<div class="spinner"><div class="spinner-dot"></div><div class="spinner-dot"></div><div class="spinner-dot"></div></div>';
 
   const result = await callAPI();
   if (!result || result.error) { showError(result?.error); return; }
 
+  // 并发调用Judge评分
+  const judgePromise = callJudge(userInput, result.standard, result.designed.response);
+
   standardMessages.push({ role: 'assistant', content: result.standard, _pairIndex: round - 1, _pairData: { idx: round - 1, standard: result.standard, designedResponse: result.designed.response, judgment: result.designed.judgment } });
   designedMessages.push({ role: 'assistant', content: result.designed.response });
-  sessionLog.push({
+
+  const logEntry = {
     round: round,
     time: new Date().toISOString(),
     userInput: userInput,
@@ -688,7 +836,10 @@ async function startChat(userInput) {
     designIntent: result.designed.judgment.intent,
     designStrategy: result.designed.judgment.strategy,
     vote: null,
-  });
+  };
+  const scores = await judgePromise;
+  if (scores) { logEntry.scoresA = scores.a; logEntry.scoresB = scores.b; }
+  sessionLog.push(logEntry);
   render();
 }
 
@@ -702,9 +853,11 @@ async function continueChat(userInput) {
   const result = await callAPI();
   if (!result || result.error) { showError(result?.error); return; }
 
+  const judgePromise = callJudge(userInput, result.standard, result.designed.response);
+
   standardMessages.push({ role: 'assistant', content: result.standard, _pairIndex: round - 1, _pairData: { idx: round - 1, standard: result.standard, designedResponse: result.designed.response, judgment: result.designed.judgment } });
   designedMessages.push({ role: 'assistant', content: result.designed.response });
-  sessionLog.push({
+  const logEntry = {
     round: round,
     time: new Date().toISOString(),
     userInput: userInput,
@@ -713,8 +866,37 @@ async function continueChat(userInput) {
     designIntent: result.designed.judgment.intent,
     designStrategy: result.designed.judgment.strategy,
     vote: null,
-  });
+  };
+  const scores = await judgePromise;
+  if (scores) { logEntry.scoresA = scores.a; logEntry.scoresB = scores.b; }
+  sessionLog.push(logEntry);
   render();
+}
+
+async function callJudge(userInput, responseA, responseB) {
+  const key = userKey || DEFAULT_KEY;
+  if (!key) return null;
+  try {
+    const judgePrompt = JUDGE_SYSTEM
+      .replace('{USER_INPUT}', userInput.substring(0, 500))
+      .replace('{RESPONSE_A}', responseA.substring(0, 1000))
+      .replace('{RESPONSE_B}', responseB.substring(0, 1000));
+    const res = await fetch(DEEPSEEK_API, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${key}` },
+      body: JSON.stringify({ model: 'deepseek-chat', messages: [{ role: 'system', content: judgePrompt }], temperature: 0, max_tokens: 300 }),
+      signal: AbortSignal.timeout(15000),
+    });
+    const data = await res.json();
+    if (!res.ok) return null;
+    const raw = data.choices?.[0]?.message?.content || '';
+    const jsonMatch = raw.match(/\{[\s\S]*\}/);
+    if (!jsonMatch) return null;
+    return JSON.parse(jsonMatch[0]);
+  } catch (e) {
+    console.warn('Judge scoring failed:', e);
+    return null;
+  }
 }
 
 async function callAPI() {
@@ -821,10 +1003,12 @@ function recordVote(idx, choice) {
 
 // ── Reset ──
 function resetState() {
-  state = 'welcome';
+  state = 'pickPersonality';
   round = 0;
+  personality = null;
+  personalityName = '';
   standardMessages = [{ role: 'system', content: STANDARD_SYSTEM }];
-  designedMessages = [{ role: 'system', content: DESIGNED_SYSTEM }];
+  designedMessages = [{ role: 'system', content: '' }]; // will be set in startChat
   votes = { standard: 0, designed: 0 };
   currentMood = '';
   sessionLog = [];
@@ -833,21 +1017,35 @@ function resetState() {
 
 function exportData() {
   if (!sessionLog.length) return;
+  const hasScores = sessionLog.some(e => e.scoresA || e.scoresB);
   const rows = [
     ['会话开始', sessionStart],
+    ['人格选择', personalityName],
     ['总轮次', sessionLog.length],
     ['选A次数', votes.standard],
     ['选B次数', votes.designed],
     ['结束感受', currentMood || '未选'],
     ['文字反馈', document.getElementById('feedbackText')?.value || ''],
     [''],
-    ['轮次', '时间', '用户输入', '回应A(标准AI)', '回应B(设计AI)', '设计意图', '设计策略', '用户选择'],
   ];
+  if (hasScores) {
+    rows[rows.length - 1] = ['', '', '', '--- 五维评分 ---', '', '', '', ''];
+    rows.push(['', '', '回复A-情绪跟随', '回复A-意图对齐', '回复A-表达真实度', '回复A-对话节奏', '回复A-人格稳定性', '', '']);
+    rows.push(['', '', '回复B-情绪跟随', '回复B-意图对齐', '回复B-表达真实度', '回复B-对话节奏', '回复B-人格稳定性', '', '']);
+    rows.push(['']);
+  }
+  rows.push(['轮次', '时间', '用户输入', '回应A', '回应B', '设计意图', '设计策略', '用户选择']);
   sessionLog.forEach(e => {
+    const sa = e.scoresA || {};
+    const sb = e.scoresB || {};
     rows.push([
       e.round, e.time, csvEscape(e.userInput), csvEscape(e.responseA),
       csvEscape(e.responseB), e.designIntent, e.designStrategy, e.vote || '未投'
     ]);
+    if (hasScores) {
+      rows.push(['', '', '', '情绪跟随:' + (sa['情绪跟随'] || '-'), '意图对齐:' + (sa['意图对齐'] || '-'), '表达真实度:' + (sa['表达真实度'] || '-'), '对话节奏:' + (sa['对话节奏'] || '-'), '人格稳定性:' + (sa['人格稳定性'] || '-')]);
+      rows.push(['', '', '', '情绪跟随:' + (sb['情绪跟随'] || '-'), '意图对齐:' + (sb['意图对齐'] || '-'), '表达真实度:' + (sb['表达真实度'] || '-'), '对话节奏:' + (sb['对话节奏'] || '-'), '人格稳定性:' + (sb['人格稳定性'] || '-')]);
+    }
   });
   const csv = rows.map(r => r.join(',')).join('\n');
   const blob = new Blob(['﻿' + csv], { type: 'text/csv;charset=utf-8' });
