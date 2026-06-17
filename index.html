@@ -511,7 +511,7 @@
 </head>
 <body>
 <div class="container" id="app"></div>
-<div class="toast" id="toast">已复制，去微信粘贴发送吧～</div>
+<div class="toast" id="toast"></div>
 
 <!-- API Key modal (fallback) -->
 <div id="keyModal">
@@ -754,10 +754,21 @@ function renderChat() {
   html += '</div>';
 
   html += '<div class="chat-footer">';
+  // Check if latest round has unvoted cards
+  const latestPair = (() => {
+    for (let i = msgs.length - 1; i >= 0; i--) {
+      if (msgs[i].role === 'assistant' && msgs[i]._pairData) return msgs[i]._pairData;
+    }
+    return null;
+  })();
+  const needsVote = latestPair && !latestPair.vote;
   html += '<div class="next-input-row">';
-  html += '<textarea class="chat-input" id="chatInput" placeholder="继续说……" rows="2"></textarea>';
+  html += '<textarea class="chat-input" id="chatInput" placeholder="' + (needsVote ? '选一个你觉得更舒服的回复，再继续聊？' : '继续说……') + '" rows="2"></textarea>';
   html += '<button class="send-btn" id="chatSendBtn" disabled>→</button>';
   html += '</div>';
+  if (needsVote) {
+    html += '<div class="end-hint" style="color:var(--accent);font-size:12px;">选一个你觉得更舒服的回复，再继续聊～</div>';
+  }
   if (round >= 5) {
     html += '<div class="end-hint">觉得聊得差不多了？<button id="endChatBtn">就到这里吧</button></div>';
   }
@@ -792,7 +803,7 @@ function renderEnd() {
       <button class="copy-send-btn" id="copySendBtn">📋 点一下，发送给开发者</button>
       <div class="copy-hint">会自动复制你的对话数据，然后去微信粘贴发给我就好。</div>
     </div>
-    <div class="toast" id="toast">已复制，去微信粘贴发送吧～</div>
+    <div class="toast" id="toast"></div>
   </div>`;
 }
 
@@ -839,10 +850,10 @@ function bindEvents() {
     if (input) {
       input.addEventListener('input', () => { btn.disabled = !input.value.trim(); });
       input.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); if (input.value.trim()) continueChat(input.value.trim()); }
+        if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); if (input.value.trim()) tryContinueChat(input.value.trim()); }
       });
     }
-    if (btn) btn.addEventListener('click', () => { if (input.value.trim()) continueChat(input.value.trim()); });
+    if (btn) btn.addEventListener('click', () => { if (input.value.trim()) tryContinueChat(input.value.trim()); });
     document.querySelectorAll('.response-card').forEach(card => {
       card.addEventListener('click', function() {
         const idx = parseInt(this.dataset.idx);
@@ -916,6 +927,38 @@ async function startChat(userInput) {
   if (scores) { logEntry.scoresA = scores.a; logEntry.scoresB = scores.b; }
   sessionLog.push(logEntry);
   render();
+}
+
+function tryContinueChat(userInput) {
+  // Check if latest round is unvoted
+  const pair = latestUnvotedPair();
+  if (pair) {
+    // Pulse the unvoted cards, scroll to them, don't send
+    document.querySelectorAll('.response-card[data-idx="' + pair.idx + '"]').forEach(c => {
+      c.style.transition = 'none';
+      c.style.boxShadow = '0 0 0 3px rgba(201,112,78,0.5)';
+      setTimeout(() => {
+        c.style.transition = 'all 0.5s';
+        c.style.boxShadow = '';
+      }, 80);
+    });
+    const firstCard = document.querySelector('.response-card[data-idx="' + pair.idx + '"]');
+    if (firstCard) firstCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    buildToast('先选一个让你更舒服的回复吧～');
+    return;
+  }
+  continueChat(userInput);
+}
+
+function latestUnvotedPair() {
+  const msgs = standardMessages.filter(m => m._pairIndex !== undefined && m._pairData && !m._pairData.vote);
+  if (!msgs.length) return null;
+  return msgs[msgs.length - 1]._pairData;
+}
+
+function buildToast(msg) {
+  const t = document.getElementById('toast');
+  if (t) { t.textContent = msg; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 2000); }
 }
 
 async function continueChat(userInput) {
@@ -1203,8 +1246,7 @@ function copySessionToClipboard() {
     '',
   ].join('\n');
   navigator.clipboard.writeText(text).then(() => {
-    const t = document.getElementById('toast');
-    if (t) { t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 2500); }
+    buildToast('已复制，去微信粘贴发送吧～');
   }).catch(() => {
     alert('复制失败，请截图发给我吧～');
   });
