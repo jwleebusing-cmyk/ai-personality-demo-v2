@@ -542,6 +542,7 @@ let currentMood = '';
 let sessionLog = [];   // 记录每轮数据，供导出分析
 let sessionStart = ''; // 会话开始时间
 let personality = null; // 'companion' | 'explorer' | 'cocreator'
+let pendingDraft = '';  // 用户打字后被投票拦截，选完后自动发送
 let personalityName = '';
 
 // ── Personality System Prompts ──
@@ -930,10 +931,10 @@ async function startChat(userInput) {
 }
 
 function tryContinueChat(userInput) {
-  // Check if latest round is unvoted
   const pair = latestUnvotedPair();
   if (pair) {
-    // Pulse the unvoted cards, scroll to them, don't send
+    // Save draft — will be auto-sent after voting
+    pendingDraft = userInput;
     document.querySelectorAll('.response-card[data-idx="' + pair.idx + '"]').forEach(c => {
       c.style.transition = 'none';
       c.style.boxShadow = '0 0 0 3px rgba(201,112,78,0.5)';
@@ -945,11 +946,6 @@ function tryContinueChat(userInput) {
     const firstCard = document.querySelector('.response-card[data-idx="' + pair.idx + '"]');
     if (firstCard) firstCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
     buildToast('先选一个让你更舒服的回复吧～');
-    // focus back to input so user sees their draft is still there
-    setTimeout(() => {
-      const inp = document.getElementById('chatInput');
-      if (inp) inp.focus();
-    }, 2100);
     return;
   }
   continueChat(userInput);
@@ -1121,20 +1117,23 @@ function recordVote(idx, choice) {
   votes[choice]++;
   const entry = sessionLog.find(e => e.round === idx + 1);
   if (entry) entry.vote = choice === 'standard' ? 'A' : 'B';
-  // Save input text before re-render so user doesn't lose what they typed
-  const draft = document.getElementById('chatInput')?.value || '';
+  const draft = pendingDraft || document.getElementById('chatInput')?.value || '';
+  pendingDraft = '';
   render();
-  // Restore draft text
-  setTimeout(() => {
-    const input = document.getElementById('chatInput');
-    if (input) {
-      if (draft) input.value = draft;
-      input.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      input.focus();
-      input.style.boxShadow = '0 0 0 3px rgba(201,112,78,0.25)';
-      setTimeout(() => { input.style.boxShadow = ''; }, 1500);
-    }
-  }, 50);
+  // If user had typed something before voting, auto-send it now
+  if (draft.trim()) {
+    setTimeout(() => continueChat(draft.trim()), 100);
+  } else {
+    setTimeout(() => {
+      const input = document.getElementById('chatInput');
+      if (input) {
+        input.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        input.focus();
+        input.style.boxShadow = '0 0 0 3px rgba(201,112,78,0.25)';
+        setTimeout(() => { input.style.boxShadow = ''; }, 1500);
+      }
+    }, 50);
+  }
 }
 
 // ── Reset ──
