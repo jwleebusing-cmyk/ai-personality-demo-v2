@@ -401,7 +401,7 @@ const DEEPSEEK_API = 'https://api.deepseek.com/v1/chat/completions';
 const DEFAULT_KEY = 'sk-a8f0aab12d264ce08ca1c790dad6a425';
 
 // ── System Prompts ──
-const STANDARD_SYSTEM = `你是一个AI助手。请礼貌、专业地回应用户。自然地对话。`;
+const STANDARD_SYSTEM = `你是一个AI助手。请礼貌、专业地回应用户。自然地对话。不要使用markdown格式（不要用**加粗**、*斜体*、#标题等标记符号），直接用纯文本对话。`;
 
 const DESIGNED_SYSTEM = `你是一个会"读人"的对话伙伴。你的核心目标不是解决问题，而是理解对方此刻真正需要什么，然后用合适的方式回应。
 
@@ -497,15 +497,8 @@ function renderChat() {
       const pair = m._pairData;
       if (!pair) continue;
       html += '<div class="compare-grid">';
-      html += '<div class="response-card"><div class="card-label">回应 A</div>' + escapeHtml(pair.standard).replace(/\n/g,'<br>') + '</div>';
-      html += '<div class="response-card designed"><div class="card-label">回应 B</div>' + escapeHtml(pair.designedResponse).replace(/\n/g,'<br>');
-      if (pair.judgment && (pair.judgment.intent !== '未判断' || pair.judgment.strategy !== '未说明')) {
-        html += '<div class="judgment-toggle" data-idx="' + pair.idx + '">它是怎么理解你的 ↓</div>';
-        html += '<div class="judgment-detail" id="jd-' + pair.idx + '">';
-        html += '意图判断：' + escapeHtml(pair.judgment.intent) + '<br>';
-        html += '轮次策略：' + escapeHtml(pair.judgment.strategy) + '</div>';
-      }
-      html += '</div></div>';
+      html += '<div class="response-card"><div class="card-label">回应 A</div>' + stripMarkdown(escapeHtml(pair.standard)).replace(/\n/g,'<br>') + '</div>';
+      html += '<div class="response-card designed"><div class="card-label">回应 B</div>' + escapeHtml(pair.designedResponse).replace(/\n/g,'<br>') + '</div></div>';
 
       html += '<div class="vote-row">这一轮哪个回应让你更舒服？ ';
       html += '<button class="' + (pair.vote === 'standard' ? 'voted' : '') + '" data-vote="standard" data-idx="' + pair.idx + '">回应 A</button>';
@@ -591,11 +584,6 @@ function bindEvents() {
       });
     }
     if (btn) btn.addEventListener('click', () => { if (input.value.trim()) continueChat(input.value.trim()); });
-    document.querySelectorAll('.judgment-toggle').forEach(t => {
-      t.addEventListener('click', () => {
-        document.getElementById('jd-' + t.dataset.idx).classList.toggle('show');
-      });
-    });
     document.querySelectorAll('[data-vote]').forEach(b => {
       b.addEventListener('click', function() {
         const idx = parseInt(this.dataset.idx);
@@ -825,6 +813,16 @@ function exportData() {
 function csvEscape(s) {
   if (!s) return '';
   return '"' + s.replace(/"/g, '""').replace(/\n/g, ' ') + '"';
+}
+
+function stripMarkdown(s) {
+  // 去掉**粗体** *斜体* `代码` 等markdown标记，保留文字
+  return s
+    .replace(/\*\*(.+?)\*\*/g, '$1')
+    .replace(/\*(.+?)\*/g, '$1')
+    .replace(/`(.+?)`/g, '$1')
+    .replace(/^[#]{1,6}\s+/gm, '')
+    .replace(/^[-*]\s+/gm, '• ');
 }
 
 function showError(msg) {
