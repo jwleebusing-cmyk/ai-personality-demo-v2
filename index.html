@@ -439,7 +439,7 @@ let round = 0;
 let standardMessages = [{ role: 'system', content: STANDARD_SYSTEM }];
 let designedMessages = [{ role: 'system', content: DESIGNED_SYSTEM }];
 let votes = { standard: 0, designed: 0 };
-let userKey = sessionStorage.getItem('ds_key') || '';
+let userKey = ''; // 用户手动设的Key才存这里。优先用DEFAULT_KEY
 let currentMood = '';
 
 // ── Render ──
@@ -646,8 +646,9 @@ async function continueChat(userInput) {
 }
 
 async function callAPI() {
-  if (!userKey && !DEFAULT_KEY) { openKeyModal(); return null; }
+  // 优先用默认Key，除非用户手动设了自己的Key
   const key = userKey || DEFAULT_KEY;
+  if (!key) { openKeyModal(); return null; }
   try {
     const [standardRes, designedRes] = await Promise.all([
       fetch(DEEPSEEK_API, {
@@ -665,11 +666,15 @@ async function callAPI() {
     ]);
     const [sData, dData] = await Promise.all([standardRes.json(), designedRes.json()]);
     if (!standardRes.ok || !designedRes.ok) {
-      const err = !standardRes.ok ? sData : dData;
-      if (standardRes.status === 401 || designedRes.status === 401) {
-        sessionStorage.removeItem('ds_key'); userKey = ''; openKeyModal(); return null;
+      const errData = !standardRes.ok ? sData : dData;
+      const status = !standardRes.ok ? standardRes.status : designedRes.status;
+      if (status === 401) {
+        // Key无效，清除并提示
+        sessionStorage.removeItem('ds_key'); userKey = '';
+        if (!DEFAULT_KEY) { openKeyModal(); }
+        return null;
       }
-      throw new Error(err.error?.message || 'API error');
+      throw new Error(errData.error?.message || 'API error');
     }
     const standard = sData.choices?.[0]?.message?.content || '';
     const raw = dData.choices?.[0]?.message?.content || '';
