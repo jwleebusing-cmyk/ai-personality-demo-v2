@@ -10,7 +10,7 @@
     --surface: #ffffff;
     --text: #2c2c2c;
     --muted: #8c8c8c;
-    --light: #b8b4b0;
+    --light: #a09c97;
     --accent: #c9704e;
     --accent-soft: #f5ede8;
     --border: #e8e4df;
@@ -91,7 +91,9 @@
   .input-wrap {
     width: 100%;
     max-width: 480px;
-    position: relative;
+    display: flex;
+    gap: 8px;
+    align-items: flex-end;
   }
   .chat-input {
     width: 100%;
@@ -110,11 +112,9 @@
   .chat-input:focus { border-color: var(--accent); }
   .chat-input::placeholder { color: var(--light); }
   .send-btn {
-    position: absolute;
-    right: 6px;
-    bottom: 6px;
-    width: 36px;
-    height: 36px;
+    width: 42px;
+    height: 42px;
+    flex-shrink: 0;
     border-radius: 50%;
     border: none;
     background: var(--accent);
@@ -129,8 +129,8 @@
   .send-btn:disabled { opacity: 0.3; cursor: default; }
   .welcome-note {
     margin-top: var(--gap-lg);
-    font-size: 12px;
-    color: var(--light);
+    font-size: 13px;
+    color: var(--muted);
     max-width: 380px;
     line-height: 1.7;
   }
@@ -178,9 +178,9 @@
     border-bottom: 1px solid var(--border-light);
   }
   .chat-header .round-label {
-    font-size: 11px;
+    font-size: 12px;
     letter-spacing: 0.08em;
-    color: var(--light);
+    color: var(--muted);
     text-transform: uppercase;
   }
   .user-bubble {
@@ -210,15 +210,15 @@
     position: relative;
   }
   .response-card .card-label {
-    font-size: 10px;
+    font-size: 12px;
     letter-spacing: 0.06em;
-    color: var(--light);
+    color: var(--muted);
     text-transform: uppercase;
     margin-bottom: 8px;
   }
   .response-card.designed { border-color: #d4c5b8; }
   .judgment-toggle {
-    font-size: 11px;
+    font-size: 13px;
     color: var(--accent);
     cursor: pointer;
     margin-top: 10px;
@@ -231,7 +231,7 @@
     padding: 10px 12px;
     background: var(--accent-soft);
     border-radius: var(--radius-sm);
-    font-size: 12px;
+    font-size: 13px;
     color: var(--muted);
     line-height: 1.6;
   }
@@ -262,16 +262,16 @@
     align-items: flex-end;
   }
   .next-input-row .chat-input { flex: 1; }
-  .next-input-row .send-btn { position: static; width: 42px; height: 42px; flex-shrink: 0; }
+  .next-input-row .send-btn { width: 42px; height: 42px; flex-shrink: 0; }
   .end-hint {
     text-align: center;
-    font-size: 12px;
-    color: var(--light);
+    font-size: 13px;
+    color: var(--muted);
     margin-top: 12px;
   }
   .end-hint button {
     background: none; border: none; color: var(--accent);
-    font-size: 12px; cursor: pointer; font-family: inherit;
+    font-size: 13px; cursor: pointer; font-family: inherit;
     text-decoration: underline;
   }
 
