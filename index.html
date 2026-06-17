@@ -451,6 +451,8 @@ let designedMessages = [{ role: 'system', content: DESIGNED_SYSTEM }];
 let votes = { standard: 0, designed: 0 };
 let userKey = ''; // 用户手动设的Key才存这里。优先用DEFAULT_KEY
 let currentMood = '';
+let sessionLog = [];   // 记录每轮数据，供导出分析
+let sessionStart = ''; // 会话开始时间
 
 // ── Render ──
 function render() {
@@ -518,7 +520,7 @@ function renderChat() {
   html += '<button class="send-btn" id="chatSendBtn" disabled>→</button>';
   html += '</div>';
 
-  if (round >= 2) {
+  if (round >= 5) {
     html += '<div class="end-hint">觉得聊得差不多了？<button id="endChatBtn">就到这里吧</button></div>';
   }
 
@@ -545,7 +547,11 @@ function renderEnd() {
     <div class="feedback-section">
       <textarea id="feedbackText" placeholder="如果你愿意，可以告诉我刚才的对话里，哪句话让你觉得被懂了，哪句话让你觉得怪怪的。"></textarea>
     </div>
-    <button class="retry-btn" id="retryBtn">再聊一次</button>
+    <div style="margin-top:12px;font-size:13px;color:var(--muted);">
+      <a href="#" id="exportLink" onclick="exportData();return false;" style="color:var(--accent);">下载对话数据 (CSV)</a>
+      <span style="margin-left:12px;font-size:12px;color:var(--light);">用于产品分析</span>
+    </div>
+    <button class="retry-btn" id="retryBtn" style="margin-top:16px;">再聊一次</button>
   </div>`;
 }
 
@@ -627,16 +633,29 @@ function bindEvents() {
 // ── Actions ──
 async function startChat(userInput) {
   state = 'chatting'; round = 1;
+  sessionLog = [];
+  sessionStart = new Date().toISOString();
   standardMessages.push({ role: 'user', content: userInput });
   designedMessages.push({ role: 'user', content: userInput });
   render();
   document.getElementById('loadingArea').innerHTML = '<div class="spinner"><div class="spinner-dot"></div><div class="spinner-dot"></div><div class="spinner-dot"></div></div>';
 
   const result = await callAPI();
-  if (!result) { document.getElementById('loadingArea').innerHTML = '<p style="text-align:center;color:var(--muted);font-size:13px;">出了点问题，请确认Key是否正确，或稍后再试。</p>'; return; }
+  if (!result) { document.getElementById('loadingArea').innerHTML = '<p style="text-align:center;color:var(--muted);font-size:13px;">出了点问题，请稍后再试。</p>'; return; }
 
   standardMessages.push({ role: 'assistant', content: result.standard, _pairIndex: round - 1, _pairData: { idx: round - 1, standard: result.standard, designedResponse: result.designed.response, judgment: result.designed.judgment } });
   designedMessages.push({ role: 'assistant', content: result.designed.response });
+  // 记录本轮数据
+  sessionLog.push({
+    round: round,
+    time: new Date().toISOString(),
+    userInput: userInput,
+    responseA: result.standard,
+    responseB: result.designed.response,
+    designIntent: result.designed.judgment.intent,
+    designStrategy: result.designed.judgment.strategy,
+    vote: null,
+  });
   render();
 }
 
@@ -652,6 +671,16 @@ async function continueChat(userInput) {
 
   standardMessages.push({ role: 'assistant', content: result.standard, _pairIndex: round - 1, _pairData: { idx: round - 1, standard: result.standard, designedResponse: result.designed.response, judgment: result.designed.judgment } });
   designedMessages.push({ role: 'assistant', content: result.designed.response });
+  sessionLog.push({
+    round: round,
+    time: new Date().toISOString(),
+    userInput: userInput,
+    responseA: result.standard,
+    responseB: result.designed.response,
+    designIntent: result.designed.judgment.intent,
+    designStrategy: result.designed.judgment.strategy,
+    vote: null,
+  });
   render();
 }
 
@@ -748,6 +777,9 @@ function recordVote(idx, choice) {
   if (!pair || pair.vote) return;
   pair.vote = choice;
   votes[choice]++;
+  // 同步更新sessionLog
+  const entry = sessionLog.find(e => e.round === idx + 1);
+  if (entry) entry.vote = choice === 'standard' ? 'A' : 'B';
   render();
 }
 
@@ -759,6 +791,41 @@ function resetState() {
   designedMessages = [{ role: 'system', content: DESIGNED_SYSTEM }];
   votes = { standard: 0, designed: 0 };
   currentMood = '';
+  sessionLog = [];
+  sessionStart = '';
+}
+
+function exportData() {
+  if (!sessionLog.length) return;
+  const rows = [
+    ['会话开始', sessionStart],
+    ['总轮次', sessionLog.length],
+    ['选A次数', votes.standard],
+    ['选B次数', votes.designed],
+    ['结束感受', currentMood || '未选'],
+    ['文字反馈', document.getElementById('feedbackText')?.value || ''],
+    [''],
+    ['轮次', '时间', '用户输入', '回应A(标准AI)', '回应B(设计AI)', '设计意图', '设计策略', '用户选择'],
+  ];
+  sessionLog.forEach(e => {
+    rows.push([
+      e.round, e.time, csvEscape(e.userInput), csvEscape(e.responseA),
+      csvEscape(e.responseB), e.designIntent, e.designStrategy, e.vote || '未投'
+    ]);
+  });
+  const csv = rows.map(r => r.join(',')).join('\n');
+  const blob = new Blob(['﻿' + csv], { type: 'text/csv;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'ai-dialogue-data-' + new Date().toISOString().slice(0,10) + '.csv';
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function csvEscape(s) {
+  if (!s) return '';
+  return '"' + s.replace(/"/g, '""').replace(/\n/g, ' ') + '"';
 }
 
 // ── Key management ──
