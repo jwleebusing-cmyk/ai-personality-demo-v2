@@ -715,10 +715,6 @@ function renderEnd() {
     <div class="feedback-section">
       <textarea id="feedbackText" placeholder="如果你愿意，可以告诉我刚才的对话里，哪句话让你觉得被懂了，哪句话让你觉得怪怪的。"></textarea>
     </div>
-    <div style="margin-top:12px;font-size:13px;color:var(--muted);">
-      <a href="#" id="exportLink" onclick="exportData();return false;" style="color:var(--accent);">下载对话数据 (CSV)</a>
-      <span style="margin-left:12px;font-size:12px;color:var(--light);">用于产品分析</span>
-    </div>
     <button class="retry-btn" id="retryBtn" style="margin-top:16px;">再聊一次</button>
   </div>`;
 }
@@ -785,6 +781,7 @@ function bindEvents() {
   }
 
   if (state === 'ending') {
+    console.log('对话数据已就绪。在控制台输入 exportData() 即可下载CSV。');
     document.querySelectorAll('.mood-btn').forEach(b => {
       b.addEventListener('click', function() {
         document.querySelectorAll('.mood-btn').forEach(x => x.classList.remove('picked'));
