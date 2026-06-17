@@ -945,6 +945,11 @@ function tryContinueChat(userInput) {
     const firstCard = document.querySelector('.response-card[data-idx="' + pair.idx + '"]');
     if (firstCard) firstCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
     buildToast('先选一个让你更舒服的回复吧～');
+    // focus back to input so user sees their draft is still there
+    setTimeout(() => {
+      const inp = document.getElementById('chatInput');
+      if (inp) inp.focus();
+    }, 2100);
     return;
   }
   continueChat(userInput);
@@ -1116,17 +1121,20 @@ function recordVote(idx, choice) {
   votes[choice]++;
   const entry = sessionLog.find(e => e.round === idx + 1);
   if (entry) entry.vote = choice === 'standard' ? 'A' : 'B';
+  // Save input text before re-render so user doesn't lose what they typed
+  const draft = document.getElementById('chatInput')?.value || '';
   render();
-  // After vote, scroll input into view + focus + brief glow to indicate "keep going"
+  // Restore draft text
   setTimeout(() => {
     const input = document.getElementById('chatInput');
     if (input) {
+      if (draft) input.value = draft;
       input.scrollIntoView({ behavior: 'smooth', block: 'center' });
       input.focus();
       input.style.boxShadow = '0 0 0 3px rgba(201,112,78,0.25)';
       setTimeout(() => { input.style.boxShadow = ''; }, 1500);
     }
-  }, 150);
+  }, 50);
 }
 
 // ── Reset ──
