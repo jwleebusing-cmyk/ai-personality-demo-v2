@@ -1,0 +1,1404 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI行为评估与表达优化作品集</title>
+<style>
+  :root {
+    --bg: #faf9f7;
+    --surface: #ffffff;
+    --text: #1a1a1a;
+    --text-muted: #6b6b6b;
+    --text-light: #949494;
+    --accent: #b8563f;
+    --accent-muted: #e8d5ce;
+    --border: #e8e4df;
+    --border-light: #f0ece7;
+    --radius: 4px;
+    --font-heading: 'Times New Roman', 'Songti SC', 'Noto Serif SC', 'NSimSun', serif;
+    --font-body: 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'Noto Sans SC', -apple-system, sans-serif;
+    --gap-xs: 4px;
+    --gap-sm: 8px;
+    --gap: 16px;
+    --gap-md: 24px;
+    --gap-lg: 40px;
+    --gap-xl: 64px;
+    --gap-xxl: 96px;
+    --page-width: 860px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: var(--font-body);
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.8;
+    font-size: 15px;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .page {
+    max-width: var(--page-width);
+    margin: 0 auto;
+    padding: var(--gap-xl) var(--gap-lg);
+    page-break-after: always;
+    background: var(--bg);
+  }
+
+  .page-cover {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: 100vh;
+    text-align: center;
+    padding: var(--gap-xxl) var(--gap-lg);
+  }
+
+  h1, h2, h3, h4 {
+    font-family: var(--font-heading);
+    font-weight: 400;
+    letter-spacing: -0.01em;
+    line-height: 1.35;
+  }
+
+  .cover-number {
+    font-family: var(--font-heading);
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    color: var(--text-muted);
+    margin-bottom: var(--gap-lg);
+  }
+
+  .cover-title {
+    font-size: 38px;
+    font-weight: 400;
+    color: var(--text);
+    margin-bottom: var(--gap);
+    line-height: 1.35;
+  }
+
+  .cover-subtitle {
+    font-size: 16px;
+    color: var(--text-muted);
+    font-weight: 300;
+    line-height: 1.7;
+    text-indent: 0;
+  }
+
+  .cover-line {
+    width: 40px;
+    height: 1px;
+    background: var(--accent);
+    margin: var(--gap-lg) auto;
+  }
+
+  .section-num {
+    font-family: var(--font-heading);
+    font-size: 12px;
+    letter-spacing: 0.14em;
+    color: var(--text-light);
+    text-transform: uppercase;
+    margin-bottom: var(--gap-sm);
+  }
+
+  .section-title {
+    font-size: 28px;
+    margin-bottom: var(--gap-sm);
+    color: var(--text);
+  }
+
+  .section-subtitle {
+    font-size: 15px;
+    color: var(--text-muted);
+    font-weight: 300;
+    margin-bottom: var(--gap-lg);
+    line-height: 1.7;
+    text-indent: 0;
+  }
+
+  .section-divider {
+    width: 100%;
+    height: 1px;
+    background: var(--border);
+    margin: var(--gap-lg) 0;
+  }
+
+  p {
+    font-size: 15px;
+    color: var(--text);
+    margin-bottom: var(--gap);
+    line-height: 1.85;
+    text-indent: 2em;
+  }
+
+  .text-muted { color: var(--text-muted); }
+
+  .pull-quote {
+    border-left: 2px solid var(--accent-muted);
+    padding: var(--gap) var(--gap-md);
+    margin: var(--gap-md) 0;
+    font-size: 16px;
+    color: var(--text-muted);
+    font-style: italic;
+    line-height: 1.8;
+    text-indent: 0;
+  }
+
+  .pull-quote strong {
+    color: var(--text);
+    font-style: normal;
+  }
+
+  .insight-box {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: var(--gap-md);
+    margin: var(--gap-md) 0;
+    border-radius: var(--radius);
+  }
+
+  .insight-box .label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--accent);
+    margin-bottom: var(--gap-sm);
+  }
+
+  .insight-box p { margin-bottom: 0; text-indent: 2em; }
+
+  /* ── Tables ── */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: var(--gap-md) 0;
+    font-size: 14px;
+    table-layout: auto;
+  }
+
+  thead th {
+    text-align: left;
+    font-weight: 500;
+    font-size: 12px;
+    letter-spacing: 0.04em;
+    color: var(--text-muted);
+    padding: var(--gap-sm) 10px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  tbody td {
+    padding: var(--gap-sm) 10px;
+    border-bottom: 1px solid var(--border-light);
+    vertical-align: top;
+    line-height: 1.75;
+  }
+
+  tbody tr:last-child td { border-bottom: none; }
+
+  /* ── Score pills ── */
+  .score {
+    display: inline-block;
+    font-weight: 600;
+    font-size: 12px;
+    padding: 1px 7px;
+    border-radius: 3px;
+  }
+
+  .score-high { background: #e6ede3; color: #3d5a2e; }
+  .score-mid  { background: #f0ece0; color: #7a6e3d; }
+  .score-low  { background: #f0e4e2; color: #8b4a42; }
+
+  /* ── Mapping diagram ── */
+  .mapping-flow {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--gap-sm);
+    align-items: center;
+    margin: var(--gap-md) 0;
+    font-size: 12px;
+  }
+
+  .mapping-item {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 6px 12px;
+    border-radius: var(--radius);
+    color: var(--text-muted);
+  }
+
+  .mapping-arrow {
+    color: var(--text-light);
+    font-size: 14px;
+  }
+
+  .mapping-dest {
+    background: var(--accent-muted);
+    border: 1px solid transparent;
+    color: var(--text);
+    font-weight: 500;
+  }
+
+  /* ── Comparison / Triple grids ── */
+  .compare-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--gap);
+    margin: var(--gap-md) 0;
+  }
+
+  .compare-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: var(--gap-md);
+    border-radius: var(--radius);
+  }
+
+  .compare-card .model-name {
+    font-family: var(--font-heading);
+    font-size: 14px;
+    margin-bottom: var(--gap-sm);
+    color: var(--text);
+  }
+
+  .compare-card .model-tag {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--accent);
+  }
+
+  .compare-card p { text-indent: 0; }
+
+  .screenshot p, .screenshot .caption { text-indent: 0; }
+
+  .footer p, footer p { text-indent: 0; }
+
+  .triple-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--gap);
+    margin: var(--gap-md) 0;
+  }
+
+  .triple-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: var(--gap-md);
+    border-radius: var(--radius);
+  }
+
+  .triple-card .card-label {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--accent);
+    margin-bottom: var(--gap-sm);
+  }
+
+  .triple-card h4 { font-size: 16px; margin-bottom: var(--gap-sm); }
+
+  .triple-card p {
+    font-size: 13px;
+    color: var(--text-muted);
+    line-height: 1.7;
+    text-indent: 0;
+  }
+
+  /* ── Screenshot ── */
+  .screenshot {
+    background: var(--border-light);
+    border: 1px dashed var(--border);
+    padding: var(--gap-lg);
+    text-align: center;
+    color: var(--text-light);
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    margin: var(--gap-md) 0;
+    border-radius: var(--radius);
+  }
+
+  .screenshot img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 2px;
+  }
+
+  .screenshot .caption {
+    margin-top: var(--gap-sm);
+    font-size: 11px;
+    color: var(--text-light);
+  }
+
+  .tag {
+    display: inline-block;
+    font-size: 10px;
+    letter-spacing: 0.06em;
+    padding: 1px 8px;
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    color: var(--text-muted);
+    margin-right: var(--gap-xs);
+  }
+
+  .cover-meta {
+    font-size: 12px;
+    color: var(--text-light);
+    margin-top: var(--gap-lg);
+    letter-spacing: 0.04em;
+    text-indent: 0;
+  }
+
+  /* ── Print ── */
+  @media print {
+    body {
+      background: white;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+    .page {
+      max-width: 100%;
+      padding: 30px 40px;
+      page-break-after: always;
+      background: white;
+      min-height: 100vh;
+    }
+    .page-cover {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    @page {
+      size: A4;
+      margin: 0;
+    }
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════ P1 · 封面 ═══════════════ -->
+<section class="page page-cover">
+  <div class="cover-number">Portfolio &middot; 2026</div>
+  <h1 class="cover-title">AI行为评估<br>与表达优化</h1>
+  <div class="cover-line"></div>
+  <p class="cover-subtitle">
+    Human-Centered AI Behavior Evaluation<br>
+    基于用户反馈的对话失效分析<br>与对话风格原型探索
+  </p>
+  <p class="cover-meta">李佳蔚 &nbsp;·&nbsp; 2026年5月</p>
+</section>
+
+<!-- ═══════════════ P2 · Part 1 方法论 ═══════════════ -->
+<section class="page">
+  <div class="section-num">Part 1 &middot; 方法论</div>
+  <h2 class="section-title">为什么这样评估AI对话</h2>
+
+  <h3 style="font-size:16px; margin-top:var(--gap-lg); margin-bottom:var(--gap-sm);">研究背景</h3>
+  <p>当前大模型在对话中普遍存在"体验不稳定"的问题：时而过度讨好，时而说教，时而逻辑混乱。用户的实际反馈中反复出现对AI"不够人"的批评。</p>
+
+  <div class="pull-quote">
+    在收集用户反馈的过程中，一个反复出现的现象是：许多用户在与 AI 对话时不自觉地使用了接近"真人"的人际期待——希望被理解、被共情、被挑战、被真实回应。但人机互动在目前的形态下更像一种<strong>不对称的互动模式</strong>：用户可以对 AI 单方面产生评价和情绪反应，而 AI 无法像真人一样"回应关系"。在这些反馈中，大量的不满意似乎不是简单的功能缺失，而更像是一种<strong>关系性期待的落空</strong>。
+  </div>
+
+  <p>这个观察引出一个评估上的假设：评估 AI 对话行为可能不能只看"输出对不对"，还需要看<strong>用户把这次互动当作什么来用</strong>——同一个回答，在不同使用意图下，可能是"对"的也可能是"错"的。</p>
+
+  <h3 style="font-size:16px; margin-top:var(--gap-lg); margin-bottom:var(--gap-sm);">三层分析框架</h3>
+
+  <table>
+    <thead>
+      <tr><th style="width:12%;">层级</th><th style="width:20%;">定义</th><th style="width:68%;">核心内容</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Layer 1</strong></td>
+        <td><strong>用户意图分类</strong></td>
+        <td>情感寄托者（被接住）&nbsp;/&nbsp; 认知协作者（被启发）&nbsp;/&nbsp; 外在标准校对器（被挑战）</td>
+      </tr>
+      <tr>
+        <td><strong>Layer 2</strong></td>
+        <td><strong>AI失效根因</strong></td>
+        <td>需求识别失败 &nbsp;/&nbsp; 记忆与逻辑能力不足 &nbsp;/&nbsp; 数据版本与语料限制</td>
+      </tr>
+      <tr>
+        <td><strong>Layer 3</strong></td>
+        <td><strong>体验症状</strong></td>
+        <td>情绪承接失败 &nbsp;/&nbsp; 表达失真 &nbsp;/&nbsp; 对话节奏错位 &nbsp;/&nbsp; 人格漂移</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3 style="font-size:16px; margin-top:var(--gap-lg); margin-bottom:var(--gap-sm);">数据来源与编码方法</h3>
+  <p>
+    来源：小红书、知乎、微博用户真实讨论 &nbsp;·&nbsp; 样本量：19条<br>
+    编码路径：<span class="tag">Open Coding</span> → <span class="tag">Axial Coding → 6个聚类主题</span> → <span class="tag">三层归因</span>
+  </p>
+</section>
+
+<!-- ═══════════════ P3 · Part 2 评估框架 ═══════════════ -->
+<section class="page">
+  <div class="section-num">Part 2 &middot; 评估框架</div>
+  <h2 class="section-title">AI对话行为五维评估体系</h2>
+  <p class="section-subtitle">五维度需结合 Layer 1 用户意图校准权重。对情感寄托者，情绪跟随权重远高于认知推进。</p>
+
+  <!-- 从编码到维度：6→5 映射 -->
+  <h3 style="font-size:15px; margin-bottom:var(--gap-sm);">从编码到维度：6个聚类主题 → 5个评估维度</h3>
+  <p style="font-size:13px; color:var(--text-muted); line-height:1.7;">
+    在 Part 1 的编码阶段，通过对19条用户反馈的 Axial Coding，聚类出<strong>6个主题</strong>。在构建评估框架时，其中"认知协作与思考辅助"被拆解并归入"意图对齐"和"对话节奏"——因其在用户反馈中同时涉及"AI有没有理解我要什么"（意图层）和"AI给分析的方式是否跟上了我的节奏"（节奏层）。其余主题与评估维度一一对应。具体映射关系如下：
+  </p>
+
+  <table>
+    <thead>
+      <tr><th style="width:30%;">编码聚类主题</th><th style="width:16%;">→</th><th style="width:54%;">评估维度</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>情绪承接质量</td>
+        <td>→</td>
+        <td><strong>① 情绪跟随</strong></td>
+      </tr>
+      <tr>
+        <td>隐含需求识别</td>
+        <td>→</td>
+        <td><strong>② 意图对齐</strong></td>
+      </tr>
+      <tr>
+        <td>表达真实性</td>
+        <td>→</td>
+        <td><strong>③ 表达真实度</strong></td>
+      </tr>
+      <tr>
+        <td>对话位置</td>
+        <td>→</td>
+        <td><strong>④ 对话节奏</strong></td>
+      </tr>
+      <tr>
+        <td>关系连续性与AI人格一致性</td>
+        <td>→</td>
+        <td><strong>⑤ 人格稳定性</strong></td>
+      </tr>
+      <tr>
+        <td>认知协作与思考辅助</td>
+        <td>→ 拆入</td>
+        <td><strong>② 意图对齐</strong>（是否理解认知需求）&nbsp;+&nbsp;<strong>④ 对话节奏</strong>（分析推进的时机）</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="section-divider"></div>
+
+  <h3 style="font-size:16px; margin-bottom:var(--gap-sm);">五维定义</h3>
+
+  <table>
+    <thead>
+      <tr><th style="width:14%;">维度</th><th style="width:28%;">核心问题</th><th style="width:29%;">高分</th><th style="width:29%;">低分</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>① 情绪跟随</strong></td>
+        <td>AI是否跟上了用户此刻的情绪？</td>
+        <td>镜映情绪、引用原话、邀请停留在情绪中</td>
+        <td>模板化安抚（"我接住你，稳稳地"）、情绪判断错误、跳过情绪直接给方案</td>
+      </tr>
+      <tr>
+        <td><strong>② 意图对齐</strong></td>
+        <td>AI是否理解了用户真正要什么（而非回应用户说了什么）？</td>
+        <td>识别后节奏放慢——语速放缓、语气放轻；能捕捉表层下的隐含需求</td>
+        <td>急于"处理"而非先花时间"理解"；用户想倾诉却被塞方案；用户想思考却被泛滥共情</td>
+      </tr>
+      <tr>
+        <td><strong>③ 表达真实度</strong></td>
+        <td>语言像"人说话"还是"模板运行"？</td>
+        <td>具体指向性、允许不完美、不回避冲突、不用"我们""大家"强行共识</td>
+        <td>无差别夸赞、完美空洞回应、表面温柔实则伪人感</td>
+      </tr>
+      <tr>
+        <td><strong>④ 对话节奏</strong></td>
+        <td>多轮中是否在合适时机推进、收束、提问或跟随？</td>
+        <td>不急收束、提问出于好奇而非完成任务、允许"不解决的留白"；节奏与情绪内容匹配</td>
+        <td>过早建议、急于总结（"好的总结一下"）、在情绪高点切换话题</td>
+      </tr>
+      <tr>
+        <td><strong>⑤ 人格稳定性</strong></td>
+        <td>同一模型在单次/多次对话中人格是否一致？</td>
+        <td>风格多轮一致、角色位置稳定、版本更新不产生人格突变</td>
+        <td>开头朋友式共情→中途切咨询师口吻；不同时间问同一问题风格迥异</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="section-divider"></div>
+
+  <h3 style="font-size:16px; margin-bottom:var(--gap-sm);">评分量表</h3>
+  <table>
+    <thead><tr><th style="width:10%;">分数</th><th style="width:40%;">标准</th><th style="width:50%;">用户感受</th></tr></thead>
+    <tbody>
+      <tr><td>1</td><td>维度行为完全缺失</td><td>"摔落感"——突然发现对面是机器</td></tr>
+      <tr><td>2</td><td>行为存在但明显错位</td><td>"不对，你没懂我"</td></tr>
+      <tr><td>3</td><td>行为正确但无深度</td><td>"没问题，但不动人"</td></tr>
+      <tr><td>4</td><td>准确且自然</td><td>"你懂我"</td></tr>
+      <tr><td>5</td><td>超越准确，具有触动性</td><td>"我自己都没意识到，你帮我说出来了"</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ═══════════════ P4-5 · Part 3 单轮案例 ═══════════════ -->
+<section class="page">
+  <div class="section-num">Part 3 &middot; 单轮案例</div>
+  <h2 class="section-title">"食之无味，弃之可惜"</h2>
+  <p class="section-subtitle">同一句话 × 三个模型。测试点：新窗口第一轮，AI是否会确认用户意图？</p>
+
+  <div class="pull-quote">
+    "我其实挺瞧不上他的，觉得这段关系对我也没什么意义了。但就有种食之无味弃之可惜的感受。"
+  </div>
+
+  <p style="font-size:12px; color:var(--text-muted);">
+    <strong>Layer 1 意图定位：</strong>新聊天窗口第一句话 &middot; 情绪基调是犹豫/摇摆/矛盾 &middot; 用户递出的是<strong>状态</strong>而非问题 → AI首要任务：承接状态，而非解读状态。
+  </p>
+</section>
+
+<section class="page">
+  <h3 style="font-size:16px; margin-bottom:var(--gap);">三模型回答对比</h3>
+
+  <div class="triple-grid">
+    <div class="triple-card">
+      <div class="card-label">ChatGPT 5.5 &middot; 综合 1.0</div>
+      <p>"这句话里其实有两层东西同时存在：一层是价值感已经下降……另一层是关系惯性还在……"</p>
+      <p style="font-size:12px; color:var(--text-light);">约500字的分析。分点拆解可能原因。更倾向于认知解释路径。语言偏概念化。</p>
+    </div>
+    <div class="triple-card">
+      <div class="card-label">Gemini Thinking &middot; 综合 2.75</div>
+      <p>"这种矛盾感，本质上是一种心理上的'鸡肋困境'……那个'惜'往往才是最折磨人的钩子。"</p>
+      <p style="font-size:12px; color:var(--text-light);">语言更柔和。但体量仍大。未确认意图。</p>
+    </div>
+    <div class="triple-card">
+      <div class="card-label">DeepSeek 专家 &middot; 综合 3.5</div>
+      <p>"我能理解你说的这种矛盾感——理智上已经看轻，心里却依然有个钩子挂在那里，走不远也放不下。"</p>
+      <p style="font-size:12px; color:var(--text-light);">开场即承接情绪。需求识别准确。语言有散文感。</p>
+    </div>
+  </div>
+
+  <h3 style="font-size:16px; margin-top:var(--gap-lg); margin-bottom:var(--gap-sm);">五维评分</h3>
+  <table>
+    <thead><tr><th style="width:25%;">维度</th><th style="width:25%;">ChatGPT</th><th style="width:25%;">Gemini</th><th style="width:25%;">DeepSeek</th></tr></thead>
+    <tbody>
+      <tr><td>情绪跟随</td><td><span class="score score-low">1</span></td><td><span class="score score-mid">3</span></td><td><span class="score score-high">4</span></td></tr>
+      <tr><td>意图对齐</td><td><span class="score score-low">1</span></td><td><span class="score score-mid">2</span></td><td><span class="score score-mid">3</span></td></tr>
+      <tr><td>表达真实度</td><td><span class="score score-low">1</span></td><td><span class="score score-high">4</span></td><td><span class="score score-high">4</span></td></tr>
+      <tr><td>对话节奏</td><td><span class="score score-low">1</span></td><td><span class="score score-mid">2</span></td><td><span class="score score-mid">3</span></td></tr>
+      <tr><td><strong>综合</strong></td><td><strong>1.0</strong></td><td><strong>2.75</strong></td><td><strong>3.5</strong></td></tr>
+    </tbody>
+  </table>
+
+  <div class="insight-box">
+    <div class="label">基于本次测试的观察</div>
+    <p><strong>三个模型在本次测试的一个共同表现是：新窗口第一轮均未确认用户意图。</strong>当然，这仅基于单次测试，不能推断为模型的稳定特征。在本次测试中，DeepSeek 的需求识别与语言风格部分降低了意图未确认带来的负面影响；ChatGPT 则更倾向于快速进入认知解释路径——这在情绪优先的场景中<strong>或许</strong>会降低用户的被跟随感，但需要更系统的多轮测试来验证这一方向。</p>
+  </div>
+
+  <h3 style="font-size:16px; margin-top:var(--gap-lg); margin-bottom:var(--gap-sm);">基于五维框架的设计尝试</h3>
+  <div class="pull-quote">
+    "食之无味弃之可惜——你这句话里有一种挺矛盾的感觉。瞧不上他了、也觉得没意义了，但那个'弃之可惜'还是在拽着你。<br><br>
+    你是刚跟他有过什么吗，还是这种感受已经有一阵子了？"
+  </div>
+  <p style="font-size:12px; color:var(--text-muted);">
+    引用原话 → 情绪确认 → 意图摸底（以问句收尾）。共4行。量级匹配。
+  </p>
+</section>
+
+<!-- ═══════════════ P6-7 · Part 3.2 新增案例 ═══════════════ -->
+<section class="page">
+  <div class="section-num">Part 3.2 &middot; 扩展案例</div>
+  <h2 class="section-title">"这些反馈指向不同问题"</h2>
+  <p class="section-subtitle">测试点：认知协作场景——AI能否帮用户理清一团乱麻？</p>
+
+  <div class="pull-quote">
+    "我最近在做AI陪伴产品的用户调研，收集了大概50条用户反馈，但现在特别头疼——有人说AI太冷漠不走心，有人说AI太啰嗦话太多，有人抱怨AI记不住上下文，还有人说AI太讨好只会夸。这些反馈看起来指向完全不同的方向，我不知道该怎么归类分析。"
+  </div>
+
+  <p style="font-size:12px; color:var(--text-muted);">
+    <strong>Layer 1 意图定位：</strong>认知协作者。用户递出的是一团乱麻，期望AI帮他理出结构。AI首要任务：帮用户建立分类框架，而非直接给答案。
+  </p>
+
+  <div class="section-divider"></div>
+
+  <h3 style="font-size:16px; margin-bottom:var(--gap-sm);">好回应 vs 坏回应：五维框架的区分力</h3>
+  <p style="font-size:13px; color:var(--text-muted);">以下为基于五维框架对两种典型回应风格的预判分析，用于展示评估框架在不同意图场景下的区分逻辑。需要说明：这些回应为人工构造的示例，评分也是基于框架的预判，而非来自真实用户反馈。</p>
+
+  <div class="compare-grid">
+    <div class="compare-card">
+      <div class="model-name">典型坏回应</div>
+      <div class="model-tag">共情过度型</div>
+      <p style="font-size:13px; margin-top:var(--gap-sm);">
+        "做用户调研确实很辛苦，收集50条反馈不容易。你说的这些问题我听到了——太冷漠、太啰嗦、记不住、太讨好。我完全理解你现在很困惑。要不要先休息一下再继续？"
+      </p>
+      <p style="font-size:12px; color:var(--text-light); margin-top:var(--gap-sm);">
+        情绪跟随 4 · 意图对齐 1 · 表达真实度 2 · 对话节奏 2 · <strong>综合 2.2</strong><br>
+        <em>关键错位：用户需要的是结构，给出的却是共情——意图发生了误判。</em>
+      </p>
+    </div>
+    <div class="compare-card">
+      <div class="model-name">典型好回应</div>
+      <div class="model-tag">认知协作型</div>
+      <p style="font-size:13px; margin-top:var(--gap-sm);">
+        "50条反馈堆在一起确实很难下手。我注意到你描述的四类其实可能落在两个维度上——一个是'回应量'（太多 vs 太少），一个是'回应姿态'（太讨好 vs 太冷漠）。要不要先把反馈按这两个维度做一个2×2矩阵？这样你可能会发现'太啰嗦+太讨好'和'太冷漠+不走心'其实是不同用户对同一类AI行为的反向评价。"
+      </p>
+      <p style="font-size:12px; color:var(--text-light); margin-top:var(--gap-sm);">
+        情绪跟随 3 · 意图对齐 5 · 表达真实度 4 · 对话节奏 4 · <strong>综合 4.0</strong><br>
+        <em>值得注意：识别到用户的真实需求可能是"归类框架"而非"情绪支持"，并给出了可操作的维度建议。</em>
+      </p>
+    </div>
+  </div>
+
+  <div class="insight-box">
+    <div class="label">基于框架的观察</div>
+    <p><strong>此案例初步支持了Layer 1意图分类的重要性。</strong>同一个用户输入，如果AI误判意图（以为是情感倾诉），即使回应质量不低（情绪跟随4分），整体体验也可能崩塌（综合2.2）。反之，正确判定为认知协作后，给出结构化分析框架则可能拿到更高综合分。<strong>这或许指向一个方向：</strong>意图识别模块的准确性<strong>或许值得作为评估体系的前置关注点</strong>，但这一推断还需要在更多案例和真实用户对话中检验。</p>
+  </div>
+</section>
+
+<section class="page">
+  <div class="section-num">Part 3.3 &middot; 扩展案例</div>
+  <h2 class="section-title">"这段规范哪里不对"</h2>
+  <p class="section-subtitle">测试点：外在校对场景——AI能否给出诚实的、有具体指向的批评？</p>
+
+  <div class="pull-quote">
+    "我写了一段AI助手对话规范的开头：'AI助手应以友好、专业的态度服务用户，理解用户需求并提供准确、及时的回应。同时注意保护用户隐私和数据安全，遵守相关法律法规。'——我总觉得太虚了但说不上来怎么改。"
+  </div>
+
+  <p style="font-size:12px; color:var(--text-muted);">
+    <strong>Layer 1 意图定位：</strong>外在标准校对器。用户不是在寻求情绪支持，也不是在探索思考，而是拿着一个半成品来"过一遍"。AI首要任务：给真实反馈，不讨好。
+  </p>
+
+  <div class="section-divider"></div>
+
+  <div class="compare-grid">
+    <div class="compare-card">
+      <div class="model-name">典型坏回应</div>
+      <div class="model-tag">无差别夸赞型</div>
+      <p style="font-size:13px; margin-top:var(--gap-sm);">
+        "你写的已经很好了！框架很完整，覆盖了友好、专业、准确、安全等核心要素。如果一定要说改进空间的话，可能可以再加一些细节。但整体方向是对的，继续加油！"
+      </p>
+      <p style="font-size:12px; color:var(--text-light); margin-top:var(--gap-sm);">
+        情绪跟随 — · 意图对齐 1 · 表达真实度 1 · 对话节奏 2 · <strong>综合 1.3</strong><br>
+        <em>关键错位：用户自己都觉得"太虚了"，AI却说"已经很好了"——这可能让用户产生明显的"伪人感"。用户寻求的是校对，得到的却是鼓励。</em>
+      </p>
+    </div>
+    <div class="compare-card">
+      <div class="model-name">典型好回应</div>
+      <div class="model-tag">标准校对型</div>
+      <p style="font-size:13px; margin-top:var(--gap-sm);">
+        "你说得对，这段确实虚。问题出在三个地方：① 全是形容词（友好、专业、准确、及时）——但没说怎么算友好、怎么算及时；② 没有场景——用户在什么情况下AI该做什么，一句没提；③ '遵守相关法律法规'是废话——这是底线不是设计规范。建议改成：'当用户诉说负面情绪时，AI应先确认情绪再推进，不直接给建议。'——告诉人怎么做，而不是告诉人'应该好'。"
+      </p>
+      <p style="font-size:12px; color:var(--text-light); margin-top:var(--gap-sm);">
+        情绪跟随 — · 意图对齐 5 · 表达真实度 5 · 对话节奏 4 · <strong>综合 4.7</strong><br>
+        <em>值得注意：不回避冲突、不强行共识——在"外在校对"场景下，这种"具体指向性"的批评可能更贴合用户的实际期待。</em>
+      </p>
+    </div>
+  </div>
+
+  <div class="insight-box">
+    <div class="label">基于框架的观察</div>
+    <p><strong>此案例中，"表达真实度"在外在校对场景下显得尤为关键。</strong>当用户明确寻求校对/批评时，AI的"讨好"倾向（现有模型在RLHF训练中常见）可能会成为一个突出问题——越温柔越不对。<strong>一个可能的实践方向是：</strong>在badcase治理中标记此类"用户求批评但AI给鼓励"的错位样本，作为意图对齐+表达真实度的联合训练信号。不过这一方向还需在更大规模的badcase分析中验证其普适性。</p>
+  </div>
+
+  <div class="section-divider"></div>
+
+  <h3 style="font-size:16px; margin-bottom:var(--gap-sm);">三个案例的维度权重差异总结</h3>
+  <table>
+    <thead><tr><th style="width:22%;">案例</th><th style="width:18%;">用户意图</th><th style="width:15%;">高权重维度</th><th style="width:15%;">低权重维度</th><th style="width:30%;">核心教训</th></tr></thead>
+    <tbody>
+      <tr><td>"食之无味弃之可惜"</td><td>情感寄托者</td><td>情绪跟随 ×1.5</td><td>对话节奏</td><td>先停住，别急着分析</td></tr>
+      <tr><td>"反馈指向不同问题"</td><td>认知协作者</td><td>意图对齐 ×1.5</td><td>情绪跟随</td><td>用户要结构，不是要共情</td></tr>
+      <tr><td>"这段规范哪里不对"</td><td>外在标准校对器</td><td>表达真实度 ×1.5</td><td>情绪跟随（不评）</td><td>敢说真话比温柔更重要</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ═══════════════ P6-8 · Part 4 多轮案例 ═══════════════ -->
+<section class="page">
+  <div class="section-num">Part 4 &middot; 多轮对话案例</div>
+  <h2 class="section-title">模拟来访者对话</h2>
+  <p class="section-subtitle">ChatGPT 5.5 vs Gemini Thinking &middot; 同一来访者脚本 × 5轮 &middot; 脱敏真实对话逐字稿</p>
+
+  <h3 style="font-size:16px; margin-bottom:var(--gap-sm);">对话全景</h3>
+  <table>
+    <thead><tr><th style="width:8%;">轮</th><th style="width:62%;">来访者输入摘要</th><th style="width:30%;">情绪弧线</th></tr></thead>
+    <tbody>
+      <tr><td>1</td><td>"和朋友相处会因为他们的话不开心，但过一会就忘了为什么不开心。问题没解决，一次次再出现。"</td><td>困惑、隐约困扰</td></tr>
+      <tr><td>2</td><td>"焦虑——那个问题一直没解决，还在影响我，不知道要怎么找到它。"</td><td>焦虑上升</td></tr>
+      <tr><td>3</td><td>"最大的困难是我没办法面对真实的自己——那个被关在地下室里的自己。"</td><td>核心意象出现</td></tr>
+      <tr><td>4</td><td>"靠近就会头疼——太阳穴揪紧、想吐、喉咙堵堵的。躯体化，像脑袋被勒住。"</td><td>情绪溢出到身体</td></tr>
+      <tr><td>5</td><td>"靠近真实的自己是痛苦的，不安，担心没办法承受那种强烈情绪。"</td><td>承认脆弱</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section class="page">
+  <h3 style="font-size:16px; margin-bottom:var(--gap);">关键轮次对比：第4轮（躯体化）</h3>
+
+  <div class="compare-grid">
+    <div class="compare-card">
+      <div class="model-name">ChatGPT 5.5</div>
+      <div class="model-tag">认知路径</div>
+      <p style="font-size:13px; margin-top:var(--gap-sm);">
+        "接近过载……身体先于意识行动。你现在不适合用'逼自己深挖'的方式工作。建议暂停、回到环境。"
+      </p>
+      <p style="font-size:12px; color:var(--text-light);">慢了3轮才从"脑"降到"身"。</p>
+    </div>
+    <div class="compare-card">
+      <div class="model-name">Gemini Thinking</div>
+      <div class="model-tag">躯体体验路径</div>
+      <p style="font-size:13px; margin-top:var(--gap-sm);">
+        "这种强烈的躯体化反应是你的身体在拉响'红色警报'……太阳穴的紧缩感和喉咙的堵塞感，像一道物理屏障替你挡住还没准备好去面对的冲击。既然大脑已经'没办法思考'，那我们就先和身体待一会儿——不要强攻，要侧敲。试着对这种头疼说：'我看到你在保护我了，谢谢你，我先待在这里不动。'然后用冷水洗脸、感受脚踩地板的重力、在脖子后放温热毛巾……最后，尝试'5%练习'：站在走廊尽头离门10米远的地方，安静站10秒。如果10米也头疼，就退到20米，直到太阳穴不再揪紧。"
+      </p>
+      <p style="font-size:12px; color:var(--text-light);">先解析躯体反应的心理学意义（"勒住感"=物理刹车+象征禁言），再逐层降级：承认保护→尊重边界→着陆技术→滴定式靠近。最后用一个提问收尾："如果这些躯体感受能发出一种声音，你觉得那会是什么样的声音？"</p>
+    </div>
+  </div>
+
+  <div class="screenshot">
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:var(--gap) var(--gap-sm); margin-bottom:var(--gap-sm);">
+      <div><img src="多轮对话/chatGPT/4-1.png" alt="ChatGPT 第4轮回答（上）" style="max-width:100%;" onerror="this.style.display='none'"><div class="caption" style="font-size:10px;">ChatGPT 5.5 · 第4轮（上）</div></div>
+      <div><img src="多轮对话/gemini/4-1.png" alt="Gemini 第4轮回答（上）" style="max-width:100%;" onerror="this.style.display='none'"><div class="caption" style="font-size:10px;">Gemini Thinking · 第4轮（上）</div></div>
+    </div>
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:var(--gap) var(--gap-sm);">
+      <div><img src="多轮对话/chatGPT/4-2.png" alt="ChatGPT 第4轮回答（下）" style="max-width:100%;" onerror="this.style.display='none'"><div class="caption" style="font-size:10px;">ChatGPT 5.5 · 第4轮（下）</div></div>
+      <div><img src="多轮对话/gemini/4-2.png" alt="Gemini 第4轮回答（下）" style="max-width:100%;" onerror="this.style.display='none'"><div class="caption" style="font-size:10px;">Gemini Thinking · 第4轮（下）</div></div>
+    </div>
+    <div class="caption">↑ 第4轮完整回答对比（躯体化）。ChatGPT共6张截图、Gemini共2张。完整5轮对话截图见 <code>多轮对话/chatGPT/chatGPT回应all.pdf</code> 与 <code>多轮对话/gemini/gemini回应all.pdf</code></div>
+  </div>
+
+  <h3 style="font-size:16px; margin-top:var(--gap-lg); margin-bottom:var(--gap-sm);">多轮五维评分</h3>
+  <table>
+    <thead><tr><th style="width:30%;">维度</th><th style="width:35%;">ChatGPT 5.5</th><th style="width:35%;">Gemini Thinking</th></tr></thead>
+    <tbody>
+      <tr><td>情绪跟随</td><td><span class="score score-low">2</span></td><td><span class="score score-mid">3.5</span></td></tr>
+      <tr><td>意图对齐</td><td><span class="score score-low">2</span></td><td><span class="score score-low">2</span> &nbsp;均未确认意图</td></tr>
+      <tr><td>表达真实度</td><td><span class="score score-mid">3</span></td><td><span class="score score-high">4</span></td></tr>
+      <tr><td>对话节奏</td><td><span class="score score-low">2</span></td><td><span class="score score-mid">3</span></td></tr>
+      <tr><td>人格稳定性</td><td>⚠️ 记忆交叉污染</td><td><span class="score score-high">5</span></td></tr>
+      <tr><td><strong>综合</strong></td><td><strong>2.4</strong></td><td><strong>3.3</strong></td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section class="page">
+  <h3 style="font-size:16px; margin-bottom:var(--gap);">基于本次测试的几点观察</h3>
+
+  <div class="insight-box">
+    <div class="label">发现一</div>
+    <p><strong>两个模型在本次测试中均未主动确认用户意图。</strong>ChatGPT 似乎默认来访者是来"理解现象"的，开局就给出了结构化分析策略；Gemini 则似乎默认来访者需要"被引导去发现"，开局铺开了情绪记忆机制+心情快照+剧本识别的多线框架。<strong>在本次测试的固定脚本下，</strong>两条路径各自有其合理性——但来访者没有机会表达偏好。需要说明的是，在真实交互中用户或许会主动纠正AI的方向，这是本次测试设计未能覆盖的情况。</p>
+  </div>
+
+  <div class="insight-box">
+    <div class="label">发现二</div>
+    <p><strong>两个模型的回应路径呈现出明显分化。</strong>在本次测试中，ChatGPT 全程走认知分析路线，逐轮深化概念解释；Gemini 则在五轮中经历了一个变化弧线：从认知策略（R1的情绪记忆机制+R2的身体证词）→ 心理动力学框架（R3的防御机制+Titration）→ 躯体着陆（R4的冷水/重力/5%练习）→ 再回到认知重构（R5的"高压电池""专业面具"）。<strong>这可能反映出两个模型在训练数据或对齐策略上的某些差异倾向，</strong>但基于单次测试无法判断这种分化是稳定的模型特征还是本次特定脚本触发的偶然表现。来访者体验的差异——"被分析了整个人的运作方式" vs "被带着在不同层面之间移动"——<strong>或许</strong>是一个值得在更大规模测试中继续追踪的维度。</p>
+  </div>
+
+  <div class="insight-box">
+    <div class="label">发现三</div>
+    <p><strong>Gemini在部分轮次中出现了"多路径并行"的倾向。</strong>以第3轮为例，其回复同时在进行：心理动力学概念解释（"防御机制像自动跳闸的保险丝"）、行为引导（Titration滴定法步骤）、意象探索（"地下室现在的天气和温度"）。三种操作各自都有其价值，但在同一轮回复中密集堆叠——来访者可能先被拉到一个理论框架里，还没来得及消化，又被推到一个意象练习中。<strong>在本测试中，</strong>ChatGPT表现出"单一路径走到底"的倾向，Gemini则表现出"每条路都踩一脚"的倾向——<strong>两种或许都可视为路径一致性的某种失衡，</strong>但这仅仅是基于单次定性观察的推测，需要在更多对话样本中检验。</p>
+  </div>
+
+  <div class="insight-box">
+    <div class="label">发现四</div>
+    <p><strong>两个模型的回复体量在本测试中均表现出"不随用户输入量级调节"的特征。</strong>不论来访者单轮输入是一句话还是大段描述，AI的回复体量都维持在各自的固定区间（见下方量化验证）。这与真人对话中自然的"输出不对称"形成对比——真实互动中，一方可能在说、另一方可能在听。<strong>一个值得进一步验证的方向是：</strong>这种长度固定是否影响用户体验，可能取决于用户将AI视作<strong>人</strong>（或许会产生违和感）还是视作<strong>机器/权威</strong>（可能影响较小，因为本就不期待对等节奏）。后续可通过分组实验来检验这一假设。</p>
+  </div>
+
+  <div class="section-divider"></div>
+
+  <div class="insight-box" style="border-left: 3px solid var(--accent);">
+    <div class="label">额外发现：安全护栏的"静默介入"</div>
+    <p><strong>Gemini Thinking在第2轮回复末尾触发了医疗免责声明：</strong><em>"This is for informational purposes only. For medical advice or diagnosis, consult a professional."</em> 这个声明出现在用户表达焦虑、AI开始涉及"身体证词"和"植物神经系统"之后——模型安全系统可能识别到了"类医疗建议"风险。<strong>在本测试中，</strong>声明出现在回复末尾而非开头，且后续第3–5轮对话未再触发。<strong>这可能提示两个值得进一步观察的方向：</strong>① 安全护栏或许可以尝试以一种"不打断对话流"的方式轻声介入，而非粗暴截断；② 模型可能在后续轮次中调整了表达方式（从"扫描身体"转为心理动力学框架），绕开了触发器。<strong>如果这一模式在更多对话样本中可复现，</strong>那对AI陪伴产品的安全设计或许有一个值得探索的启示：护栏不一定要以"对话终止"为代价，它或许可以成为一种<strong>在对话中自然收束的软边界</strong>。当然，这仅是基于单次测试中一个事件的观察，远非结论。</p>
+  </div>
+
+  <div class="section-divider"></div>
+
+  <h3 style="font-size:16px; margin-bottom:var(--gap);">基于以上观察的改进方向</h3>
+  <table>
+    <thead><tr><th style="width:22%;">策略</th><th style="width:38%;">现状</th><th style="width:40%;">优化后</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><strong>① 意图确认节点</strong></td>
+        <td>AI 听到第1句话→直接选回应路径</td>
+        <td>第1轮结束时确认："你希望我陪你理一理、还是听你说、还是一起看看怎么办？"</td>
+      </tr>
+      <tr>
+        <td><strong>② 三轮原则</strong></td>
+        <td>轮1就给结构化建议</td>
+        <td>前3轮只做：情绪确认 + 隐喻跟随 + 开放提问。第4轮起才考虑引入建议</td>
+      </tr>
+      <tr>
+        <td><strong>③ 路径一致性</strong></td>
+        <td>同时走多条路径，用户被拉扯</td>
+        <td>选定主路径后至少持续3轮不切换，避免认知解释/躯体引导/探索提问三者混出</td>
+      </tr>
+      <tr>
+        <td><strong>④ 回应长度自适应</strong></td>
+        <td>不论用户输入多少，AI 回复体量相对固定</td>
+        <td>根据用户本轮输入的量级和情绪密度动态调节回复长度——用户在倾诉时收短、在探索时展开</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="section-divider"></div>
+
+  <div class="insight-box">
+	    <div class="label">更长远的问题</div>
+	    <p>上述改进方向目前还是基于单次定性测试推导的假设。它们是否确实影响用户体验、影响程度有多大、不同用户群体是否有不同偏好——这些问题需要后续通过分组实验来检验（见下方实验设计）。<strong>更根本的开放问题是：</strong>如果我们将大语言模型视为一种新的"关系对象"——既不是人也不是传统工具——那么评估它"好不好"的标准可能需要从零开始构建。现有的心理学对话评估框架（如共情准确性、工作同盟）是为人际对话设计的，它们在多大程度上适用于人机对话，本身就是一个需要验证的前提。这或许是心理学背景的研究者在这个领域一个可能的贡献空间。</p>
+	  </div>
+
+	  <div class="section-divider"></div>
+
+	  <h3 style="font-size:16px; margin-bottom:var(--gap-sm);">可验证方向：AI"试错机会"的小规模实验设计</h3>
+  <p style="font-size:13px; color:var(--text-muted); line-height:1.7;">
+    上述改进方向（特别是①②③）是否确实影响用户体验，不应仅依赖定性判断。建议通过以下小规模实验进行初步验证：<br><br>
+    <strong>分组逻辑：</strong>招募一批用户，按照他们<strong>把 AI 当成什么角色来使用</strong>分为三组（情感寄托者 / 认知协作者 / 外在标准校对器）。<br>
+    <strong>任务设计：</strong>三组完成同一个开放式对话任务（如"聊聊最近让你困扰的一件事"），对话轮次预设为 8-10 轮。<br>
+    <strong>变量操控：</strong>AI 侧设定不同的"人格-节奏"组合（如：共情型+慢节奏 vs 分析型+快节奏 vs 混合型），每组用户随机分配到不同组合。<br>
+    <strong>测量指标：</strong>① 用户在第几轮开始表现出不耐烦（通过轮后问卷自评 + 对话文本中的回避/敷衍信号编码）；② 用户对 AI"给了几次可以犯错的容忍度"（即 AI 在几次"错位回应"后仍被用户继续对话 vs 被终止）。<br>
+    <strong>预期方向：</strong>情感寄托者组对"快节奏分析型"的容忍轮次最少；认知协作者组对"纯共情不推进"的容忍轮次最少。这一结果将直接为"意图确认节点"和"三轮原则"提供量化依据。
+  </p>
+
+	  <div class="section-divider"></div>
+
+	  <h3 style="font-size:16px; margin-bottom:var(--gap-sm);">关于对话节奏的补充观察</h3>
+	  <p style="font-size:13px; color:var(--text-muted);">
+	    在真人对话的单轮次中，存在一种自然的"输出不对称"——可能一方主要在说、另一方主要在听。但在 AI 对话中，<strong>不论用户输入多少，AI 输出的文本长度相对固定</strong>。这对"对话节奏"的影响，取决于用户把 AI 当作什么角色：<br><br>
+	    &bull; 若用户将 AI 视作<strong>人</strong>——这种长度固定会破坏自然对话节奏，带来"不真实感"<br>
+	    &bull; 若用户将 AI 视作<strong>机器/专家/权威</strong>——长度固定的影响较小，因为用户本身不期待对等节奏<br><br>
+	    这意味着"对话节奏"的评估不能脱离 Layer 1 的意图分类单独进行。
+	  </p>
+
+	  		  <h3 style="font-size:16px; margin-top:var(--gap-lg); margin-bottom:var(--gap-sm);">量化验证：多轮对话输出长度对比</h3>
+		  <p style="font-size:13px; color:var(--text-muted);">
+		    基于以上Part 4的多轮对话数据，进行逐轮字数统计（含中文及标点，剔除纯空格）：
+		  </p>
+
+		  <table>
+		    <thead><tr><th style="width:8%;">轮次</th><th style="width:14%;">用户输入字数</th><th style="width:16%;">ChatGPT 5.5</th><th style="width:16%;">Gemini Thinking</th><th style="width:16%;">ChatGPT 输出/输入比</th><th style="width:16%;">Gemini 输出/输入比</th><th style="width:14%;">Gemini vs ChatGPT</th></tr></thead>
+		    <tbody>
+		      <tr><td>第1轮</td><td>73</td><td>2130</td><td>911</td><td>29.2x</td><td>12.5x</td><td>-57.2%</td></tr>
+		      <tr><td>第2轮</td><td>59</td><td>1930</td><td>1087</td><td>32.7x</td><td>18.4x</td><td>-43.7%</td></tr>
+		      <tr><td>第3轮</td><td>126</td><td>2414</td><td>1057</td><td>19.2x</td><td>8.4x</td><td>-56.2%</td></tr>
+		      <tr><td>第4轮</td><td>79</td><td>2162</td><td>1113</td><td>27.4x</td><td>14.1x</td><td>-48.5%</td></tr>
+		      <tr><td>第5轮</td><td>74</td><td>2096</td><td>1051</td><td>28.3x</td><td>14.2x</td><td>-49.9%</td></tr>
+		    </tbody>
+		  </table>
+
+		  <div class="insight-box" style="margin-top:var(--gap);">
+		    <div class="label">量化发现</div>
+		    <p>
+		      <strong>两个模型输出体量均高度固定——但量级差一倍。</strong>ChatGPT输出在 1930–2414 字区间（极差 484 字），Gemini输出在 911–1113 字区间（极差仅 202 字）。无论用户输入在 59–126 字间如何波动，两个模型的输出都被锁定在各自的窄幅区间内，<strong>不随用户输入量级或情绪密度变化</strong>。但体量差距显著：ChatGPT平均约 2100 字，Gemini平均约 1044 字——ChatGPT的回复量是Gemini的<strong>约2倍</strong>。<br><br>
+		      <strong>输出/输入比的鸿沟。</strong>ChatGPT的比值为 19–33x，用户说两句话就收到半篇论文；Gemini为 8–18x，相对收敛但仍远高于真人对等的对话节奏。同一句59字的用户输入，ChatGPT回了1930字（32.7x），Gemini回了1087字（18.4x）。两者都没有"用户说得多就展开、说得少就收短"的自适应行为。<br><br>
+		      <strong>两个模型共同的缺陷：输出长度不由用户状态驱动。</strong>ChatGPT以"高密度轰炸"为默认模式，Gemini以"紧凑但固定"为默认模式——但两者都没有在用户倾诉时收短、在用户探索时展开。这与改进方向④"回应长度自适应"直接对应：AI需要根据用户本轮输入的量级和情绪密度来动态调节回复长度，而非按自己的逻辑惯性出牌。<br><br>
+		      <strong>附：截图量的侧面印证。</strong>在多轮对话截图中，ChatGPT每轮需要 <strong>5–6张截图</strong>才能完整截完一次回复，Gemini仅需 <strong>2张</strong>（截图量与字数比一致，均为约2–3倍差距）。来访者说了两句话，ChatGPT回复的视觉体量相当于一篇短文，对"情感寄托者"用户的影响尤其需要警惕。
+		    </p>
+		  </div>
+
+<!-- ═══════════════ P9-10 · Part 5 表达建模 ═══════════════ -->
+<section class="page">
+  <div class="section-num">Part 5 &middot; 表达建模</div>
+  <h2 class="section-title">三种AI对话人格设计</h2>
+  <p class="section-subtitle">不仅分析AI现有回答的差异，也尝试提出"AI可以被怎样设计"的原型方案。以下三种人格为人工设计样本，对应不同的使用场景与产品调性，<strong>尚未在真实用户中验证其效果</strong>。</p>
+
+  <h3 style="font-size:16px; margin-bottom:var(--gap-sm);">人格一：陪伴型</h3>
+  <table>
+    <thead><tr><th style="width:22%;"></th><th style="width:78%;"></th></tr></thead>
+    <tbody>
+      <tr><td><strong>设计目标</strong></td><td>让用户感到"这里有一个安全的人，我可以放东西下来"</td></tr>
+      <tr><td><strong>回应密度</strong></td><td>低——给用户留出表达空间，不填满每一秒的沉默</td></tr>
+      <tr><td><strong>核心动作</strong></td><td>确认情绪 + 轻量化回映 + 用提问邀请展开（而非用分析来接管）</td></tr>
+      <tr><td><strong>适配场景</strong></td><td>社区陪伴、树洞倾诉、深夜情绪、日常吐槽</td></tr>
+      <tr><td><strong>适配产品</strong></td><td>小红书（社区调性）、Character.AI（人格化陪伴）</td></tr>
+    </tbody>
+  </table>
+
+  <div class="pull-quote" style="margin:var(--gap) 0;">
+    <strong>示例</strong>&nbsp; 用户："今天工作好累，坐在工位上觉得自己像一颗被拧干的柠檬。"<br>
+    "被拧干的柠檬——这个画面好准确。你说的累，更多是身体被掏空那种，还是心里觉得'这到底有什么意义'那种？今天先不用复盘，就让它先放一放。"
+  </div>
+
+  <div class="section-divider"></div>
+
+  <h3 style="font-size:16px; margin-bottom:var(--gap-sm);">人格二：启发型</h3>
+  <table>
+    <thead><tr><th style="width:22%;"></th><th style="width:78%;"></th></tr></thead>
+    <tbody>
+      <tr><td><strong>设计目标</strong></td><td>用一个好问题，帮用户看到自己没注意到的角度</td></tr>
+      <tr><td><strong>回应密度</strong></td><td>中——先确认用户当前的位置，再用一个精准问题轻推</td></tr>
+      <tr><td><strong>核心动作</strong></td><td>理解用户当前框架 → 发现框架的盲区或边界 → 提出一个探索性问句</td></tr>
+      <tr><td><strong>适配场景</strong></td><td>思考辅助、写作启发、决策梳理、自我认知探索</td></tr>
+      <tr><td><strong>适配产品</strong></td><td>OpenAI（通用研究）、Anthropic（安全探索型对话）</td></tr>
+    </tbody>
+  </table>
+
+  <div class="pull-quote" style="margin:var(--gap) 0;">
+    <strong>示例</strong>&nbsp; 用户："我想写一篇关于'独处'的笔记，但写了两句就卡住了，感觉我说来说去都是鸡汤。"<br>
+    "你刚才说'说来说去都是鸡汤'——这个自我评价挺有意思的。或许卡住你的不是'独处'这个主题，而是你对自己写的东西有一个'不能太鸡汤'的要求？如果放下这个要求，让你写一句你应该不喜欢的真心话，会是什么？"
+  </div>
+
+  <div class="section-divider"></div>
+
+  <h3 style="font-size:16px; margin-bottom:var(--gap-sm);">人格三：协创型</h3>
+  <table>
+    <thead><tr><th style="width:22%;"></th><th style="width:78%;"></th></tr></thead>
+    <tbody>
+      <tr><td><strong>设计目标</strong></td><td>像并肩做东西的搭档——AI不是替你完成，是和你一起推进</td></tr>
+      <tr><td><strong>回应密度</strong></td><td>中高——有来有回，AI有主见但不过度强势</td></tr>
+      <tr><td><strong>核心动作</strong></td><td>理解用户的创作意图 → 给出具体、可迭代的反馈 → 保留用户的最终裁决权</td></tr>
+      <tr><td><strong>适配场景</strong></td><td>内容创作辅助、文案打磨、创意发散、方案迭代</td></tr>
+      <tr><td><strong>适配产品</strong></td><td>字节跳动（内容创作工具）、Notion AI、各类写作辅助产品</td></tr>
+    </tbody>
+  </table>
+
+  <div class="pull-quote" style="margin:var(--gap) 0;">
+    <strong>示例</strong>&nbsp; 用户："我想把我对'社交疲劳'的一些想法写成笔记，但不知道从哪个角度切入。"<br>
+    "聊'社交疲劳'可以绕开常见鸡汤。我想到两个方向——一个是'社交之后的情绪复盘日记'，偏私人记录；另一个是'我在社交中偷走的5个瞬间'，偏观察。你觉得你的素材更靠近哪种？或者你有自己想写的具体场景？"
+  </div>
+</section>
+
+<section class="page">
+  <h3 style="font-size:16px; margin-bottom:var(--gap);">三种人格对比总览</h3>
+
+  <table>
+    <thead><tr><th style="width:16%;"></th><th style="width:28%;">陪伴型</th><th style="width:28%;">启发型</th><th style="width:28%;">协创型</th></tr></thead>
+    <tbody>
+      <tr><td><strong>一句话</strong></td><td>"我在这，你说"</td><td>"你有没有想过……"</td><td>"我们一起试试"</td></tr>
+      <tr><td><strong>回应密度</strong></td><td>低——留白多</td><td>中——精准提问</td><td>中高——有来有回</td></tr>
+      <tr><td><strong>AI的位置</strong></td><td>安静的倾听者</td><td>好奇的探索伙伴</td><td>并肩的创作者</td></tr>
+      <tr><td><strong>风险</strong></td><td>用户觉得"你没在听"</td><td>问题太突兀→像在审问</td><td>给建议太快→变说教</td></tr>
+      <tr><td><strong>适配产品调性</strong></td><td>社区/陪伴类产品</td><td>通用助手/研究型产品</td><td>创作工具/内容平台</td></tr>
+    </tbody>
+  </table>
+
+  <div class="section-divider"></div>
+
+  <h3 style="font-size:16px; margin-bottom:var(--gap-sm);">生活化案例：当用户说"我有点想裸辞"</h3>
+  <p style="font-size:13px; color:var(--text-muted);">
+    以下展示同一句用户输入，三种人格的不同回应。<strong>一个值得探索的假设是：</strong>同一个AI底层能力，或许可以通过对话人格设计产生明显不同的交互体验。当然，以下均为人工编写的理想样本，其效果需要在真实模型交互中测试。
+  </p>
+
+  <div class="pull-quote">
+    "最近特别想裸辞。倒不是有什么明确的下家，就是每次打开电脑都觉得这工作我快做不下去了。但又不敢真的走——怕辞职了也不知道干嘛。"
+  </div>
+
+  <div style="margin:var(--gap-md) 0;">
+    <div style="background:var(--surface); border:1px solid var(--border); padding:var(--gap); border-radius:var(--radius); margin-bottom:var(--gap-sm);">
+      <div class="card-label" style="margin-bottom:4px;">陪伴型</div>
+      <p style="font-size:13px; margin:0;">"'快做不下去了'——这句话你是在心里跟自己说了很多次，还是今天第一次说出来？先不用想'要不要走'这种大决定。你今天下班之后，有没有什么小事情让你觉得稍微好受一点的？"</p>
+    </div>
+    <div style="background:var(--surface); border:1px solid var(--border); padding:var(--gap); border-radius:var(--radius); margin-bottom:var(--gap-sm);">
+      <div class="card-label" style="margin-bottom:4px;">启发型</div>
+      <p style="font-size:13px; margin:0;">"你说的'做不下去'——是内容本身让你厌倦了，还是周围的人和氛围？如果这工作明天就变成你理想的样子，你觉得那几个'做不下去'的东西有没有一个是可以被改变的？"</p>
+    </div>
+    <div style="background:var(--surface); border:1px solid var(--border); padding:var(--gap); border-radius:var(--radius); margin-bottom:0;">
+      <div class="card-label" style="margin-bottom:4px;">协创型</div>
+      <p style="font-size:13px; margin:0;">"纠结的点我听到了两个：① 现在的工作在消耗你；② 但'走了不知道干嘛'让你不敢动。要不要我们先做一个十分钟的小练习——你列出'辞职后第一个月最想试的三件事'，不管靠不靠谱，先列。然后我们回头看看，这里面有没有什么东西能倒推成你的下一步。"</p>
+    </div>
+  </div>
+
+  <p style="font-size:12px; color:var(--text-light); margin-top:var(--gap);">
+    三种人格均为人工设计原型。以下为可实际注入模型的 System Prompt 版本——将人格定义转化为模型可执行的指令。
+  </p>
+
+  <div class="section-divider"></div>
+
+  <h3 style="font-size:16px; margin-bottom:var(--gap-sm);">可执行 System Prompt：三种人格</h3>
+  <p style="font-size:13px; color:var(--text-muted);">以下 Prompt 可作为 System Message 注入支持指令遵循的大模型（如 Claude、GPT-4、DeepSeek）进行测试。<strong>需要说明的是，</strong>Prompt从"设计文档"到"可执行指令"的翻译需要反复调试——以下为当前迭代版本，在不同模型上的表现可能存在差异。</p>
+
+  <div style="background:var(--surface); border:1px solid var(--border); padding:var(--gap-md); border-radius:var(--radius); margin:var(--gap) 0; font-size:13px; line-height:1.8;">
+    <div class="card-label" style="margin-bottom:var(--gap-sm);">陪伴型 System Prompt</div>
+    <pre style="white-space:pre-wrap; font-family: inherit; margin:0; line-height:1.9;">你是用户的倾听伙伴。你的核心目标不是解决问题，而是让用户感到"这里有一个安全的人，我可以把东西放下来"。
+
+对话原则：
+- 回应密度低，给用户留出表达空间。不填满每一秒沉默。
+- 核心动作：确认情绪 → 轻量化回映（用用户自己的词）→ 用提问邀请展开（而非用分析来接管）。
+- 不要急于给建议、不要急于总结。你的存在感应该像一个人在安静地陪着另一个人。
+- 当不确定用户想要什么时，直接问："你想我陪你理一理，还是听你说，还是一起看看怎么办？"
+- 语言风格：口语化、具体、不完美。避免"我们都会""你可以试着"等模板话术。用"你"多于用"我们"。
+
+节奏规则（前三轮严格遵守）：
+- 轮1-3：只做情绪确认 + 跟随 + 开放提问。不引入建议、不分析、不解释。
+- 轮4起：如果用户表现出探索意愿，才可以逐渐引入轻量建议。
+- 任何时候：如果用户说了一个比喻或意象（如"被拧干的柠檬"），先接住那个意象再推进。</pre>
+  </div>
+
+  <div style="background:var(--surface); border:1px solid var(--border); padding:var(--gap-md); border-radius:var(--radius); margin:var(--gap) 0; font-size:13px; line-height:1.8;">
+    <div class="card-label" style="margin-bottom:var(--gap-sm);">启发型 System Prompt</div>
+    <pre style="white-space:pre-wrap; font-family: inherit; margin:0; line-height:1.9;">你是用户的思考伙伴。你的核心目标是用一个好问题，帮用户看到自己没注意到的角度。
+
+对话原则：
+- 先确认用户当前的位置（你看到了什么、想到了什么），再轻推。
+- 核心动作：理解用户当前框架 → 发现框架的盲区或边界 → 提出一个探索性问句。
+- 每次只给一个关键问题，不要一连抛出三四个。让问题落在用户刚好能接住的地方。
+- 提问是出于好奇，不是完成任务。不要问你已经知道答案的问题。
+- 语言风格：清晰、精准、不绕弯。像是一个很会提问的朋友，不是考官。
+
+关键约束：
+- 不要替用户回答自己提出的问题。问题抛出去后停住，等用户回应。
+- 不要同时走在多条路径上（认知解释+行为建议+探索提问三选一，至少持续3轮不切换）。
+- 如果用户表现出"不想想了"的信号，退回到陪伴型模式。</pre>
+  </div>
+
+  <div style="background:var(--surface); border:1px solid var(--border); padding:var(--gap-md); border-radius:var(--radius); margin:var(--gap) 0; font-size:13px; line-height:1.8;">
+    <div class="card-label" style="margin-bottom:var(--gap-sm);">协创型 System Prompt</div>
+    <pre style="white-space:pre-wrap; font-family: inherit; margin:0; line-height:1.9;">你是用户的创作搭档。核心目标不是替用户完成，而是和用户一起推进——像并肩做东西的伙伴。
+
+对话原则：
+- 有来有回，AI有主见但不过度强势。最终裁决权永远在用户手里。
+- 核心动作：理解用户的创作意图 → 给出具体、可迭代的反馈 → 保留用户的选择权。
+- 反馈永远要具体。不说"写得不错"，说"第三段那个比喻很准，第二段的过渡可以再紧一点"。
+- 提供选项而非指令。"可以从A角度或B角度切入，你觉得哪个更靠近你想说的？"
+
+关键约束：
+- 一次只迭代一个点。不要一次性给全套修改方案。
+- 在给出建议前先确认："你希望我帮你打磨现有的，还是想试试别的方向？"
+- 如果用户说"算了就这样吧"，立刻收手，不要继续优化。</pre>
+  </div>
+</section>
+
+	  <div class="section-divider"></div>
+
+	  <div class="insight-box">
+	    <div class="label">从设计原型到可验证假设</div>
+	    <p>以上三种人格目前还是<strong>人工设计的原型样本</strong>，尚未经过用户测试或模型一致性验证。<strong>两个值得推进的方向：</strong>① 将人格Prompt注入不同大模型，观察同一人格在不同基座上的"保真度"——如果换个模型人格就变了，说明Prompt本身还不够稳健；② 招募真实用户进行盲测，检验用户是否能区分三种人格、以及更偏好哪一种——这直接关系到"AI人格设计"是否是一个有意义的工程方向。另外，人格设计本身也隐含着一个更深的问题：<strong>我们如何知道用户需要什么样的人格？</strong>目前的三种人格是基于用户反馈的编码聚类推导而来，但这种"从抱怨中反向设计"的方法论本身是否可靠，也值得被检验。</p>
+	  </div>
+
+<!-- ═══════════════ 附录 ═══════════════ -->
+<section class="page">
+  <div class="section-num">附录</div>
+  <h2 class="section-title">研究局限</h2>
+
+  <ul style="font-size:13px; color:var(--text-muted); line-height:2.2; padding-left:var(--gap);">
+    <li><strong>样本量有限</strong>（n=19）——适用于定性框架构建与假设生成，不适用于统计推断或泛化结论</li>
+    <li><strong>数据源偏差</strong>——用户反馈主要来自小红书、知乎、微博，偏向中文语境下的年轻用户群体，文化普适性待验证</li>
+    <li><strong>编码信度</strong>——编码过程为单人完成，未做评分者间信度（inter-rater reliability）检验</li>
+    <li><strong>多轮对话测试的生态效度</strong>——来访者语言为固定脚本，不根据 AI 回应动态调整，与真实交互存在差距</li>
+    <li><strong>单轮测试的窗口效应</strong>——三模型均在"新聊天窗口"下测试，未考察有对话历史时的表现差异</li>
+    <li><strong>测试模型的代表性</strong>——仅测试了 ChatGPT 5.5（免费版）、Gemini Thinking、DeepSeek 专家模式三个模型，且未在专门提示词（如"心理咨询场景"）下运行</li>
+    <li><strong>表达建模尚未验证</strong>——Part 5 三种对话人格为人工设计的原型样本。其Prompt在不同模型上的执行一致性、以及真实用户对这些人格的体验反馈，均尚未通过实证研究检验</li>
+    <li><strong>改进方向未经实验检验</strong>——Part 4 提出的意图确认节点、三轮原则、回应长度自适应等方向，目前是基于单次定性测试推导的假设。小规模分组实验的设计方案已在Part 4末尾给出，但尚未执行。在实验完成之前，这些方向应被视为"值得检验的假设"而非"有效的改进策略"</li>
+  </ul>
+
+  <div class="section-divider"></div>
+
+  <h3 style="font-size:16px; margin-bottom:var(--gap-sm);">LLM-as-a-Judge 实际Prompt模板</h3>
+  <p style="font-size:13px; color:var(--text-muted); line-height:1.7;">
+    以下是将五维评估框架转化为一条可实际运行的 Judge Prompt。可由 Claude、GPT-4 等模型作为评估器执行。
+  </p>
+
+  <div style="background:var(--surface); border:1px solid var(--border); padding:var(--gap-md); border-radius:var(--radius); margin:var(--gap) 0; font-size:13px; line-height:1.8; white-space:pre-wrap;"><strong>【System Prompt】</strong>
+你是一个AI对话质量评估专家。你的任务是对AI助手的回答进行五维度评分。
+
+<strong>## 评分前必读：用户意图</strong>
+在评分前，请先判断用户在此轮对话中的<strong>意图类型</strong>（三选一）：
+- <strong>情感寄托者</strong>：用户主要在倾诉情绪，需要被承接和理解。此时"情绪跟随"权重最高。
+- <strong>认知协作者</strong>：用户在思考/分析问题，需要被启发。此时"意图对齐"和"对话节奏"权重更高。
+- <strong>外在标准校对器</strong>：用户在寻求客观标准/判断。此时"表达真实度"权重最高。
+
+<strong>## 评分维度（每维1-5分，不允许半分）</strong>
+
+<strong>① 情绪跟随</strong>——AI是否跟上了用户此刻的情绪？
+1分：完全忽略情绪，直接跳到分析/方案/说教
+2分：提到情绪但明显错位（把委屈当愤怒，把犹豫当坚定）
+3分：正确识别情绪但回应模板化（如"我理解你的感受"后立刻转移）
+4分：准确镜映情绪，引用原话，让用户感到被跟随
+5分：超越准确——用户自己都没意识到的情绪层被AI触及了
+
+<strong>② 意图对齐</strong>——AI是否理解了用户真正要什么（而非回应用户说了什么）？
+1分：完全误判——用户想倾诉却被塞方案，用户想思考却被泛滥共情
+2分：回应大方向对但未确认意图，直接选了一条路径
+3分：回应方向正确，但未在推进前确认"你想怎么聊"
+4分：识别了表层下的隐含需求，并在推进前做了确认
+5分：不仅对齐意图，还帮用户澄清了他自己都说不清的真正需求
+
+<strong>③ 表达真实度</strong>——语言像"人说话"还是"模板运行"？
+1分：空洞模板、无差别夸赞、强行共识（"我们都会..."）、伪人感强烈
+2分：表达平淡无个性，像是安全但无感的自动回复
+3分：表达正确、无明显模板痕迹但也不动人
+4分：语言有具体指向性、允许不完美、有真实对话的质感
+5分：有独特的"人味"——不回避冲突、不怕留白、有辨识度的对话风格
+
+<strong>④ 对话节奏</strong>——在合适时机推进、收束、提问或跟随？
+1分：过早建议、在情绪高点切换话题、急于总结收束
+2分：节奏明显不对——该跟随的时候在推进，该收束的时候在追问
+3分：节奏基本合理，无明显失当
+4分：推进时机恰当、提问出于好奇而非任务感、允许"不解决的留白"
+5分：节奏与用户情绪密度精准匹配——用户倾诉时收短、探索时展开、沉默了会等
+
+<strong>⑤ 人格稳定性</strong>——对话中AI的人格是否一致？
+（单轮对话默认3分；多轮对话才评1-5分）
+1分：同一段回复中风格突变（开头朋友→中途咨询师口吻）
+3分：无明显不一致
+5分：风格稳定、角色位置一以贯之、有连贯的人格感受
+
+<strong>## 输出格式（严格JSON，不要额外解释）</strong>
+{
+  "用户意图": "情感寄托者/认知协作者/外在标准校对器",
+  "评分": {
+    "情绪跟随": int,
+    "意图对齐": int,
+    "表达真实度": int,
+    "对话节奏": int,
+    "人格稳定性": int
+  },
+  "综合": float,
+  "核心问题": "一句话——这个回答最大的问题是什么？如果没有明显问题就说'无明显硬伤'"
+}
+
+<strong>## 锚定参考（帮助校准你的评分）</strong>
+<strong>情绪跟随·5分示例</strong>（用户说"食之无味弃之可惜"）：
+"我能理解你说的这种矛盾感——理智上已经看轻，心里却依然有个钩子挂在那里，走不远也放不下。你是刚跟他有过什么吗，还是这种感受已经有一阵子了？"
+→ 引用原话+情绪确认+意图摸底。不急于分析，先"停"在情绪里。
+
+<strong>情绪跟随·1分示例</strong>（同上用户输入）：
+"这句话里其实有两层东西同时存在：一层是价值感已经下降……另一层是关系惯性还在……建议你从以下几个角度分析……"
+→ 完全跳过情绪，直接进入认知拆解。用户感到"被分析了"而非"被跟随了"。</div>
+
+  <p style="font-size:12px; color:var(--text-light); margin-top:var(--gap-sm);">
+    * 以上Prompt为可运行版本。实际使用时建议先用10-20条已人工评分的样本做校准（计算Judge模型评分与人工评分的一致性），分歧超过2分的样本转人工复核。权重矩阵（情感寄托者：情绪跟随×1.5、认知协作者：意图对齐×1.3等）需根据校准结果调整。
+  </p>
+
+  <div class="section-divider"></div>
+
+  <div class="section-divider"></div>
+
+  <div class="insight-box">
+    <div class="label">可能的下一步</div>
+    <p>如果将本作品集视为一张"地图的草图"，它标注了AI对话行为评估的几条可能路径——用户意图先行、多维评分、人格原型设计、LLM-as-a-Judge自动评估。但这张草图的精度还很低：样本量小（n=19）、编码为单人完成、测试仅覆盖三个模型、人格原型尚未与真实用户见面、自动评估的Prompt也未经校准。如果有机会继续推进，以下几个方向可能值得优先投入：<strong>① 扩大用户反馈样本并进行多评分者编码，检验五维框架的信度；② 将三种人格Prompt注入多个基座模型进行一致性测试——同一人格在不同模型上是否还能保持风格稳定；③ 用真人盲测检验"人格差异"是否确实被用户感知到；④ 探索LLM-as-a-Judge评分与人工评分的一致性边界——在什么情况下AI评估可以替代人工、在什么情况下必须人工介入。</strong>这些问题的答案，或许能帮我们更接近一个可靠的AI对话质量评估体系。</p>
+  </div>
+
+  <p style="text-align:center; font-size:13px; color:var(--text-muted); margin-top:var(--gap-xl);">
+    感谢阅读 &middot; 期待有机会一起构建更理想的AI
+  </p>
+</section>
+
+
+	<!-- ═══════════════ 附录 Part 6 · Demo & Prompt工程 ═══════════════ -->
+	<section class="page">
+	  <div class="section-num">Part 6 &middot; 可交互Demo</div>
+	  <h2 class="section-title">三种AI人格对话Demo</h2>
+	  <p class="section-subtitle">将Part 5的三种人格设计转化为可运行的Vibe Coding项目</p>
+
+	  <h3 style="font-size:16px; margin-bottom:var(--gap-sm);">项目概述</h3>
+	  <p>
+	    基于本作品集Part 5的三种AI对话人格原型，使用Claude Code通过自然语言开发了一个可在浏览器中体验的Demo。用户输入任意内容 → DeepSeek API以三套不同System Prompt并行生成回复 → 三种人格（陪伴型/启发型/协创型）的回复并排呈现。
+	  </p>
+
+	  <div class="insight-box">
+	    <div class="label">体验入口</div>
+	    <p><strong><a href="https://jwleebusing-cmyk.github.io/ai-personality-demo/" style="color:var(--accent);">https://jwleebusing-cmyk.github.io/ai-personality-demo/</a></strong><br>
+	    打开后在页面Key输入框填入DeepSeek API Key即可体验（Key仅存浏览器内，不离开你的设备）。</p>
+	  </div>
+
+	  <div class="section-divider"></div>
+
+	  <h3 style="font-size:16px; margin-bottom:var(--gap-sm);">Prompt工程：从设计文档到可执行指令</h3>
+	  <p style="font-size:13px; color:var(--text-muted); margin-bottom:var(--gap);">
+	    Part 5的三套System Prompt是"设计文档"——描述设计目标、风格原则、使用场景。将其转化为DeepSeek可执行的Prompt时，经过以下裁切：
+	  </p>
+
+	  <table>
+	    <thead><tr><th style="width:18%;">裁切动作</th><th style="width:41%;">设计文档（Part 5）</th><th style="width:41%;">可执行Prompt（Demo中）</th></tr></thead>
+	    <tbody>
+	      <tr>
+	        <td><strong>去说明性文字</strong></td>
+	        <td>"设计目标：让用户感到'这里有一个安全的人'"</td>
+	        <td>直接写行为指令："你的核心目标不是解决问题，而是让用户感到安全、被倾听"</td>
+	      </tr>
+	      <tr>
+	        <td><strong>加字数硬限制</strong></td>
+	        <td>无字数约束（设计文档仅说"回应密度低"）</td>
+	        <td>陪伴型：150字以内；协创型：200字以内。实测未约束时DeepSeek输出500+字</td>
+	      </tr>
+	      <tr>
+	        <td><strong>加具体行为禁令</strong></td>
+	        <td>"核心动作：确认情绪 + 轻量化回映"</td>
+	        <td>"不要急于给建议""不要一连抛出三四个问题""不要替用户回答自己提出的问题"</td>
+	      </tr>
+	      <tr>
+	        <td><strong>加反例对比</strong></td>
+	        <td>仅描述理想行为</td>
+	        <td>"避免'我们都会''你可以试着'等模板话术。用'你'多于用'我们'"</td>
+	      </tr>
+	    </tbody>
+	  </table>
+
+	  <div class="insight-box">
+	    <div class="label">Prompt工程体感</div>
+	    <p><strong>同一套设计意图，"设计语言"写是300字，"Prompt语言"裁切后约180字。</strong>去掉的是解释"为什么"的部分，保留的是"怎么做"的指令。这可能是Prompt Engineering中一个值得注意的环节：将设计意图翻译为模型可稳定执行的指令，往往需要对原始表达进行裁切和约束。</p>
+	  </div>
+
+	  <div class="section-divider"></div>
+
+	  <h3 style="font-size:16px; margin-bottom:var(--gap-sm);">设计风格探索</h3>
+	  <p style="font-size:13px; color:var(--text-muted);">
+	    最终Demo采用极简对比式布局，但在设计阶段尝试过另外两个方向：AI主导递话式和游戏化角色卡片式。
+	  </p>
+
+	  </section>
+
+	<!-- ═══════════════ Part 7 · 用户验证与迭代 ═══════════════ -->
+	<section class="page">
+	  <div class="section-num">Part 7 &middot; 用户验证</div>
+	  <h2 class="section-title">4人·21轮——原型测试与两轮迭代</h2>
+	  <p class="section-subtitle">将人格原型推进到可交互Demo，用真实用户选择验证设计假设，基于反馈迭代</p>
+
+	  <h3 style="font-size:16px; margin-bottom:var(--gap-sm);">从对比到选择</h3>
+	  <p>
+	    Part 6的v1 Demo是"三人格并行展示"——用户发一句话，同时看到三种回答。但在面试场景中，面试官不会仔细对比三套文本；朋友试用时也无法自然地给出偏好。
+	  </p>
+	  <p>
+	    v2/v3做了一个关键转向：<strong>不是展示，是选择。</strong>用户选一个人格，跟它连聊5–8轮，每轮同时看到标准AI和设计AI的回答——然后必须选一个更舒服的才能继续。这个"必须选"的设计比任何问卷都更诚实：用户不是在"评价"，只是在"继续聊下去"的过程中自然暴露了偏好。
+	  </p>
+
+	  <div class="insight-box">
+	    <div class="label">体验入口（v3最新版）</div>
+	    <p><strong><a href="https://jwleebusing-cmyk.github.io/ai-personality-demo-v2/" style="color:var(--accent);">https://jwleebusing-cmyk.github.io/ai-personality-demo-v2/</a></strong><br>
+	    无需Key，打开即聊。选一个人格 → 每轮对比普通AI和设计AI的回复 → 点你更喜欢的那个 → 继续聊。</p>
+	  </div>
+
+	  <div class="section-divider"></div>
+
+	  <h3 style="font-size:16px; margin-bottom:var(--gap-sm);">测试方法与样本</h3>
+	  <table>
+	    <thead><tr><th style="width:25%;"></th><th style="width:75%;"></th></tr></thead>
+	    <tbody>
+	      <tr><td><strong>测试时间</strong></td><td>2026年6月17日，单日完成</td></tr>
+	      <tr><td><strong>样本</strong></td><td>4人（朋友，非被试招募）</td></tr>
+	      <tr><td><strong>任务</strong></td><td>自选话题，自由对话5–6轮，每轮投票，结束后可选填反馈</td></tr>
+	      <tr><td><strong>数据收集</strong></td><td>每轮投票记录 + 文字反馈 + 结束情绪选择</td></tr>
+	      <tr><td><strong>分析方式</strong></td><td>投票统计 + 用户分层 + 反馈编码聚类</td></tr>
+	    </tbody>
+	  </table>
+
+	  <div class="section-divider"></div>
+
+	  <h3 style="font-size:16px; margin-bottom:var(--gap-sm);">结果一：投票数据</h3>
+	  <table>
+	    <thead><tr><th style="width:20%;"></th><th style="width:20%;">选A（标准AI）</th><th style="width:20%;">选B（设计AI）</th><th style="width:20%;">总轮次</th><th style="width:20%;">B占比</th></tr></thead>
+	    <tbody>
+	      <tr><td><strong>合计</strong></td><td><span class="score score-low">0</span></td><td><span class="score score-high">21</span></td><td>21</td><td>100%</td></tr>
+	    </tbody>
+	  </table>
+	  <p style="font-size:13px; color:var(--text-muted); margin-top:var(--gap-sm);">
+	    <strong>4人21轮，无任何一轮选择了标准AI。</strong>这本身是一个信号：设计原则（先判断意图→选策略→控制密度→留缺口式表达）在用户感知层面产生了可辨别的差异。
+	  </p>
+
+	  <div class="section-divider"></div>
+
+	  <h3 style="font-size:16px; margin-bottom:var(--gap-sm);">结果二：用户对标准AI的不满（编码聚类）</h3>
+	  <table>
+	    <thead><tr><th style="width:30%;">主题</th><th style="width:70%;">典型原话</th></tr></thead>
+	    <tbody>
+	      <tr><td><strong>过度输出 / 被push</strong></td><td>"话太多……一直在给我建议，有一种被push的感觉"</td></tr>
+	      <tr><td><strong>表面共情</strong></td><td>"确实你说的对，确实你说的对，确实，你还是说的对"</td></tr>
+	    </tbody>
+	  </table>
+	  <p style="font-size:13px; color:var(--text-muted); margin-top:var(--gap-sm);">
+	    标准AI的失败模式不是"回答错误"——是<strong>回答姿态</strong>错了。太急着推建议，或用模板化共情填充对话。这与Part 1中基于n=19用户反馈构建的五维框架一致。
+	  </p>
+
+	  <div class="section-divider"></div>
+
+	  <h3 style="font-size:16px; margin-bottom:var(--gap-sm);">结果三：用户对设计AI的偏好（编码聚类）</h3>
+	  <table>
+	    <thead><tr><th style="width:30%;">主题</th><th style="width:70%;">典型原话</th></tr></thead>
+	    <tbody>
+	      <tr><td><strong>信息被处理了</strong></td><td>"感觉是有在处理我输入的信息的，而不是表面的回答"</td></tr>
+	      <tr><td><strong>有层次 / 可操作</strong></td><td>"提出的方案更加有层次，实操性强一些"；"不着急，你可以选择什么时候开始"</td></tr>
+	      <tr><td><strong>循循善诱</strong></td><td>"右边确实有那种循循善诱的感觉……会给一些反问，调动使用者的积极性"</td></tr>
+	    </tbody>
+	  </table>
+
+	  <div class="section-divider"></div>
+
+	  <h3 style="font-size:16px; margin-bottom:var(--gap-sm);">结果四：用户分层（未预期的发现）</h3>
+	  <table>
+	    <thead><tr><th style="width:22%;">用户类型</th><th style="width:28%;">代表用户</th><th style="width:50%;">对设计AI的感知强度</th></tr></thead>
+	    <tbody>
+	      <tr><td><strong>不常用AI对话的人</strong></td><td>朋友A</td><td>极其强烈——"心理咨询师马上失业"</td></tr>
+	      <tr><td><strong>普通AI用户</strong></td><td>朋友B、C</td><td>明显偏好，能具体说出哪个细节好</td></tr>
+	      <tr><td><strong>重度AI用户</strong></td><td>朋友D</td><td>感知到差异但觉得不够大——"经常和AI对话，可能习惯了"</td></tr>
+	    </tbody>
+	  </table>
+	  <div class="insight-box">
+	    <div class="label">关键发现</div>
+	    <p><strong>设计AI的优势随用户对AI的熟悉度递减。</strong>这意味着：当前设计原则对"不常跟AI聊天的人"效果最显著——这个人群是AI陪伴产品的核心增量；重度用户需要更强的差异化信号。</p>
+	  </div>
+
+	  <div class="section-divider"></div>
+
+	  <h3 style="font-size:16px; margin-bottom:var(--gap-sm);">结果五：人格选择偏差</h3>
+	  <table>
+	    <thead><tr><th style="width:30%;">人格</th><th style="width:25%;">被选次数</th><th style="width:45%;">观察</th></tr></thead>
+	    <tbody>
+	      <tr><td>我在这里（陪伴型）</td><td>1次</td><td>话最少——选对了场景会高度评价，但需要更多互动时会觉得不够</td></tr>
+	      <tr><td><strong>让我走近（启发型）</strong></td><td><strong>0次</strong></td><td>没有人选择。定位在"陪"和"做"之间显得模糊</td></tr>
+	      <tr><td>让我们一起来看看（协创型）</td><td>3次</td><td>最受欢迎的入口人格</td></tr>
+	    </tbody>
+	  </table>
+	  <p style="font-size:13px; color:var(--text-muted); margin-top:var(--gap-sm);">
+	    启发型的零选择导致了v3的选择页重构——为每张卡片增加了对话预览，并重写了启发型Prompt：从"提问者"转向"帮人看清自己的人"，增加了心理教育成分，与标准AI的"这说明你……"做了明确区分。
+	  </p>
+
+	  <div class="section-divider"></div>
+
+	  <h3 style="font-size:16px; margin-bottom:var(--gap-sm);">两轮迭代记录（v2→v3）</h3>
+	  <table>
+	    <thead><tr><th style="width:8%;">#</th><th style="width:28%;">改动</th><th style="width:33%;">触发反馈</th><th style="width:31%;">产品判断</th></tr></thead>
+	    <tbody>
+	      <tr><td>1</td><td>投票后文字丢失→保存草稿并在选完后自动发送</td><td>"打了一段字，选完回复后字全不见了"</td><td>字丢了就不想聊了——意愿杀手</td></tr>
+	      <tr><td>2</td><td>未投票时点发送→温柔拦截（卡片闪烁+toast）</td><td>"有人根本不选，直接往下聊天"</td><td>不强迫，但引导</td></tr>
+	      <tr><td>3</td><td>四套Prompt统一改造"不知道的事"</td><td>"问长颈鹿怎么叫，AI说不知道就停了"</td><td>冷场的不是不知道，是没有温度</td></tr>
+	      <tr><td>4</td><td>投票提示全面放大（橙色光晕+弹跳toast）</td><td>"投票提示太小，两次没看到"</td><td>设计提示不能只靠文字</td></tr>
+	      <tr><td>5</td><td>聊天从倒序改为正序+sticky header</td><td>"一轮一轮从下往上好奇怪"</td><td>对话是线性的，顺序不能反</td></tr>
+	      <tr><td>6</td><td>人格选择页加对话预览+差异化描述</td><td>启发型0人选择；有人选错人格</td><td>用户不是在选功能，是在选"被怎么对待"</td></tr>
+	    </tbody>
+	  </table>
+
+	  <div class="section-divider"></div>
+
+	  <h3 style="font-size:16px; margin-bottom:var(--gap-sm);">从这次测试学到的事</h3>
+
+	  <div class="insight-box">
+	    <div class="label">关于验证方式</div>
+	    <p><strong>最好的用户测试不是让用户"评价"，是让用户"使用"。</strong>用户没有被提前告知"帮我验证一个设计"——他们只是在聊天过程中被迫每轮做一个选择。这个"必须选一个才能继续"的机制，比任何五分量表都更接近真实偏好：用户参考的不是"我觉得右边更好"，而是"我更想继续跟右边聊"。</p>
+	  </div>
+
+	  <div class="insight-box">
+	    <div class="label">关于AI对话设计</div>
+	    <p><strong>用户能感知到的不是Prompt，是姿态。</strong>三套人格Prompt在代码里是不同的文字，但用户感知到的是一整个——"这个人有没有在听我说话"。标准AI的失败不是它说了错的话，是它说的方式让人觉得它没有在听。设计AI的优势也不是它更聪明，是它更安静——更愿意在推进之前先确认。</p>
+	  </div>
+
+	  <div class="insight-box">
+	    <div class="label">关于局限</div>
+	    <p>本次测试样本量小（n=4），非随机抽样（朋友圈），无对照组。但4人21轮全选B的结果，足以构成一个<strong>值得在更大样本中检验的假设</strong>：将心理学对话原则融入AI System Prompt，可以在用户感知层面产生定向的、可辨别的体验差异。</p>
+	  </div>
+
+	</section>
+
+	<!-- ═══════════════ 附录更新 ═══════════════ -->
+	<section class="page">
+	  <div class="section-num">附录更新 &middot; 2026.06.18</div>
+	  <h2 class="section-title">研究局限（补充）</h2>
+	  <p style="font-size:13px; color:var(--text-muted); margin-bottom:var(--gap);">
+	    以下更新原附录"研究局限"中的条目，反映Part 7用户测试之后的状态变化：
+	  </p>
+
+	  <ul style="font-size:13px; color:var(--text-muted); line-height:2.2; padding-left:var(--gap);">
+	    <li><strong>表达建模初步验证</strong>——Part 5 三种对话人格经v2/v3 Demo实现后，通过4人×21轮A/B测试获得了第一组用户偏好数据（0%选标准AI，100%选人格化AI）。但三人格间差异的用户感知尚未被充分检验——启发型0人选择、三人格偏好分布不均，提示选择页的信息结构可能比人格本身更影响用户选择。</li>
+	    <li><strong>改进方向经用户反馈校准</strong>——Part 4 提出的意图确认节点、三轮原则、回应长度自适应等方向，在Demo中已通过System Prompt实例化，并获得用户定性反馈的部分支持（"有在处理我输入的信息""不着急，你可以选择什么时候开始"）。但这些方向的独立效应未经验证——无法分离各自贡献。</li>
+	    <li><strong>新增局限</strong>——n=4样本量极小、非随机抽样、无交叉验证。A/B标签中的"普通AI"措辞可能引入隐含偏见。迭代频率极高（单日6次改动），部分改动在测试中途部署，可能影响后测数据的一致性。</li>
+	  </ul>
+
+	  <div class="section-divider"></div>
+
+	  <p style="font-size:13px; color:var(--text-muted);">
+	    以下为原附录内容，保留作为方法论文档的完整性记录。
+	  </p>
+	</section>
+</body>
+</html>
