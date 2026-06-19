@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI对话人格设计 · 产品案例</title>
+<style>
+  :root {
+    --bg: #faf8f5;
+    --surface: #ffffff;
+    --text: #1a1a1a;
+    --muted: #6b6b6b;
+    --light: #949494;
+    --accent: #b8563f;
+    --accent-muted: #e8d5ce;
+    --border: #e8e4df;
+    --radius: 4px;
+    --gap: 16px;
+    --gap-lg: 40px;
+    --page: 760px;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    font-family: 'PingFang SC','Hiragino Sans GB','Microsoft YaHei',-apple-system,sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    font-size: 15px;
+    line-height: 1.8;
+    -webkit-font-smoothing: antialiased;
+  }
+  .container { max-width:var(--page); margin:0 auto; padding:64px 24px; }
+  .cover { text-align:center; padding:80px 0 64px; }
+  .cover-tag { font-size:11px; letter-spacing:0.14em; text-transform:uppercase; color:var(--light); margin-bottom:8px; }
+  .cover-title { font-size:28px; font-weight:400; line-height:1.45; font-family:'Songti SC','Noto Serif SC',serif; }
+  .cover-sub { font-size:14px; color:var(--muted); margin-top:8px; }
+  .cover-line { width:40px; height:1px; background:var(--accent); margin:24px auto; }
+
+  h2 { font-size:20px; font-weight:400; margin:48px 0 16px; font-family:'Songti SC','Noto Serif SC',serif; padding-bottom:4px; border-bottom:1px solid var(--border); }
+  h3 { font-size:16px; font-weight:500; margin:28px 0 10px; }
+
+  p { margin-bottom:14px; text-indent:2em; }
+  p.no-indent { text-indent:0; }
+
+  .pull-quote {
+    border-left:2px solid var(--accent-muted);
+    padding:12px 20px;
+    margin:20px 0;
+    font-size:16px;
+    color:var(--muted);
+    font-style:italic;
+    line-height:1.75;
+    text-indent:0;
+  }
+  .pull-quote strong { color:var(--text); font-style:normal; }
+
+  .insight-box {
+    background:var(--surface);
+    border:1px solid var(--border);
+    padding:16px 20px;
+    margin:16px 0;
+    border-radius:var(--radius);
+  }
+  .insight-box .label {
+    font-size:11px;
+    text-transform:uppercase;
+    letter-spacing:0.1em;
+    color:var(--accent);
+    margin-bottom:6px;
+  }
+  .insight-box p { margin:0; text-indent:2em; }
+
+  table {
+    width:100%;
+    border-collapse:collapse;
+    margin:16px 0;
+    font-size:13px;
+  }
+  thead th {
+    text-align:left;
+    font-weight:500;
+    font-size:11px;
+    letter-spacing:0.04em;
+    color:var(--muted);
+    padding:8px 12px;
+    border-bottom:1px solid var(--border);
+  }
+  tbody td {
+    padding:8px 12px;
+    border-bottom:1px solid #f0ece7;
+    vertical-align:top;
+    line-height:1.7;
+  }
+  tbody tr:last-child td { border-bottom:none; }
+
+  ul { margin:12px 0 12px 20px; font-size:13px; color:var(--muted); line-height:2; }
+
+  .divider { width:100%; height:1px; background:var(--border); margin:32px 0; }
+
+  .footer { text-align:center; font-size:11px; color:var(--light); margin-top:64px; }
+
+  @media print {
+    body { background:#fff; font-size:13px; }
+    .container { max-width:100%; padding:30px 40px; }
+    .cover { padding:40px 0 32px; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- Cover -->
+  <div class="cover">
+    <div class="cover-tag">Product Case Study · 2026</div>
+    <h1 class="cover-title">AI对话人格设计<br>产品案例</h1>
+    <p class="cover-sub">李佳蔚 · 2026年6月</p>
+    <div class="cover-line"></div>
+  </div>
+
+  <!-- 1. Problem -->
+  <h2>1. 问题定义</h2>
+
+  <p class="no-indent"><strong>当前大模型在对话中的默认回答姿态，让很多用户感觉不对。</strong></p>
+
+  <p>"太啰嗦""太冷漠""太讨好""被push了"——这些抱怨出现在小红书、知乎、微博的用户反馈中，反复出现。它们不是"模型不够聪明"的问题，是<strong>模型不知道自己在对话中的位置</strong>的问题。</p>
+
+  <p>用户跟AI倾诉，AI却给了建议。用户想要一个诚实的判断，AI却给了温暖的鼓励。同一句话，在不同场景下，"对"和"错"的标准完全相反——但AI默认不会区分。</p>
+
+  <div class="pull-quote">
+    需求不是"让AI更聪明"，是<strong>"让AI知道自己在什么时候该说什么话"。</strong>
+  </div>
+
+  <!-- 2. Users -->
+  <h2>2. 用户与场景</h2>
+
+  <p>在用户反馈编码和后续原型测试中，识别了三种用户需求模式和三种用户类型：</p>
+
+  <h3>三种对话需求</h3>
+  <table>
+    <thead><tr><th style="width:20%;">需求</th><th style="width:40%;">用户在想什么</th><th style="width:40%;">AI该做什么</th></tr></thead>
+    <tbody>
+      <tr><td><strong>想被陪一会儿</strong></td><td>"我今天好累，想有人说说话"</td><td>接住情绪，不推。不分析、不建议</td></tr>
+      <tr><td><strong>想一起想想</strong></td><td>"我卡住了，不知道哪里不对"</td><td>帮他看到自己没注意到的事</td></tr>
+      <tr><td><strong>想听真话</strong></td><td>"这段写得怎么样？说实话"</td><td>诚实反馈，不讨好</td></tr>
+    </tbody>
+  </table>
+
+  <h3>三种用户类型（从原型测试中发现的）</h3>
+  <table>
+    <thead><tr><th style="width:20%;">用户类型</th><th style="width:30%;">特征</th><th style="width:50%;">对设计AI的感知</th></tr></thead>
+    <tbody>
+      <tr><td><strong>不常用AI的人</strong></td><td>很少认真跟AI对话</td><td>极其强烈——"心理咨询师马上失业"</td></tr>
+      <tr><td><strong>普通AI用户</strong></td><td>日常使用，会对比</td><td>明显偏好，能具体说出哪个细节好</td></tr>
+      <tr><td><strong>重度AI用户</strong></td><td>高频对话，对AI已有预期</td><td>有差异但觉得不够大——阈值更高</td></tr>
+    </tbody>
+  </table>
+
+  <div class="insight-box">
+    <div class="label">产品洞察</div>
+    <p>设计AI的优势随用户对AI的熟悉度递减。不常用AI的人——这个人群恰恰是AI陪伴产品的核心增量——对"被push"的感知最敏感，对"被听到"的体验最强烈。</p>
+  </div>
+
+  <!-- 3. Competition -->
+  <h2>3. 竞品对应</h2>
+
+  <p>我做的事情不是一个新产品品类——是在一个已有方法空间里寻找差异化的切入点。</p>
+
+  <table>
+    <thead><tr><th style="width:16%;">方案</th><th style="width:40%;">做法</th><th style="width:44%;">我的差异</th></tr></thead>
+    <tbody>
+      <tr><td><strong>大厂RLHF/对齐</strong></td><td>用海量人类偏好数据训练模型，调整模型权重</td><td>不碰模型权重。Prompt层设计快速迭代、成本极低、单个PM可独立验证</td></tr>
+      <tr><td><strong>Prompt共享社区</strong></td><td>用户凭感觉写Prompt、分享、互相调试</td><td>有方法论——从用户反馈编码反推设计原则，不是玄学调参</td></tr>
+      <tr><td><strong>心理学框架翻译</strong></td><td>将CBT等理论翻译成Prompt指令</td><td>起点是用户的真实抱怨，不是教科书。做的是"反向设计"</td></tr>
+    </tbody>
+  </table>
+
+  <div class="insight-box">
+    <div class="label">定位</div>
+    <p>在"训练模型"和"玄学调参"之间，存在一个被忽略的空间：<strong>用产品经理的工作方式——用户反馈编码→设计原则→原型→测试→迭代——来做AI对话行为设计。</strong></p>
+  </div>
+
+  <!-- 4. Solution -->
+  <h2>4. 方案</h2>
+
+  <p>核心思路：<strong>不训练模型，不做Prompt玄学。从用户的真实抱怨出发，反向设计AI的对话行为。</strong></p>
+
+  <h3>完整链路</h3>
+
+  <p class="no-indent"><strong>① 编码反馈 · 知道"哪里坏了"</strong><br>
+  收集19条公开用户反馈（小红书/知乎/微博）→ 开放性编码→轴向编码→6个聚类主题→三层归因。发现：用户抱怨的不是"模型不够聪明"，是<strong>回答姿态不对</strong>。</p>
+
+  <p class="no-indent"><strong>② 构建框架 · 知道"什么算好"</strong><br>
+  6个编码主题→5个可评分维度（情绪跟随/意图对齐/表达真实度/对话节奏/人格稳定性），每维有1-5分量表+行为锚定+LLM-as-a-Judge自动评分Prompt。</p>
+
+  <p class="no-indent"><strong>③ 设计人格 · 知道"该怎么说话"</strong><br>
+  基于三种用户意图（情感寄托者/认知协作者/外在标准校对器），设计三种对话人格（陪伴型/启发型/协创型），每种有完整的行为定义、风险约束和可执行System Prompt。</p>
+
+  <p class="no-indent"><strong>④ 做原型 · 让用户直接体验</strong><br>
+  将三套Prompt注入DeepSeek API，做成单文件HTML网页（GitHub Pages部署）。用户选一个人格→每轮同时看到标准AI和设计AI的回答→必须选一个更舒服的才能继续聊。</p>
+
+  <p class="no-indent"><strong>⑤ 验证 · 用用户选择证明</strong><br>
+  4人测试，21轮投票。不做"帮我验证一个设计"的暗示——用户只是在聊天的过程中被迫每轮做选择。结果：0人选标准AI，100%选人格化AI。</p>
+
+  <p class="no-indent"><strong>⑥ 迭代 · 基于反馈闭环</strong><br>
+  测试当天完成6次迭代：投票后文字丢失→草稿自动恢复；未投票拦截→卡片闪烁引导；不知道的事→AI用温度而非冷场回应；等等。每次改动都有反馈依据+产品判断。</p>
+
+  <div class="divider"></div>
+
+  <h3>三套人格Prompt的设计原则</h3>
+  <table>
+    <thead><tr><th style="width:16%;">人格</th><th style="width:24%;">一句话</th><th style="width:30%;">核心动作</th><th style="width:30%;">和标准AI的差异</th></tr></thead>
+    <tbody>
+      <tr><td><strong>我在这里</strong><br>（陪伴型）</td><td>最安静的那一个</td><td>接住→回映→轻轻问</td><td>标准AI急着建议，陪伴型只是陪。话最少，不推</td></tr>
+      <tr><td><strong>让我走近</strong><br>（启发型）</td><td>帮你看清自己</td><td>串联系→递观察→等回应</td><td>标准AI说"这说明你……"，启发型说"你有没有注意到……"</td></tr>
+      <tr><td><strong>让我们一起来看看</strong><br>（协创型）</td><td>像有人在你旁边帮忙</td><td>给方向→还决定权</td><td>标准AI给结论，协创型给选项。决定永远在用户手里</td></tr>
+    </tbody>
+  </table>
+
+  <!-- 5. Results -->
+  <h2>5. 验证结果</h2>
+
+  <h3>投票数据</h3>
+  <table>
+    <thead><tr><th style="width:20%;"></th><th style="width:20%;">选A（标准AI）</th><th style="width:20%;">选B（设计AI）</th><th style="width:20%;">总轮次</th><th style="width:20%;">B占比</th></tr></thead>
+    <tbody>
+      <tr><td><strong>合计</strong></td><td>0</td><td>21</td><td>21</td><td><strong>100%</strong></td></tr>
+    </tbody>
+  </table>
+
+  <h3>用户对设计AI的偏好（编码聚类）</h3>
+  <table>
+    <thead><tr><th style="width:25%;">主题</th><th style="width:75%;">典型原话</th></tr></thead>
+    <tbody>
+      <tr><td><strong>信息被处理了</strong></td><td>"感觉是有在处理我输入的信息的，而不是表面的回答"</td></tr>
+      <tr><td><strong>有层次 / 可操作</strong></td><td>"提出的方案更加有层次，实操性强一些"；"不着急，你可以选择什么时候开始"</td></tr>
+      <tr><td><strong>循循善诱</strong></td><td>"有那种循循善诱的感觉……会给一些反问，调动使用者的积极性"</td></tr>
+    </tbody>
+  </table>
+
+  <h3>人格选择偏差</h3>
+  <table>
+    <thead><tr><th style="width:22%;">人格</th><th style="width:18%;">被选次数</th><th style="width:60%;">产品判断</th></tr></thead>
+    <tbody>
+      <tr><td>我在这里（陪伴）</td><td>1次</td><td>选对了场景评价极高；选错了会觉得话太少</td></tr>
+      <tr><td><strong>让我走近（启发）</strong></td><td><strong>0次</strong></td><td>定位在"陪"和"做"之间模糊——选择页信息结构需要改进</td></tr>
+      <tr><td>让我们一起来看看（协创）</td><td>3次</td><td>最受欢迎的入口——"一起做"比"帮我看"更直觉</td></tr>
+    </tbody>
+  </table>
+
+  <!-- 6. Iterations -->
+  <h2>6. 迭代与复盘</h2>
+
+  <table>
+    <thead><tr><th style="width:6%;">#</th><th style="width:26%;">改动</th><th style="width:30%;">触发反馈</th><th style="width:38%;">产品判断</th></tr></thead>
+    <tbody>
+      <tr><td>1</td><td>投票后文字丢失→保存草稿并在选完后自动发送</td><td>"打了一段字，选完回复后字全不见了"</td><td>字丢了就不想聊了——意愿杀手。不是功能bug，是用户留存问题</td></tr>
+      <tr><td>2</td><td>未投票拦截（卡片发光+toast+自动发送）</td><td>"有人根本不选，直接往下聊天"</td><td>不能强迫，但必须引导。设计决策：保留输入→拦截→选完自动发送</td></tr>
+      <tr><td>3</td><td>"不知道的事"四种Prompt改造</td><td>"问长颈鹿怎么叫，AI说不知道就停了"</td><td>冷场的不是不知道，是没有温度。三种人格各用不同方式接住</td></tr>
+      <tr><td>4</td><td>投票提示全面放大</td><td>"提示太小，两次没看到"</td><td>设计提示不能只靠文字——用颜色、动效、位置共同传达</td></tr>
+      <tr><td>5</td><td>聊天从倒序改为正序+sticky header</td><td>"从下往上好奇怪"</td><td>对话是线性的。阅读顺序=时间顺序</td></tr>
+      <tr><td>6</td><td>人格选择页加对话预览</td><td>启发型0人选择</td><td>用户不是在选功能，是在选"被怎么对待"</td></tr>
+    </tbody>
+  </table>
+
+  <div class="insight-box">
+    <div class="label">复盘</div>
+    <p>最好的用户测试不是让用户"评价"，是让用户"使用"。在这个Demo中，用户没有被提前告知"帮我验证一个设计"——他们只是在聊天过程中被迫每轮做选择。这个"必须选一个才能继续"的机制，比任何五分量表都更接近真实偏好。</p>
+  </div>
+
+  <!-- 7. Next Steps -->
+  <h2>7. 如果继续做</h2>
+
+  <ul>
+    <li><strong>扩大验证：</strong>n=4太小，非随机抽样。下一步在非朋友圈人群（如小红书发帖招募）中做20-30人测试，检验100%选B是否可复现</li>
+    <li><strong>分离变量：</strong>当前无法区分"意图确认""长度自适应""留缺口式表达"各自的贡献。需要做拆解A/B测试</li>
+    <li><strong>人格间差异量化：</strong>Judge评分加人格差异列，验证三个人格是否确实在五维上走了不同路径</li>
+    <li><strong>接入更强模型：</strong>DeepSeek的表现受限于基座模型强度。接Claude API做同Prompt测试，看设计原则是否跨模型可迁移</li>
+  </ul>
+
+  <div class="divider"></div>
+
+  <!-- 8. Deliverables -->
+  <h2>8. 产出清单</h2>
+  <table>
+    <thead><tr><th style="width:22%;">产出</th><th style="width:30%;">文件</th><th style="width:48%;">说明</th></tr></thead>
+    <tbody>
+      <tr><td>完整作品集</td><td>Part 1-7 HTML</td><td>方法论→评估→案例→建模→Demo→验证→迭代</td></tr>
+      <tr><td>可交互原型</td><td>v3 HTML（需Key）</td><td>GitHub Pages部署，三人格+A/B对比+投票+反馈收集</td></tr>
+      <tr><td>用户反馈原始记录</td><td>Markdown表格</td><td>4人原始反馈+聚类编码+汇总分析</td></tr>
+      <tr><td>迭代记录</td><td>Markdown表格</td><td>从反馈到改动的6条完整记录+产品判断</td></tr>
+      <tr><td>三套人格Prompt</td><td>内嵌于Demo HTML</td><td>每套含风格定义+行为约束+输出格式+风险处理</td></tr>
+      <tr><td>LLM-as-a-Judge Prompt</td><td>内嵌于Demo HTML</td><td>五维自动评分+锚定参考+权重矩阵</td></tr>
+    </tbody>
+  </table>
+
+  <div class="divider"></div>
+
+  <div class="insight-box">
+    <div class="label">最后</div>
+    <p>AI产品经理的工作不是写Prompt——是定义<strong>AI应该如何跟人相处</strong>。Prompt只是手段，用户反馈才是起点。我做的事说起来很简单：听用户抱怨AI哪里不对→设计一套原则让AI换个方式说话→让用户自己判断哪个更好。我没写一行训练代码，但做了产品经理该做的事。</p>
+  </div>
+
+  <div class="footer">
+    李佳蔚 · 2026年6月 · AI对话人格设计产品案例
+  </div>
+
+</div>
+</body>
+</html>
