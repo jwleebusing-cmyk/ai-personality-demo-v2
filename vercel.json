@@ -1,9 +1,0 @@
-{
-  "functions": {
-    "api/proxy.js": {
-      "memory": 512,
-      "maxDuration": 25
-    }
-  },
-  "regions": ["hkg1"]
-}
