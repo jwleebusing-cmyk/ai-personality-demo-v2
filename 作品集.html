@@ -1399,6 +1399,98 @@
 
 		</section>
 
+	<!-- ═══════════════ Part 7 · Mochi ═══════════════ -->
+	<section class="page">
+	  <div class="section-num">Part 7 &middot; AI Native开发</div>
+	  <h2 class="section-title">Mochi &middot; macOS原生应用</h2>
+	  <p class="section-subtitle">全程使用 Claude Code，6 个开发日，没有一行代码是自己写的。但每个设计决策是自己的。</p>
+
+	  <div style="display:flex;gap:16px;margin-bottom:24px;flex-wrap:wrap;">
+	    <div style="flex:1;min-width:160px;background:#fff;padding:16px;border-radius:4px;border:1px solid #e8e4df;text-align:center;">
+	      <div style="font-size:28px;font-weight:600;color:#b8563f;">115</div>
+	      <div style="font-size:12px;color:#6b6b6b;margin-top:4px;">commits</div>
+	    </div>
+	    <div style="flex:1;min-width:160px;background:#fff;padding:16px;border-radius:4px;border:1px solid #e8e4df;text-align:center;">
+	      <div style="font-size:28px;font-weight:600;color:#b8563f;">62</div>
+	      <div style="font-size:12px;color:#6b6b6b;margin-top:4px;">Swift 文件</div>
+	    </div>
+	    <div style="flex:1;min-width:160px;background:#fff;padding:16px;border-radius:4px;border:1px solid #e8e4df;text-align:center;">
+	      <div style="font-size:28px;font-weight:600;color:#b8563f;">6</div>
+	      <div style="font-size:12px;color:#6b6b6b;margin-top:4px;">开发日</div>
+	    </div>
+	    <div style="flex:1;min-width:160px;background:#fff;padding:16px;border-radius:4px;border:1px solid #e8e4df;text-align:center;">
+	      <div style="font-size:28px;font-weight:600;color:#b8563f;">11</div>
+	      <div style="font-size:12px;color:#6b6b6b;margin-top:4px;">功能模块</div>
+	    </div>
+	  </div>
+
+	  <h3 style="font-size:16px; margin-bottom:8px;">项目动机</h3>
+	  <p>
+	    大多数效率工具关注「完成任务」。Mochi 定位为人生叙事系统——帮助用户记录、连接和发现自己的生活脉络。做完之后发现：用户觉得"被记住了"的时刻，不是搜索到某条历史记录，是跨两个月的两条随笔被关联在一起的瞬间。
+	  </p>
+
+	  <div class="section-divider"></div>
+
+	  <h3 style="font-size:16px; margin-bottom:8px;">需求梳理</h3>
+	  <p>
+	    先把想法全倒出来——要做的东西太多，肯定装不下。列完杀掉一批，剩 11 个模块（日历/日程/随笔/待办/目标/印记/书影音/总览/分析/搜索/塔罗）。决定先做日历和随笔，其他一个一个加。需求没理清不碰代码。
+	  </p>
+
+	  <div class="section-divider"></div>
+
+	  <h3 style="font-size:16px; margin-bottom:8px;">AI 协作方式</h3>
+	  <p>
+	    全程 Claude Code。每个功能先把逻辑想清楚——这页要干嘛、用户会怎么点、按钮在哪——想完了才让 AI 写。收到的第一版几乎都有问题，标出不对的地方，让它重跑。115 次 commit、62 个 Swift 文件，没有一行是自己亲手打的。但删哪些功能、用什么交互、什么时候该重构——都是自己判断的。
+	  </p>
+
+	  <div class="insight-box">
+	    <div class="label">AI Native 的工作方式</div>
+	    <p>不是写代码的速度，是知道让 AI 写什么、怎么判断它写得对不对、写得不对时怎么把它拉回来。每个 commit message 里记录的设计决策就是"我在做什么"的证据。</p>
+	  </div>
+
+	  <div class="section-divider"></div>
+
+	  <h3 style="font-size:16px; margin-bottom:8px;">关键设计决策</h3>
+	  <table>
+	    <thead><tr><th style="width:18%;">决策点</th><th style="width:41%;">最初方案</th><th style="width:41%;">最终方案</th></tr></thead>
+	    <tbody>
+	      <tr>
+	        <td><strong>WeekView</strong></td>
+	        <td>7 列网格布局，仿 Apple 日历</td>
+	        <td>垂直卡片流——滚动体验更舒服，信息密度更高</td>
+	      </tr>
+	      <tr>
+	        <td><strong>书影音</strong></td>
+	        <td>接豆瓣 API 获取评分和封面</td>
+	        <td>切到 OpenLibrary + TMDB，只保留读过/在读/想读三态。评分太累</td>
+	      </tr>
+	      <tr>
+	        <td><strong>视觉主题</strong></td>
+	        <td>5 套预设配色</td>
+	        <td>换了五版才定下来——AI 生成的配色在中文文本上阅读舒适度不够</td>
+	      </tr>
+	      <tr>
+	        <td><strong>塔罗</strong></td>
+	        <td>每日随机抽牌</td>
+	        <td>根据当天心情推荐牌面——抽到的牌会跟当天做的事产生关联</td>
+	      </tr>
+	    </tbody>
+	  </table>
+
+	  <div class="section-divider"></div>
+
+	  <h3 style="font-size:16px; margin-bottom:8px;">产出</h3>
+	  <p>
+	    两周，6 个开发日（2026.06.04 – 06.19），从零到能跑的原生 macOS 应用。全本地存储，关了网也能用。11 个模块都通了。删了几百行废代码和两个没人用的 Service。
+	  </p>
+
+	  <div class="insight-box">
+	    <div class="label">这个项目的意义</div>
+	    <p>它证明了一件事：不会写 Swift 的人，在 AI 的时代也能做出 macOS 原生应用。关键是你会不会拆任务、会不会描述需求、会不会判断输出。这三个"会不会"就是 AI PM 的核心能力。</p>
+	  </div>
+
+	</section>
+
 	<!-- ═══════════════ 附录更新 ═══════════════ -->
 	<section class="page">
 	  <div class="section-num">附录更新 &middot; 2026.06.18</div>
