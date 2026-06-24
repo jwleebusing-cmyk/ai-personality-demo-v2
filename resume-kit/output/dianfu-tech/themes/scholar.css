@@ -1,0 +1,294 @@
+/* ============================================================
+   简约黑白 (Scholar)
+   Inspired by aleckmann/resume — serif, generous, scholarly.
+   Large name, ruled section titles, circle bullets.
+   配合 base.css 使用
+   ============================================================ */
+
+:root {
+	--ink:   #232321;
+	--paper: #ffffff;
+	--white: #fffdf7;
+	--fade:  #6f6f6d;
+	--rule:  #31312f;
+	--gold:  #b88935;
+}
+
+/* ---- Body ---- */
+body {
+	color: var(--ink);
+	background: #ffffff;
+	font-family: "Charter", "Georgia", "Noto Serif CJK SC", "Source Han Serif SC", serif;
+	font-size: 9pt;
+	line-height: 1.45;
+}
+
+/* ---- A4 Page ---- */
+.resume-page {
+	overflow: hidden;
+background: #ffffff;
+	line-height: 1.45;
+}
+
+.resume-page::before {
+	display: none;
+}
+
+/* ---- Header ---- */
+.resume-header {
+	text-align: center;
+	padding: 0 0 0.5mm;
+	margin: 0 0 0.5mm;
+}
+
+.header-main {
+	text-align: center;
+}
+
+.resume-header h2 {
+	margin: 0 0 2mm;
+	font-size: 18pt;
+	font-weight: 700;
+	line-height: 1.1;
+	letter-spacing: 0.02em;
+}
+
+.contact-line {
+	margin: 0;
+	font-size: 9.5pt;
+	line-height: 1.4;
+	color: var(--ink);
+}
+
+.contact-line a {
+	color: var(--ink);
+	text-decoration: none;
+}
+
+.target {
+	display: block;
+	margin: 2mm 0 0;
+	font-size: 10pt;
+	color: var(--ink);
+}
+
+/* ---- Portrait ---- */
+.portrait {
+	position: absolute;
+	top: -2mm;
+	right: 0;
+	display: grid;
+	place-items: center;
+	overflow: hidden;
+	width: 20mm;
+	aspect-ratio: 3 / 4;
+	color: var(--paper);
+	background: var(--ink);
+	border: 0.5mm solid var(--fade);
+	border-radius: 2.2mm;
+	box-shadow: none;
+}
+
+.portrait span {
+	font-size: 16pt;
+	font-weight: 700;
+}
+
+.portrait img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+}
+
+/* ---- Section Titles — bold + solid rule below ---- */
+.section-title {
+	display: block;
+	margin-top: 3.5mm;
+	margin-bottom: 1.5mm;
+	padding: 0;
+	background: none;
+	border-radius: 0;
+	overflow: visible;
+}
+
+.section-title::before {
+	display: none;
+}
+
+.section-title span {
+	display: none;
+}
+
+.section-title h3 {
+	margin: 0 0 1mm;
+	padding: 0;
+	font-size: 11pt;
+	font-weight: 800;
+	letter-spacing: 0.02em;
+}
+
+.section-title::after {
+	content: "";
+	display: block;
+	width: 100%;
+	height: 0;
+	margin-top: 0.5mm;
+	border-bottom: 1px solid var(--rule);
+}
+
+.section-title em {
+	margin-left: 2mm;
+	color: var(--fade);
+	font-family: "Avenir Next", "Helvetica Neue", sans-serif;
+	font-size: 7pt;
+	font-style: normal;
+	font-weight: 400;
+	letter-spacing: 0.04em;
+	text-transform: uppercase;
+}
+
+/* ---- Section Spacing ---- */
+.resume-section {
+	margin: 0;
+}
+
+.education-list,
+.entry-list,
+.project-list,
+.skill-list {
+	margin: 0;
+}
+
+.entry-list,
+.project-list {
+	gap: 0;
+}
+
+.education-list {
+	gap: 1mm;
+}
+
+/* ---- Internships ---- */
+.entry-company {
+	font-size: 9.5pt;
+	font-weight: 700;
+}
+
+.entry-role {
+	font-size: 8.5pt;
+	font-weight: 700;
+	color: var(--ink);
+}
+
+.entry-period {
+	font-size: 8.5pt;
+	color: var(--fade);
+}
+
+.entry-item {
+	margin: 0;
+	padding: 0 0 1.5mm;
+	border-bottom: none;
+}
+
+/* ---- Education ---- */
+.education-degree {
+	font-size: 8.5pt;
+	font-weight: 700;
+}
+
+.education-school {
+	font-size: 8.5pt;
+	font-weight: 700;
+}
+
+.education-college {
+	font-size: 8.5pt;
+	font-weight: 700;
+}
+
+.education-major {
+	font-size: 8.5pt;
+	font-weight: 700;
+	color: var(--ink);
+}
+
+.education-period {
+	font-size: 8.5pt;
+	color: var(--fade);
+}
+
+/* ---- Projects ---- */
+.project-title {
+	font-size: 9.5pt;
+	font-weight: 700;
+}
+
+.project-role {
+	font-size: 8.5pt;
+	font-weight: 700;
+	color: var(--ink);
+}
+
+.project-period {
+	font-size: 8.5pt;
+	color: var(--fade);
+}
+
+.project-item {
+	margin: 0;
+	padding: 0 0 1.5mm;
+	border-bottom: none;
+}
+
+/* ---- Bullets — circle markers ---- */
+.achievement-list,
+.skill-points {
+	gap: 1.2mm;
+	padding-left: 4mm;
+	font-size: 9pt;
+	line-height: 1.6;
+}
+
+.achievement-list li {
+	list-style-type: circle;
+}
+
+.achievement-list li::marker {
+	color: var(--rule);
+}
+
+.achievement-list strong {
+	font-weight: 700;
+}
+
+.skill-points {
+	gap: 1.2mm;
+	padding-left: 4mm;
+	font-size: 9pt;
+	line-height: 1.45;
+}
+
+.skill-points li {
+	list-style-type: circle;
+	margin: 0;
+}
+
+.skill-points li::marker {
+	color: var(--rule);
+}
+
+.skill-points strong {
+	font-weight: 700;
+}
+
+/* ---- Print overrides ---- */
+@media print {
+	.resume-page {
+		overflow: visible;
+	}
+
+	.portrait {
+		background: black;
+	}
+}

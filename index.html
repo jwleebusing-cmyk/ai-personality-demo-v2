@@ -560,7 +560,6 @@
 <script>
 // ── API config ──
 const DEEPSEEK_API = 'https://api.deepseek.com/v1/chat/completions';
-const DEFAULT_KEY = 'sk-a8f0aab12d264ce08ca1c790dad6a425';
 
 // ── System Prompts ──
 const STANDARD_SYSTEM = `你是一个AI助手。请礼貌、自然地回应用户。不要使用markdown格式。不知道的事诚实说不知道就好。`;
@@ -571,7 +570,7 @@ let round = 0;
 let standardMessages = [{ role: 'system', content: STANDARD_SYSTEM }];
 let designedMessages = [{ role: 'system', content: '' }]; // set dynamically in startChat from personality
 let votes = { standard: 0, designed: 0 };
-let userKey = ''; // 用户手动设的Key才存这里。优先用DEFAULT_KEY
+let userKey = sessionStorage.getItem('ds_key') || '';
 let currentMood = '';
 let sessionLog = [];   // 记录每轮数据，供导出分析
 let sessionStart = ''; // 会话开始时间
@@ -1066,7 +1065,7 @@ async function continueChat(userInput) {
 }
 
 async function callJudge(userInput, responseA, responseB) {
-  const key = userKey || DEFAULT_KEY;
+  const key = userKey;
   if (!key) return null;
   try {
     const judgePrompt = JUDGE_SYSTEM
@@ -1092,8 +1091,7 @@ async function callJudge(userInput, responseA, responseB) {
 }
 
 async function callAPI() {
-  // 优先用默认Key，除非用户手动设了自己的Key
-  const key = userKey || DEFAULT_KEY;
+  const key = userKey;
   if (!key) { openKeyModal(); return null; }
   try {
     const [standardRes, designedRes] = await Promise.all([
@@ -1117,7 +1115,7 @@ async function callAPI() {
       if (status === 401) {
         // Key无效，清除并提示
         sessionStorage.removeItem('ds_key'); userKey = '';
-        if (!DEFAULT_KEY) { openKeyModal(); }
+        openKeyModal();
         return null;
       }
       throw new Error(errData.error?.message || 'API error');

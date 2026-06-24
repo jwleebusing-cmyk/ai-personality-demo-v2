@@ -1,0 +1,64 @@
+{
+  "meta": {
+    "version": "1.0",
+    "lastModified": "2026-06-19",
+    "candidateName": "李佳蔚"
+  },
+  "profile": {
+    "basics": {
+      "name": "李佳蔚",
+      "intent": "AI对话设计 / AI产品实习",
+      "location": "广州·深圳·北京",
+      "undergraduate": "湖南科技大学 教育学院 应用心理学",
+      "graduate": "北京师范大学（985）心理学部 临床与咨询心理",
+      "graduationYear": "2026",
+      "email": "jiawei_li2024@163.com",
+      "phone": "15196794651"
+    },
+    "education": [
+      { "degree": "硕士", "school": "北京师范大学（985）", "college": "心理学部", "major": "临床与咨询心理", "period": "2024.09-2026.06" },
+      { "degree": "本科", "school": "湖南科技大学（一本）", "college": "教育学院", "major": "应用心理学", "period": "2019.09-2023.06" }
+    ]
+  },
+  "experiences": [
+    {
+      "id": "exp-001",
+      "type": "internship",
+      "source": { "company": "北师大珠海校区心理健康服务中心", "role": "实习心理咨询师", "period": "2025.09-至今" },
+      "content": {
+        "achievements": [
+          { "label": "深度对话与需求识别", "text": "独立承接来访者全程咨询，累计60+小时深度一对一对话。建立对'人如何感受一段对话'的系统理解——情绪承接、需求识别时机、对话节奏控制。经验直接迁移至AI对话行为评估的用户意图三级分类框架。" },
+          { "label": "用户评估与风险筛查", "text": "完成62人次电话初始评估，15-20分钟内判断困扰严重程度、风险等级及适配方向。" }
+        ]
+      }
+    },
+    {
+      "id": "proj-001",
+      "type": "project",
+      "source": { "title": "AI人格对话Demo v3", "role": "独立完成", "period": "2026.05-2026.06" },
+      "content": {
+        "achievements": [
+          { "label": "项目背景", "text": "验证'AI对话姿态可通过Prompt设计改善'的假设，需将设计原则转化为可体验原型。" },
+          { "label": "关键产出", "text": "设计三套人格System Prompt（陪伴/启发/协创）；单文件HTML A/B对比网页GitHub Pages部署；4人×21轮用户测试，100%选择人格化AI；测试当天6次迭代。" }
+        ]
+      }
+    },
+    {
+      "id": "proj-002",
+      "type": "project",
+      "source": { "title": "五维AI对话评估框架", "role": "独立完成", "period": "2026.05" },
+      "content": {
+        "achievements": [
+          { "label": "项目背景", "text": "大模型对话评估缺乏从用户视角出发的系统性评分体系。" },
+          { "label": "关键产出", "text": "19条用户反馈→编码→6主题→三维归因；五维评分体系（情绪跟随/意图对齐/表达真实度/对话节奏/人格稳定性）+1-5分量表；可运行LLM-as-a-Judge自动评分Prompt。" }
+        ]
+      }
+    }
+  ],
+  "skillDimensions": [
+    { "name": "AI对话设计", "items": [{ "name": "System Prompt设计", "proficiency": "熟练", "description": "三套可执行人格Prompt，含风格定义+行为约束+风险处理" }] },
+    { "name": "用户研究", "items": [{ "name": "质性编码分析", "proficiency": "熟练", "description": "开放编码→轴向编码→聚类，19条反馈→五维框架" }] },
+    { "name": "原型工具", "items": [{ "name": "Web原型", "proficiency": "能独立搭建", "description": "单文件HTML+CSS+JS，GitHub Pages部署" }] }
+  ],
+  "roleProfiles": {}
+}
