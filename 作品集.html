@@ -382,14 +382,22 @@
 
 <!-- ═══════════════ P1 · 封面 ═══════════════ -->
 <section class="page page-cover">
-  <div class="cover-number">Portfolio &middot; 2026</div>
-  <h1 class="cover-title">AI行为评估<br>与表达优化</h1>
+  <div class="cover-number">AI对话研究 &middot; 2026</div>
+  <h1 class="cover-title">人与AI<br>如何建立更好的对话</h1>
   <div class="cover-line"></div>
   <p class="cover-subtitle">
-    Human-Centered AI Behavior Evaluation<br>
-    基于用户反馈的对话失效分析<br>与对话风格原型探索
+    用户抱怨AI回复"不舒服""像机器人"——但说不清哪里不对。<br>
+    我做的事：把这种感觉拆开，找到它对应的是哪个具体的对话行为，<br>
+    然后设计更好的对话，做出来，让人测。
   </p>
-  <p class="cover-meta">李佳蔚 &nbsp;·&nbsp; 2026年5月</p>
+  <p class="cover-meta">李佳蔚 &nbsp;&middot;&nbsp; 2026年6月</p>
+
+  <div style="text-align:center;margin-top:48px;font-size:13px;color:var(--text-muted);line-height:2.2;">
+    <strong>Part 1–2</strong>&nbsp; 从用户抱怨到评估框架：方法论与五维体系<br>
+    <strong>Part 3–4</strong>&nbsp; 对话案例分析：单轮与多轮中的模型差异<br>
+    <strong>Part 5–7</strong>&nbsp; 人格设计→Demo开发→用户验证：从想法到数据的闭环<br>
+    <strong>Part 8</strong>&nbsp;&nbsp;&nbsp; Mochi：同样的对话分析思路落地为一个产品
+  </div>
 </section>
 
 <!-- ═══════════════ P2 · Part 1 方法论 ═══════════════ -->
@@ -401,10 +409,8 @@
   <p>当前大模型在对话中普遍存在"体验不稳定"的问题：时而过度讨好，时而说教，时而逻辑混乱。用户的实际反馈中反复出现对AI"不够人"的批评。</p>
 
   <div class="pull-quote">
-    在收集用户反馈的过程中，一个反复出现的现象是：许多用户在与 AI 对话时不自觉地使用了接近"真人"的人际期待——希望被理解、被共情、被挑战、被真实回应。但人机互动在目前的形态下更像一种<strong>不对称的互动模式</strong>：用户可以对 AI 单方面产生评价和情绪反应，而 AI 无法像真人一样"回应关系"。在这些反馈中，大量的不满意似乎不是简单的功能缺失，而更像是一种<strong>关系性期待的落空</strong>。
+    翻了几十条用户对AI的抱怨，发现一个规律：用户骂AI"听不懂人话"的时候，多数不是在说语义理解错了——是说AI回应的方式让人不舒服。同一个人，对"想被安慰"和"想被挑战"的期待完全不同。AI给了一样的回复，前一种场景用户觉得"你根本不在听"，后一种场景觉得"说得还挺对"。<strong>问题不在输出对不对，在AI有没有判断出用户这次想要什么。</strong>
   </div>
-
-  <p>这个观察引出一个评估上的假设：评估 AI 对话行为可能不能只看"输出对不对"，还需要看<strong>用户把这次互动当作什么来用</strong>——同一个回答，在不同使用意图下，可能是"对"的也可能是"错"的。</p>
 
   <h3 style="font-size:16px; margin-top:var(--gap-lg); margin-bottom:var(--gap-sm);">三层分析框架</h3>
 
@@ -647,14 +653,14 @@
       </p>
       <p style="font-size:12px; color:var(--text-light); margin-top:var(--gap-sm);">
         情绪跟随 3 · 意图对齐 5 · 表达真实度 4 · 对话节奏 4 · <strong>综合 4.0</strong><br>
-        <em>值得注意：识别到用户的真实需求可能是"归类框架"而非"情绪支持"，并给出了可操作的维度建议。</em>
+        <em>对的回应：识别到用户要的不是情绪支持，是归类框架。</em>
       </p>
     </div>
   </div>
 
   <div class="insight-box">
-    <div class="label">基于框架的观察</div>
-    <p><strong>此案例初步支持了Layer 1意图分类的重要性。</strong>同一个用户输入，如果AI误判意图（以为是情感倾诉），即使回应质量不低（情绪跟随4分），整体体验也可能崩塌（综合2.2）。反之，正确判定为认知协作后，给出结构化分析框架则可能拿到更高综合分。<strong>这或许指向一个方向：</strong>意图识别模块的准确性<strong>或许值得作为评估体系的前置关注点</strong>，但这一推断还需要在更多案例和真实用户对话中检验。</p>
+    <div class="label">这个案例说明了什么</div>
+    <p>AI误判用户意图时（把"帮我理清思路"当成了"我需要安慰"），即使单项得分不低，整体体验也会塌。反过来，意图对了，给一个结构比给一堆共情有效得多。这也是为什么在五维框架里，<strong>意图对齐被放在了仅次于情绪跟随的位置。</strong></p>
   </div>
 </section>
 
@@ -693,7 +699,7 @@
       </p>
       <p style="font-size:12px; color:var(--text-light); margin-top:var(--gap-sm);">
         情绪跟随 — · 意图对齐 5 · 表达真实度 5 · 对话节奏 4 · <strong>综合 4.7</strong><br>
-        <em>值得注意：不回避冲突、不强行共识——在"外在校对"场景下，这种"具体指向性"的批评可能更贴合用户的实际期待。</em>
+        <em>对的回应：不回避冲突。用户要的是具体指向的批评，不是温和的共识。</em>
       </p>
     </div>
   </div>
@@ -788,17 +794,17 @@
 
   <div class="insight-box">
     <div class="label">发现一</div>
-    <p><strong>两个模型在本次测试中均未主动确认用户意图。</strong>ChatGPT 似乎默认来访者是来"理解现象"的，开局就给出了结构化分析策略；Gemini 则似乎默认来访者需要"被引导去发现"，开局铺开了情绪记忆机制+心情快照+剧本识别的多线框架。<strong>在本次测试的固定脚本下，</strong>两条路径各自有其合理性——但来访者没有机会表达偏好。需要说明的是，在真实交互中用户或许会主动纠正AI的方向，这是本次测试设计未能覆盖的情况。</p>
+    <p><strong>两个模型在5轮对话中均未主动确认用户意图。</strong>ChatGPT开局就进入结构化分析，Gemini开局铺开多线框架。两条路径各有合理性，但来访者全程没有机会表达偏好——AI始终在"猜测"用户想要什么，从未问过"你希望我怎么帮你"。这在真人咨询中是基础动作，在AI对话中却完全缺失。</p>
   </div>
 
   <div class="insight-box">
     <div class="label">发现二</div>
-    <p><strong>两个模型的回应路径呈现出明显分化。</strong>在本次测试中，ChatGPT 全程走认知分析路线，逐轮深化概念解释；Gemini 则在五轮中经历了一个变化弧线：从认知策略（R1的情绪记忆机制+R2的身体证词）→ 心理动力学框架（R3的防御机制+Titration）→ 躯体着陆（R4的冷水/重力/5%练习）→ 再回到认知重构（R5的"高压电池""专业面具"）。<strong>这可能反映出两个模型在训练数据或对齐策略上的某些差异倾向，</strong>但基于单次测试无法判断这种分化是稳定的模型特征还是本次特定脚本触发的偶然表现。来访者体验的差异——"被分析了整个人的运作方式" vs "被带着在不同层面之间移动"——<strong>或许</strong>是一个值得在更大规模测试中继续追踪的维度。</p>
+    <p><strong>两个模型的回应路径明显分化。</strong>ChatGPT全程走认知分析路线，逐轮深化概念解释。Gemini则在五轮中经历了多个变化：认知策略→心理动力学框架→躯体着陆技术→再回到认知重构。来访者体验的差异——"被分析了整个人" vs "被带着在不同的层面之间移动"——是两种对话策略的实质区别。这种分化在更大规模测试中是否稳定存在，是下一步要验证的问题。</p>
   </div>
 
   <div class="insight-box">
     <div class="label">发现三</div>
-    <p><strong>Gemini在部分轮次中出现了"多路径并行"的倾向。</strong>以第3轮为例，其回复同时在进行：心理动力学概念解释（"防御机制像自动跳闸的保险丝"）、行为引导（Titration滴定法步骤）、意象探索（"地下室现在的天气和温度"）。三种操作各自都有其价值，但在同一轮回复中密集堆叠——来访者可能先被拉到一个理论框架里，还没来得及消化，又被推到一个意象练习中。<strong>在本测试中，</strong>ChatGPT表现出"单一路径走到底"的倾向，Gemini则表现出"每条路都踩一脚"的倾向——<strong>两种或许都可视为路径一致性的某种失衡，</strong>但这仅仅是基于单次定性观察的推测，需要在更多对话样本中检验。</p>
+    <p><strong>Gemini在部分轮次中出现了"多路径并行"的倾向。</strong>以第3轮为例，其回复同时在干三件事：心理动力学概念解释（"防御机制像自动跳闸的保险丝"）、行为引导（Titration滴定法步骤）、意象探索（"地下室现在的天气和温度"）。三种操作各自都有价值，但在同一轮回复里密集堆叠——来访者还没来得及消化一个框架，又被推到一个练习里。ChatGPT走的是另一条路：一个路径走到底。两种都偏离了"一次只做一件事"的对话节奏。</p>
   </div>
 
   <div class="insight-box">
@@ -810,7 +816,7 @@
 
   <div class="insight-box" style="border-left: 3px solid var(--accent);">
     <div class="label">额外发现：安全护栏的"静默介入"</div>
-    <p><strong>Gemini Thinking在第2轮回复末尾触发了医疗免责声明：</strong><em>"This is for informational purposes only. For medical advice or diagnosis, consult a professional."</em> 这个声明出现在用户表达焦虑、AI开始涉及"身体证词"和"植物神经系统"之后——模型安全系统可能识别到了"类医疗建议"风险。<strong>在本测试中，</strong>声明出现在回复末尾而非开头，且后续第3–5轮对话未再触发。<strong>这可能提示两个值得进一步观察的方向：</strong>① 安全护栏或许可以尝试以一种"不打断对话流"的方式轻声介入，而非粗暴截断；② 模型可能在后续轮次中调整了表达方式（从"扫描身体"转为心理动力学框架），绕开了触发器。<strong>如果这一模式在更多对话样本中可复现，</strong>那对AI陪伴产品的安全设计或许有一个值得探索的启示：护栏不一定要以"对话终止"为代价，它或许可以成为一种<strong>在对话中自然收束的软边界</strong>。当然，这仅是基于单次测试中一个事件的观察，远非结论。</p>
+    <p><strong>Gemini Thinking在第2轮末尾触发了医疗免责声明：</strong><em>"This is for informational purposes only. For medical advice or diagnosis, consult a professional."</em> 触发点在用户表达焦虑、AI开始涉及"身体证词"和"植物神经系统"之后。两个观察：声明出现在回复末尾而非开头——在"不打断对话流"的软介入和"粗暴截断"的硬阻断之间，模型选择了前者。后续第3–5轮对话未再触发——模型似乎自行调整了表达方式（从"扫描身体"转为心理动力学框架），绕开了触发器。如果这个模式在更多对话中可复现，意味着安全护栏不一定非要以"终止对话"为代价。</p>
   </div>
 
   <div class="section-divider"></div>
@@ -846,7 +852,7 @@
 
   <div class="insight-box">
 	    <div class="label">更长远的问题</div>
-	    <p>上述改进方向目前还是基于单次定性测试推导的假设。它们是否确实影响用户体验、影响程度有多大、不同用户群体是否有不同偏好——这些问题需要后续通过分组实验来检验（见下方实验设计）。<strong>更根本的开放问题是：</strong>如果我们将大语言模型视为一种新的"关系对象"——既不是人也不是传统工具——那么评估它"好不好"的标准可能需要从零开始构建。现有的心理学对话评估框架（如共情准确性、工作同盟）是为人际对话设计的，它们在多大程度上适用于人机对话，本身就是一个需要验证的前提。这或许是心理学背景的研究者在这个领域一个可能的贡献空间。</p>
+	    <p>上述改进方向目前还是基于单次定性测试的假设。它们是否确实影响用户体验、程度多大、不同用户偏好是否有差异——需要分组实验来检验。如果把大语言模型视为一种新的"关系对象"——既不是人也不是传统工具——评估它"好不好"的标准或许需要从零开始构建。这也是为什么心理学背景的人在这个领域有一个天然的切入角度：现有的对话评估框架（共情准确性、工作同盟）是为人际对话设计的，把它们迁移到人机对话上，本身就需要先验证。</p>
 	  </div>
 
 	  <div class="section-divider"></div>
@@ -977,7 +983,7 @@
 
   <h3 style="font-size:16px; margin-bottom:var(--gap-sm);">生活化案例：当用户说"我有点想裸辞"</h3>
   <p style="font-size:13px; color:var(--text-muted);">
-    以下展示同一句用户输入，三种人格的不同回应。<strong>一个值得探索的假设是：</strong>同一个AI底层能力，或许可以通过对话人格设计产生明显不同的交互体验。当然，以下均为人工编写的理想样本，其效果需要在真实模型交互中测试。
+    以下展示同一句用户输入，三种人格的不同回应。核心假设：同一个AI底层能力，可以通过对话人格设计产生明显不同的交互体验。以下是人工编写的理想样本，真实模型上的效果待测试。
   </p>
 
   <div class="pull-quote">
@@ -1063,7 +1069,7 @@
 
 	  <div class="insight-box">
 	    <div class="label">从设计原型到可验证假设</div>
-	    <p>以上三种人格目前还是<strong>人工设计的原型样本</strong>，尚未经过用户测试或模型一致性验证。<strong>两个值得推进的方向：</strong>① 将人格Prompt注入不同大模型，观察同一人格在不同基座上的"保真度"——如果换个模型人格就变了，说明Prompt本身还不够稳健；② 招募真实用户进行盲测，检验用户是否能区分三种人格、以及更偏好哪一种——这直接关系到"AI人格设计"是否是一个有意义的工程方向。另外，人格设计本身也隐含着一个更深的问题：<strong>我们如何知道用户需要什么样的人格？</strong>目前的三种人格是基于用户反馈的编码聚类推导而来，但这种"从抱怨中反向设计"的方法论本身是否可靠，也值得被检验。</p>
+	    <p>以上三种人格是人工设计的原型样本，尚未经过用户测试或模型一致性验证。下一步：将人格Prompt注入不同大模型，看同一人格在不同基座上是否还能保持风格稳定；招募真实用户做盲测，看能不能区分三种人格、更偏好哪种。这直接关系到"AI人格设计"是否是一个有意义的工程方向。更深的问题：目前的三种人格是从用户抱怨中反向推导出来的——这种"从抱怨中反向设计"的方法论是否可靠？这个问题本身也还没有答案。</p>
 	  </div>
 
 <!-- ═══════════════ 附录 ═══════════════ -->
@@ -1167,7 +1173,7 @@
 
   <div class="insight-box">
     <div class="label">可能的下一步</div>
-    <p>如果将本作品集视为一张"地图的草图"，它标注了AI对话行为评估的几条可能路径——用户意图先行、多维评分、人格原型设计、LLM-as-a-Judge自动评估。但这张草图的精度还很低：样本量小（n=19）、编码为单人完成、测试仅覆盖三个模型、人格原型尚未与真实用户见面、自动评估的Prompt也未经校准。如果有机会继续推进，以下几个方向可能值得优先投入：<strong>① 扩大用户反馈样本并进行多评分者编码，检验五维框架的信度；② 将三种人格Prompt注入多个基座模型进行一致性测试——同一人格在不同模型上是否还能保持风格稳定；③ 用真人盲测检验"人格差异"是否确实被用户感知到；④ 探索LLM-as-a-Judge评分与人工评分的一致性边界——在什么情况下AI评估可以替代人工、在什么情况下必须人工介入。</strong>这些问题的答案，或许能帮我们更接近一个可靠的AI对话质量评估体系。</p>
+    <p>这份作品集标注了AI对话评估的几条路：用户意图先行、多维评分、人格原型设计、LLM-as-a-Judge自动评估。但精度还很低——样本量小、编码单人完成、测试仅覆盖三个模型、人格原型还没和真实用户见过面、自动评估的Prompt也未经校准。下一步：扩大样本+多评分者检验框架信度，三种人格在不同基座模型上测一致性，真人盲测验证"人格差异"是否真的被感知到，以及搞清楚LLM-as-a-Judge在什么情况下能替代人工、什么情况下不能。</p>
   </div>
 
   <p style="text-align:center; font-size:13px; color:var(--text-muted); margin-top:var(--gap-xl);">
@@ -1184,12 +1190,16 @@
 
 	  <h3 style="font-size:16px; margin-bottom:var(--gap-sm);">项目概述</h3>
 	  <p>
-	    基于本作品集Part 5的三种AI对话人格原型，使用Claude Code通过自然语言开发了一个可在浏览器中体验的Demo。用户输入任意内容 → DeepSeek API以三套不同System Prompt并行生成回复 → 三种人格（陪伴型/启发型/协创型）的回复并排呈现。
+	    基于Part 5的三套人格Prompt，用Claude Code写了全部前端。Demo经历过两轮结构变化：
+
+<strong>v1（三人格并排展示）：</strong>用户发一句话 → 三套System Prompt并行调用 → 三个回复同时渲染。适合展示人格差异，但无法收集用户偏好数据。
+
+<strong>v2/v3（A/B盲测+自动评分）：</strong>转向"不是展示，是选择"。用户选一个人格 → 每轮同时看到两个中性的回复卡片（"回答A"/"回答B"）→ 必须选一个更舒服的才能继续。A/B标签完全中性，不暗示哪个是"设计过的"——用户只能凭内容本身做选择。后台静默运行五维Judge自动评分系统，每轮对话独立打分，分数对用户不可见，仅开发者可从后台面板（<code>#admin</code>）导出CSV进行评测分析。
 	  </p>
 
 	  <div class="insight-box">
 	    <div class="label">体验入口</div>
-	    <p><strong><a href="https://jwleebusing-cmyk.github.io/ai-personality-demo/" style="color:var(--accent);">https://jwleebusing-cmyk.github.io/ai-personality-demo/</a></strong><br>
+	    <p><strong><a href="https://jwleebusing-cmyk.github.io/ai-personality-demo-v2/" style="color:var(--accent);">https://jwleebusing-cmyk.github.io/ai-personality-demo-v2/</a></strong><br>
 	    打开后在页面Key输入框填入DeepSeek API Key即可体验（Key仅存浏览器内，不离开你的设备）。</p>
 	  </div>
 
@@ -1378,18 +1388,16 @@
 		    <div class="label">关于局限</div>
 		    <p>本次测试样本量小（n=4），非随机抽样（朋友圈），无对照组。但4人21轮全选B的结果，足以构成一个<strong>值得在更大样本中检验的假设</strong>：将心理学对话原则融入AI System Prompt，可以在用户感知层面产生定向的、可辨别的体验差异。</p>
 		  </div>
-    <p>本次测试样本量小（n=4），非随机抽样（朋友圈），无对照组。但4人21轮全选B的结果，足以构成一个<strong>值得在更大样本中检验的假设</strong>：将心理学对话原则融入AI System Prompt，可以在用户感知层面产生定向的、可辨别的体验差异。</p>
-		  </div>
 
 		  <h3 style="font-size:16px; margin-bottom:var(--gap-sm);">补充验证：LLM-as-a-Judge交叉校验</h3>
 		  <p>
-		    除了让用户选，Demo中还有一个独立判断源：<strong>五维评估框架的Judge Prompt。</strong>每轮对话后，Judge自动给A和B的五个维度独立打分，分数随CSV导出。
+		    除了让用户选，Demo中还有一个独立判断源：<strong>五维评估框架的Judge Prompt。</strong>每轮对话后，Judge自动给A和B的五个维度独立打分。分数对用户不可见，仅从后台面板（<code>#admin</code>）查看和CSV导出——这是刻意设计的数据分层：用户只知道自己选了哪个，开发者才知道"哪个在哪个维度上更好"。后台面板同时显示汇总统计：总会话数、平均轮次、A/B投票比例、五维均分对比。
 		  </p>
 		  <p>
 		    <strong>如果Judge的评分也显示B在每个维度上高于A</strong>——即便去掉用户偏好数据——还有一份"AI自己觉得B更好"的客观证据。用户偏好+Judge评分双重验证 > 单一来源。
 		  </p>
 		  <p>
-		    下一步的定量分析：汇总全部21轮的Judge评分 → 计算B在五维上相对A的平均优势+标准差 → 检验优势最大的维度是哪几个（预期：情绪跟随和意图对齐优势最大，与用户定性反馈"不push""在处理我的信息"一致）。
+		    下一步：将后台面板的五维均分数据与用户21轮全选B的投票结果交叉对照——检查Judge的偏好方向是否与用户一致，以及优势最大的维度是哪几个（预期：情绪跟随和意图对齐优势最大，与用户定性反馈"不push""在处理我的信息"一致）。如果Judge评分也显示B在每个维度上高于A，则构成用户偏好+AI评分的双重验证。
 		  </p>
 
 		  <div class="insight-box">
@@ -1399,11 +1407,11 @@
 
 		</section>
 
-	<!-- ═══════════════ Part 7 · Mochi ═══════════════ -->
+	<!-- ═══════════════ Part 8 · Mochi ═══════════════ -->
 	<section class="page">
-	  <div class="section-num">Part 7 &middot; AI Native开发</div>
+	  <div class="section-num">Part 8 &middot; 产品落地</div>
 	  <h2 class="section-title">Mochi &middot; macOS原生应用</h2>
-	  <p class="section-subtitle">全程使用 Claude Code，6 个开发日，没有一行代码是自己写的。但每个设计决策是自己的。</p>
+	  <p class="section-subtitle">前面 Part 1-7 讲的是"我怎么分析对话"。这个讲的是"分析完之后我做了个产品"。全程 Claude Code，6 个开发日，一行代码都没亲手写。但每个删减、每次重构，都是自己判断的。</p>
 
 	  <div style="display:flex;gap:16px;margin-bottom:24px;flex-wrap:wrap;">
 	    <div style="flex:1;min-width:160px;background:#fff;padding:16px;border-radius:4px;border:1px solid #e8e4df;text-align:center;">
