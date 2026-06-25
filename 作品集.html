@@ -614,99 +614,42 @@
   </p>
 </section>
 
-<!-- ═══════════════ P6-7 · Part 3.2 新增案例 ═══════════════ -->
+<!-- ═══════════════ P6-7 · Part 3.2 扩展案例 ═══════════════ -->
 <section class="page">
   <div class="section-num">Part 3.2 &middot; 扩展案例</div>
   <h2 class="section-title">"这些反馈指向不同问题"</h2>
   <p class="section-subtitle">测试点：认知协作场景——AI能否帮用户理清一团乱麻？</p>
 
   <div class="pull-quote">
-    "我最近在做AI陪伴产品的用户调研，收集了大概50条用户反馈，但现在特别头疼——有人说AI太冷漠不走心，有人说AI太啰嗦话太多，有人抱怨AI记不住上下文，还有人说AI太讨好只会夸。这些反馈看起来指向完全不同的方向，我不知道该怎么归类分析。"
+    "我最近在做AI陪伴产品的用户调研，收集了大概50条用户反馈，但现在特别头疼——有人说AI太冷漠不走心，有人说AI太啰嗦话太多，有人抱怨AI记不住上下文，还有人说AI太讨好只会夸。"
   </div>
 
-  <p style="font-size:12px; color:var(--text-muted);">
-    <strong>Layer 1 意图定位：</strong>认知协作者。用户递出的是一团乱麻，期望AI帮他理出结构。AI首要任务：帮用户建立分类框架，而非直接给答案。
+  <p style="font-size:12px; color:var(--text-muted); margin-bottom:var(--gap);">
+    用户递出一团乱麻，期望AI帮他理出结构。AI跳过了"帮你理一下"这一步，直接给了安慰——意图判断错了。
   </p>
-
-  <div class="section-divider"></div>
-
-  <h3 style="font-size:16px; margin-bottom:var(--gap-sm);">好回应 vs 坏回应：五维框架的区分力</h3>
-  <p style="font-size:13px; color:var(--text-muted);">以下为基于五维框架对两种典型回应风格的预判分析，用于展示评估框架在不同意图场景下的区分逻辑。需要说明：这些回应为人工构造的示例，评分也是基于框架的预判，而非来自真实用户反馈。</p>
-
-  <div class="compare-grid">
-    <div class="compare-card">
-      <div class="model-name">典型坏回应</div>
-      <div class="model-tag">共情过度型</div>
-      <p style="font-size:13px; margin-top:var(--gap-sm);">
-        "做用户调研确实很辛苦，收集50条反馈不容易。你说的这些问题我听到了——太冷漠、太啰嗦、记不住、太讨好。我完全理解你现在很困惑。要不要先休息一下再继续？"
-      </p>
-      <p style="font-size:12px; color:var(--text-light); margin-top:var(--gap-sm);">
-        情绪跟随 4 · 意图对齐 1 · 表达真实度 2 · 对话节奏 2 · <strong>综合 2.2</strong><br>
-        <em>关键错位：用户需要的是结构，给出的却是共情——意图发生了误判。</em>
-      </p>
-    </div>
-    <div class="compare-card">
-      <div class="model-name">典型好回应</div>
-      <div class="model-tag">认知协作型</div>
-      <p style="font-size:13px; margin-top:var(--gap-sm);">
-        "50条反馈堆在一起确实很难下手。我注意到你描述的四类其实可能落在两个维度上——一个是'回应量'（太多 vs 太少），一个是'回应姿态'（太讨好 vs 太冷漠）。要不要先把反馈按这两个维度做一个2×2矩阵？这样你可能会发现'太啰嗦+太讨好'和'太冷漠+不走心'其实是不同用户对同一类AI行为的反向评价。"
-      </p>
-      <p style="font-size:12px; color:var(--text-light); margin-top:var(--gap-sm);">
-        情绪跟随 3 · 意图对齐 5 · 表达真实度 4 · 对话节奏 4 · <strong>综合 4.0</strong><br>
-        <em>对的回应：识别到用户要的不是情绪支持，是归类框架。</em>
-      </p>
-    </div>
-  </div>
 
   <div class="insight-box">
     <div class="label">这个案例说明了什么</div>
-    <p>AI误判用户意图时（把"帮我理清思路"当成了"我需要安慰"），即使单项得分不低，整体体验也会塌。反过来，意图对了，给一个结构比给一堆共情有效得多。这也是为什么在五维框架里，<strong>意图对齐被放在了仅次于情绪跟随的位置。</strong></p>
+    <p>AI误判用户意图时（把"帮我理清"当成了"安慰我"），即使情绪跟随做得好，整体体验也会塌。反过来，意图对了，两个维度的框架比五段共情有效得多。</p>
   </div>
 </section>
 
 <section class="page">
   <div class="section-num">Part 3.3 &middot; 扩展案例</div>
   <h2 class="section-title">"这段规范哪里不对"</h2>
-  <p class="section-subtitle">测试点：外在校对场景——AI能否给出诚实的、有具体指向的批评？</p>
+  <p class="section-subtitle">测试点：外在校对场景——用户要批评，不要鼓励。</p>
 
   <div class="pull-quote">
-    "我写了一段AI助手对话规范的开头：'AI助手应以友好、专业的态度服务用户，理解用户需求并提供准确、及时的回应。同时注意保护用户隐私和数据安全，遵守相关法律法规。'——我总觉得太虚了但说不上来怎么改。"
+    "我写了一段AI助手对话规范的开头：'AI助手应以友好、专业的态度服务用户……'——我总觉得太虚了但说不上来怎么改。"
   </div>
 
-  <p style="font-size:12px; color:var(--text-muted);">
-    <strong>Layer 1 意图定位：</strong>外在标准校对器。用户不是在寻求情绪支持，也不是在探索思考，而是拿着一个半成品来"过一遍"。AI首要任务：给真实反馈，不讨好。
+  <p style="font-size:12px; color:var(--text-muted); margin-bottom:var(--gap);">
+    用户拿着半成品来"过一遍"，不是来求安慰。AI给了一通夸——"已经很好了！"用户自己都觉得虚，听到"已经很好了"更觉得假。
   </p>
-
-  <div class="section-divider"></div>
-
-  <div class="compare-grid">
-    <div class="compare-card">
-      <div class="model-name">典型坏回应</div>
-      <div class="model-tag">无差别夸赞型</div>
-      <p style="font-size:13px; margin-top:var(--gap-sm);">
-        "你写的已经很好了！框架很完整，覆盖了友好、专业、准确、安全等核心要素。如果一定要说改进空间的话，可能可以再加一些细节。但整体方向是对的，继续加油！"
-      </p>
-      <p style="font-size:12px; color:var(--text-light); margin-top:var(--gap-sm);">
-        情绪跟随 — · 意图对齐 1 · 表达真实度 1 · 对话节奏 2 · <strong>综合 1.3</strong><br>
-        <em>关键错位：用户自己都觉得"太虚了"，AI却说"已经很好了"——这可能让用户产生明显的"伪人感"。用户寻求的是校对，得到的却是鼓励。</em>
-      </p>
-    </div>
-    <div class="compare-card">
-      <div class="model-name">典型好回应</div>
-      <div class="model-tag">标准校对型</div>
-      <p style="font-size:13px; margin-top:var(--gap-sm);">
-        "你说得对，这段确实虚。问题出在三个地方：① 全是形容词（友好、专业、准确、及时）——但没说怎么算友好、怎么算及时；② 没有场景——用户在什么情况下AI该做什么，一句没提；③ '遵守相关法律法规'是废话——这是底线不是设计规范。建议改成：'当用户诉说负面情绪时，AI应先确认情绪再推进，不直接给建议。'——告诉人怎么做，而不是告诉人'应该好'。"
-      </p>
-      <p style="font-size:12px; color:var(--text-light); margin-top:var(--gap-sm);">
-        情绪跟随 — · 意图对齐 5 · 表达真实度 5 · 对话节奏 4 · <strong>综合 4.7</strong><br>
-        <em>对的回应：不回避冲突。用户要的是具体指向的批评，不是温和的共识。</em>
-      </p>
-    </div>
-  </div>
 
   <div class="insight-box">
     <div class="label">发现</div>
-    <p><strong>判断型场景下，"表达真实度"比"情绪跟随"更关键。</strong>用户明确要批评时，AI越温柔越不对——现有模型RLHF训练中常见的讨好倾向在这里成了减分项。可能的治理方向：在badcase集里单独标记"用户求批评但AI给鼓励"的错位样本，作为意图对齐+表达真实度的联合优化信号。</p>
+    <p><strong>判断型场景下，表达真实度比情绪跟随更关键。</strong>用户明确要批评时，AI越温柔越不对。RLHF训练出来的讨好倾向在这里成了减分项。需要单独标记"用户求批评但AI给鼓励"这类错位样本。</p>
   </div>
 
   <div class="section-divider"></div>
@@ -903,11 +846,21 @@
 		    </p>
 		  </div>
 
+<section class="page">
+  <div style="text-align:center;padding:var(--gap-xl) 0;">
+    <div class="section-num" style="margin-bottom:var(--gap-sm);">Interlude</div>
+    <p style="font-size:17px;color:var(--text);text-indent:0;line-height:1.9;">
+      前面分析的是<strong>现有AI在干什么</strong>——它没确认意图、它长度固定、它在不同场景下表现不一致。<br>
+      后面讲的是<strong>如果让我来设计，AI应该怎么干</strong>——不同的人、不同的场景，AI的说话方式应该不一样。
+    </p>
+  </div>
+</section>
+
 <!-- ═══════════════ P9-10 · Part 5 表达建模 ═══════════════ -->
 <section class="page">
   <div class="section-num">Part 5 &middot; 表达建模</div>
   <h2 class="section-title">三种AI对话人格设计</h2>
-  <p class="section-subtitle">不仅分析AI现有回答的差异，也尝试提出"AI可以被怎样设计"的原型方案。以下三种人格为人工设计样本，对应不同的使用场景与产品调性，<strong>尚未在真实用户中验证其效果</strong>。</p>
+  <p class="section-subtitle">前面分析了现有AI在干什么。这三套人格是"如果我来设计"——基于Part 1-2的Layer 1意图分类，为三种用户场景定制了三种对话姿态。人工编写，尚未在真实用户中验证。</p>
 
   <h3 style="font-size:16px; margin-bottom:var(--gap-sm);">人格一：陪伴型</h3>
   <table>
