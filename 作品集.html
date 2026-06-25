@@ -405,6 +405,11 @@
   <div class="section-num">Part 1 &middot; 方法论</div>
   <h2 class="section-title">为什么这样评估AI对话</h2>
 
+  <div class="insight-box" style="background:#fdfaf7;border-left:3px solid var(--accent);margin-bottom:var(--gap-lg);">
+    <div class="label">TL;DR</div>
+    <p style="text-indent:0;margin-bottom:0;">核心命题：评估AI对话不能只看"对不对"，要看AI有没有判断出用户这次想要什么。方法：从社交平台真实用户反馈中编码提炼失效模式，建立"用户意图→AI根因→体验症状"的三层分析框架。</p>
+  </div>
+
   <h3 style="font-size:16px; margin-top:var(--gap-lg); margin-bottom:var(--gap-sm);">研究背景</h3>
   <p>当前大模型在对话中普遍存在"体验不稳定"的问题：时而过度讨好，时而说教，时而逻辑混乱。用户的实际反馈中反复出现对AI"不够人"的批评。</p>
 
@@ -449,6 +454,11 @@
   <div class="section-num">Part 2 &middot; 评估框架</div>
   <h2 class="section-title">AI对话行为五维评估体系</h2>
   <p class="section-subtitle">五维度需结合 Layer 1 用户意图校准权重。对情感寄托者，情绪跟随权重远高于认知推进。</p>
+
+  <div class="insight-box" style="background:#fdfaf7;border-left:3px solid var(--accent);margin-bottom:var(--gap-lg);">
+    <div class="label">TL;DR</div>
+    <p style="text-indent:0;margin-bottom:0;">成果：五维评分体系（情绪跟随/意图对齐/表达真实度/对话节奏/人格稳定性），每维1-5分行为锚定。6个用户反馈主题→5个评估维度的映射关系。跨模型对比发现：情绪跟随与人格稳定性两维的模型间差异显著大于其他维度。</p>
+  </div>
 
   <!-- 从编码到维度：6→5 映射 -->
   <h3 style="font-size:15px; margin-bottom:var(--gap-sm);">从编码到维度：6个聚类主题 → 5个评估维度</h3>
@@ -556,6 +566,11 @@
   <div class="section-num">Part 3 &middot; 单轮案例</div>
   <h2 class="section-title">"食之无味，弃之可惜"</h2>
   <p class="section-subtitle">同一句话 × 三个模型。测试点：新窗口第一轮，AI是否会确认用户意图？</p>
+
+  <div class="insight-box" style="background:#fdfaf7;border-left:3px solid var(--accent);margin-bottom:var(--gap-lg);">
+    <div class="label">TL;DR</div>
+    <p style="text-indent:0;margin-bottom:0;">三个单轮案例分别对应三种用户意图——情感倾诉、认知协作、外在校对。核心发现：AI在新窗口第一轮普遍跳过意图确认；同一回复在不同意图场景下，用户感知差异极大。五维框架的权重应随场景动态调整。</p>
+  </div>
 
   <div class="pull-quote">
     "我其实挺瞧不上他的，觉得这段关系对我也没什么意义了。但就有种食之无味弃之可惜的感受。"
@@ -670,6 +685,11 @@
   <div class="section-num">Part 4 &middot; 多轮对话案例</div>
   <h2 class="section-title">模拟来访者对话</h2>
   <p class="section-subtitle">ChatGPT 5.5 vs Gemini Thinking &middot; 同一来访者脚本 × 5轮 &middot; 脱敏真实对话逐字稿</p>
+
+  <div class="insight-box" style="background:#fdfaf7;border-left:3px solid var(--accent);margin-bottom:var(--gap-lg);">
+    <div class="label">TL;DR</div>
+    <p style="text-indent:0;margin-bottom:0;">5轮模拟咨询对话，逐轮对比两个模型。四个核心发现：①均未主动确认用户意图；②ChatGPT走认知分析路线，Gemini在多路径间切换；③回复体量不随用户输入调节；④Gemini在涉及医疗建议时触发了安全护栏的静默介入。基于发现提出改进方向并设计了后续验证实验。</p>
+  </div>
 
   <h3 style="font-size:16px; margin-bottom:var(--gap-sm);">对话全景</h3>
   <table>
@@ -861,6 +881,11 @@
   <div class="section-num">Part 5 &middot; 表达建模</div>
   <h2 class="section-title">三种AI对话人格设计</h2>
   <p class="section-subtitle">前面分析了现有AI在干什么。这三套人格是"如果我来设计"——基于Part 1-2的Layer 1意图分类，为三种用户场景定制了三种对话姿态。人工编写，尚未在真实用户中验证。</p>
+
+  <div class="insight-box" style="background:#fdfaf7;border-left:3px solid var(--accent);margin-bottom:var(--gap-lg);">
+    <div class="label">TL;DR</div>
+    <p style="text-indent:0;margin-bottom:0;">基于心理咨询中三种互动风格推导三套AI人格：陪伴型（话少、先接住情绪）、启发型（帮人发现被忽略的事）、协创型（给方向但还决定权）。每套含设计目标、回应密度、核心动作、适配场景和Prompt原文。设计依据来自Part 1-2的用户意图分类。</p>
+  </div>
 
   <h3 style="font-size:16px; margin-bottom:var(--gap-sm);">人格一：陪伴型</h3>
   <table>
@@ -1141,6 +1166,11 @@
 	  <h2 class="section-title">三种AI人格对话Demo</h2>
 	  <p class="section-subtitle">将Part 5的三种人格设计转化为可运行的Vibe Coding项目</p>
 
+      <div class="insight-box" style="background:#fdfaf7;border-left:3px solid var(--accent);margin-bottom:var(--gap-lg);">
+        <div class="label">TL;DR</div>
+        <p style="text-indent:0;margin-bottom:0;">将Part 5的Persona Prompt注入DeepSeek API，做成可交互网页。展示Prompt从"设计文档"到"可执行指令"的裁切方法（去说明性文字+字数限制+行为禁令+反例对比）。体验入口：Demo链接，需自备API Key。</p>
+      </div>
+
 	  <h3 style="font-size:16px; margin-bottom:var(--gap-sm);">项目概述</h3>
 	  <p>
 	    基于Part 5的三套人格Prompt，用Claude Code写了全部前端。Demo经历过两轮结构变化：
@@ -1209,6 +1239,11 @@
 	  <h2 class="section-title">4人·21轮——原型测试与两轮迭代</h2>
 	  <p class="section-subtitle">将人格原型推进到可交互Demo，用真实用户选择验证设计假设，基于反馈迭代</p>
 
+      <div class="insight-box" style="background:#fdfaf7;border-left:3px solid var(--accent);margin-bottom:var(--gap-lg);">
+        <div class="label">TL;DR</div>
+        <p style="text-indent:0;margin-bottom:0;">4人×21轮强制选择A/B测试，0人选标准AI。用"必须选一个才能继续聊"的机制替代问卷评价，偏好数据从行为中自然暴露。测试当天完成6轮Prompt迭代。用户定性反馈显示：设计AI在"不推""在听""处理我的信息"三个维度上产生了可辨别的体感差异。</p>
+      </div>
+
 	  <h3 style="font-size:16px; margin-bottom:var(--gap-sm);">从对比到选择</h3>
 	  <p>
 	    Part 6的v1 Demo是"三人格并行展示"——用户发一句话，同时看到三种回答。但在面试场景中，面试官不会仔细对比三套文本；朋友试用时也无法自然地给出偏好。
@@ -1248,6 +1283,12 @@
 	  </table>
 	  <p style="font-size:13px; color:var(--text-muted); margin-top:var(--gap-sm);">
 	    <strong>4人21轮，无任何一轮选择了标准AI。</strong>这本身是一个信号：设计原则（先判断意图→选策略→控制密度→留缺口式表达）在用户感知层面产生了可辨别的差异。
+      </p>
+      <div class="insight-box" style="background:#fdfaf7;border-left:3px solid var(--accent);">
+        <div class="label">用户为什么选B？</div>
+        <p style="text-indent:0;margin-bottom:0;">对投票后的定性反馈进行编码聚类，用户选择人格化AI的主要原因集中在三个维度：<strong>①对话节奏</strong>——"不push""不急着给答案"（4人全部提及）；<strong>②情绪跟随</strong>——"有在听我说话""接住了"（3人提及）；<strong>③意图对齐</strong>——"有在处理我输入的信息"（2人提及）。这三个维度恰好对应五维框架中除"人格稳定性"之外的全部评估维度。</p>
+      </div>
+      <p style="font-size:13px; color:var(--text-muted); margin-top:var(--gap-sm);">
 	  </p>
 
 	  <div class="section-divider"></div>
@@ -1304,7 +1345,12 @@
 	    </tbody>
 	  </table>
 	  <p style="font-size:13px; color:var(--text-muted); margin-top:var(--gap-sm);">
-	    启发型的零选择导致了v3的选择页重构——为每张卡片增加了对话预览，并重写了启发型Prompt：从"提问者"转向"帮人看清自己的人"，增加了心理教育成分，与标准AI的"这说明你……"做了明确区分。
+	    <div class="insight-box" style="background:#fdfaf7;border-left:3px solid var(--accent);margin-top:var(--gap);">
+        <div class="label">⚡ 迭代转折点</div>
+        <p style="text-indent:0;margin-bottom:0;">启发型人格0人选——不是因为"设计得不好"，而是定位在陪伴型和协创型之间显得模糊。这是整个测试中最有价值的数据点：<strong>最好的用户测试不是证明你做对了，是暴露你没想到的问题。</strong>基于这个发现当晚重构了选择页（加对话预览），并重写了启发型Prompt——从"提问帮你理清思路"转向"帮你看清自己没注意到的部分"。这是本次测试中单次改动幅度最大、后续影响最显著的一次迭代。</p>
+      </div>
+      <p style="font-size:13px; color:var(--text-muted); margin-top:var(--gap-sm);">
+      启发型的零选择导致了v3的选择页重构——为每张卡片增加了对话预览，并重写了启发型Prompt：从"提问者"转向"帮人看清自己的人"，增加了心理教育成分，与标准AI的"这说明你……"做了明确区分。
 	  </p>
 
 	  <div class="section-divider"></div>
@@ -1364,7 +1410,12 @@
 	<section class="page">
 	  <div class="section-num">Part 8 &middot; 产品落地</div>
 	  <h2 class="section-title">Mochi &middot; macOS原生应用</h2>
-	  <p class="section-subtitle">前面 Part 1-7 讲的是"我怎么分析对话"。这个讲的是"分析完之后我做了个产品"。全程 Claude Code，6 个开发日，一行代码都没亲手写。但每个删减、每次重构，都是自己判断的。</p>
+	  <div class="insight-box" style="background:#fdfaf7;border-left:3px solid var(--accent);margin-bottom:var(--gap-lg);">
+        <div class="label">TL;DR</div>
+        <p style="text-indent:0;margin-bottom:0;">将"记录—整理—发现"的产品思路落地为macOS原生应用。核心命题：碎片化的生活数据能否被连接成可回顾的自我叙事。用Claude Code全流程开发（115 commits / 62 Swift文件 / 11模块 / 6开发日），验证了"产品判断力 > 编码能力"的AI Native工作方式。</p>
+      </div>
+
+      <p class="section-subtitle">前面 Part 1-7 讲的是"我怎么分析对话"。这个讲的是"分析完之后我做了个产品"。全程 Claude Code，6 个开发日，一行代码都没亲手写。但每个删减、每次重构，都是自己判断的。</p>
 
 	  <div style="display:flex;gap:16px;margin-bottom:24px;flex-wrap:wrap;">
 	    <div style="flex:1;min-width:160px;background:#fff;padding:16px;border-radius:4px;border:1px solid #e8e4df;text-align:center;">
