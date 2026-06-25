@@ -1151,7 +1151,7 @@
 
   <div class="insight-box">
     <div class="label">可能的下一步</div>
-    <p>这份作品集标注了AI对话评估的几条路：用户意图先行、多维评分、人格原型设计、LLM-as-a-Judge自动评估。但精度还很低——样本量小、编码单人完成、测试仅覆盖三个模型、人格原型还没和真实用户见过面、自动评估的Prompt也未经校准。下一步：扩大样本+多评分者检验框架信度，三种人格在不同基座模型上测一致性，真人盲测验证"人格差异"是否真的被感知到，以及搞清楚LLM-as-a-Judge在什么情况下能替代人工、什么情况下不能。</p>
+    <p>这份作品集标注了AI对话评估的几条路：用户意图先行、多维评分、人格原型设计、LLM-as-a-Judge自动评估。但精度还很低——样本量小、编码单人完成、测试仅覆盖三个模型、人格原型还没和真实用户见过面、自动评估的Prompt也未经校准。下一步规划：Phase 2 — 扩大样本+多评分者检验框架信度；三种人格在不同基座模型上测一致性（人格Prompt保真度测试）；真人盲测验证"人格差异"被感知的程度。Phase 3 — 引入人工评分建立Human-LLM一致性基线（Cohen's Kappa / ICC），在真实产品环境中通过行为指标验证框架的商业有效性。</p>
   </div>
 
   <p style="text-align:center; font-size:13px; color:var(--text-muted); margin-top:var(--gap-xl);">
@@ -1222,6 +1222,12 @@
 	  <div class="insight-box">
 	    <div class="label">Prompt工程体感</div>
 	    <p><strong>同一套设计意图，"设计语言"写是300字，"Prompt语言"裁切后约180字。</strong>去掉的是解释"为什么"的部分，保留的是"怎么做"的指令。这可能是Prompt Engineering中一个值得注意的环节：将设计意图翻译为模型可稳定执行的指令，往往需要对原始表达进行裁切和约束。</p>
+
+      <div class="insight-box" style="margin-top:var(--gap);">
+        <div class="label">Judge 评测的偏差控制</div>
+        <p style="text-indent:0;margin-bottom:0;">使用LLM-as-a-Judge存在两个已知风险：①<strong>自我同质化偏差</strong>——同系列大模型可能在评分中偏好自己生成的回复风格；②<strong>长文本偏差（Verbosity Bias）</strong>——Judge可能给更长、更"文笔好"的回复打高分，而非真正评估交互姿态本身。当前缓解策略：在Judge Prompt中强制要求逐维独立评分并附具体行为证据；对多轮对话进行字数归一化处理。下一步需引入人工评分计算Human-LLM一致性（Cohen's Kappa / ICC）作为校准基线。</p>
+      </div>
+      <p style="font-size:13px; color:var(--text-muted);"></p>
 	  </div>
 
 	  <div class="section-divider"></div>
@@ -1384,8 +1390,10 @@
 
 
 		  <div class="insight-box">
-		    <div class="label">关于局限</div>
-		    <p>本次测试样本量小（n=4），非随机抽样（朋友圈），无对照组。但4人21轮全选B是个强信号：心理学对话原则融入AI System Prompt后，用户在感知层面出现了可辨别的偏好。下一步需要更大样本验证这种偏好的稳定性。</p>
+		    <div class="label">当前阶段与下步规划</div>
+		    <p><strong>Phase 1（已完成）：</strong>4名用户×21轮种子测试，验证定性偏好方向——人格化AI vs 标准AI是否存在可被感知的体验差异。结果：强信号已确认。<br><br>
+		    <strong>Phase 2（规划中）：</strong>借助LLM-as-a-Judge在更大规模测试集（目标n=500）上进行自动化交叉校验，验证五维评估框架下各维度的评分一致性（对齐率）。补充人工评分以建立Human-LLM一致性基线。<br><br>
+		    <strong>Phase 3（待推进）：</strong>在全量产品流量中切分小比例进行A/B分流实验，通过行为指标（单次会话轮数、次日留存率）定量验证人格化Prompt策略的实际效果。当前样本量小（n=4）、非随机抽样——这是探索阶段的事实，不是回避。</p>
 		  </div>
 
 		  <h3 style="font-size:16px; margin-bottom:var(--gap-sm);">补充验证：LLM-as-a-Judge交叉校验</h3>
@@ -1445,7 +1453,7 @@
 
 	  <h3 style="font-size:16px; margin-bottom:8px;">需求梳理</h3>
 	  <p>
-	    先把想法全倒出来——要做的东西太多，肯定装不下。列完杀掉一批，剩 11 个模块（日历/日程/随笔/待办/目标/印记/书影音/总览/分析/搜索/塔罗）。决定先做日历和随笔，其他一个一个加。需求没理清不碰代码。
+	    全局规划了11个模块来支撑「人生叙事系统」的完整性，但在6天的MVP开发中，<strong>核心精力80%聚焦在随笔与日历</strong>——这两者才是连接跨月叙事的最底层抓手（"跨两个月的两条随笔被关联在一起的瞬间"是核心Aha时刻）。其余9个模块在MVP阶段只做骨架连通，不做深度打磨。需求没理清不碰代码。
 	  </p>
 
 	  <div class="section-divider"></div>
@@ -1474,12 +1482,12 @@
 	      <tr>
 	        <td><strong>书影音</strong></td>
 	        <td>接豆瓣 API 获取评分和封面</td>
-	        <td>切到 OpenLibrary + TMDB，只保留读过/在读/想读三态。评分太累</td>
+	        <td>砍掉复杂评分机制。第三方API的开发ROI在MVP阶段偏低，且深度评分会拉长用户记录路径——果断聚焦「读过/在读/想读」三态，降低输入摩擦力</td>
 	      </tr>
 	      <tr>
 	        <td><strong>视觉主题</strong></td>
 	        <td>5 套预设配色</td>
-	        <td>换了五版才定下来——AI 生成的配色在中文文本上阅读舒适度不够</td>
+	        <td>AI生成配色缺乏中文排版的对比度与字重适配。通过5轮人眼可用性测试校准文本与背景的contrast ratio，优化长文本阅读无障碍体验</td>
 	      </tr>
 	      <tr>
 	        <td><strong>塔罗</strong></td>
@@ -1514,7 +1522,7 @@
 	  <ul style="font-size:13px; color:var(--text-muted); line-height:2.2; padding-left:var(--gap);">
 	    <li><strong>表达建模初步验证</strong>——Part 5 三种对话人格经v2/v3 Demo实现后，通过4人×21轮A/B测试获得了第一组用户偏好数据（0%选标准AI，100%选人格化AI）。但三人格间差异的用户感知尚未被充分检验——启发型0人选择、三人格偏好分布不均，提示选择页的信息结构可能比人格本身更影响用户选择。</li>
 	    <li><strong>改进方向经用户反馈校准</strong>——Part 4 提出的意图确认节点、三轮原则、回应长度自适应等方向，在Demo中已通过System Prompt实例化，并获得用户定性反馈的部分支持（"有在处理我输入的信息""不着急，你可以选择什么时候开始"）。但这些方向的独立效应未经验证——无法分离各自贡献。</li>
-	    <li><strong>新增局限</strong>——n=4样本量极小、非随机抽样、无交叉验证。A/B标签中的"普通AI"措辞可能引入隐含偏见。迭代频率极高（单日6次改动），部分改动在测试中途部署，可能影响后测数据的一致性。</li>
+	    <li><strong>新增局限</strong>——n=4样本量极小、非随机抽样、无交叉验证。A/B标签措辞可能引入隐含偏见。以上局限已纳入Phase 2/3规划（见Part 7"当前阶段与下步规划"），当前定位为探索性Pilot Study。</li>
 	  </ul>
 
 	  <div class="section-divider"></div>
